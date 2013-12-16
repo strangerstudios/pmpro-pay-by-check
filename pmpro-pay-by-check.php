@@ -79,6 +79,26 @@ function pmpropbc_checkout_boxes()
 			jQuery('a.pmpro_radio').click(function() {
 					jQuery(this).prev().click();
 			});
+			
+			//every couple seconds, hide the payment method box if the level is free
+			function togglePaymentMethodBox()
+			{
+				if (typeof code_level !== 'undefined')
+				{
+					if(parseFloat(code_level.billing_amount) > 0 || parseFloat(code_level.initial_payent) > 0)
+					{
+						//not free
+						jQuery('#pmpro_payment_method').show();
+					}
+					else
+					{
+						//free
+						jQuery('#pmpro_payment_method').hide();
+					}
+				}
+				pmpro_toggle_payment_method_box_timer = setTimeout(function(){togglePaymentMethodBox();}, 200);
+			}
+			togglePaymentMethodBox();
 		});
 	</script>
 	<?php
