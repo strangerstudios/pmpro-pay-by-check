@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: PMPro Pay by Check
+Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-pay-by-check/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: .1
+Version: .3
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -48,9 +48,13 @@ function pmpropbc_checkout_boxes()
 							<td>
 									<div>
 											<input type="radio" name="gateway" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
-													<a href="javascript:void(0);" class="pmpro_radio">Pay by Credit Card</a> &nbsp;
+													<?php if($gateway == "paypalexpress" || $gateway == "paypalstandard") { ?>
+														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpropbc');?></a> &nbsp;
+													<?php } else { ?>
+														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpropbc');?></a> &nbsp;
+													<?php } ?>
 											<input type="radio" name="gateway" value="check" <?php if($gateway == "check") { ?>checked="checked"<?php } ?> />
-													<a href="javascript:void(0);" class="pmpro_radio">Pay by Check</a> &nbsp;                                        
+													<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Check', 'pmpropbc');?></a> &nbsp;                                        
 									</div>
 							</td>
 					</tr>
@@ -59,18 +63,34 @@ function pmpropbc_checkout_boxes()
 	<div class="clear"></div>
 	<script>        
 		jQuery(document).ready(function() {			
+			var pmpro_gateway = '<?php echo pmpro_getOption('gateway');?>';
+			
 			//choosing payment method
 			jQuery('input[name=gateway]').click(function() {                
 					if(jQuery(this).val() == 'check')
 					{
 							jQuery('#pmpro_billing_address_fields').hide();
 							jQuery('#pmpro_payment_information_fields').hide();
+							
+							if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
+							{
+								jQuery('#pmpro_paypalexpress_checkout').hide();
+								jQuery('#pmpro_submit_span').show();
+							}
+							
 							pmpro_require_billing = false;
 					}
 					else
 					{                        
 							jQuery('#pmpro_billing_address_fields').show();
 							jQuery('#pmpro_payment_information_fields').show();                                                
+							
+							if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
+							{
+								jQuery('#pmpro_paypalexpress_checkout').show();
+								jQuery('#pmpro_submit_span').hide();
+							}
+							
 							pmpro_require_billing = true;
 					}
 			});
@@ -117,6 +137,18 @@ add_filter("pmpro_valid_gateways", "pmpropbc_pmpro_valid_gateways");
 /*
 	Handle pending check payments
 */
+//add pending as a default status when editing orders
+function pmpropbc_pmpro_order_statuses($statuses)
+{
+	if(!in_array('pending', $statuses))
+	{
+		$statuses[] = 'pending';
+	}
+	
+	return $statuses;
+}
+add_filter('pmpro_order_statuses', 'pmpropbc_pmpro_order_statuses');
+
 //set check orders to pending until they are paid
 function pmpropbc_pmpro_check_status_after_checkout($status) 
 { 
@@ -161,3 +193,20 @@ add_filter("pmpro_has_membership_access_filter", "pmpropbc_pmpro_has_membership_
 /*
 	Send email to user when order status is changed to success
 */
+
+
+/*
+Function to add links to the plugin row meta
+*/
+function pmpropbc_plugin_row_meta($links, $file) {
+	if(strpos($file, 'pmpro-pay-by-check.php') !== false)
+	{
+		$new_links = array(
+			'<a href="' . esc_url('http://www.paidmembershipspro.com/add-ons/plugins-on-github/pmpro-pay-by-check-add-on/')  . '" title="' . esc_attr( __( 'View Documentation', 'pmpro' ) ) . '">' . __( 'Docs', 'pmpro' ) . '</a>',
+			'<a href="' . esc_url('http://paidmembershipspro.com/support/') . '" title="' . esc_attr( __( 'Visit Customer Support Forum', 'pmpro' ) ) . '">' . __( 'Support', 'pmpro' ) . '</a>',
+		);
+		$links = array_merge($links, $new_links);
+	}
+	return $links;
+}
+add_filter('plugin_row_meta', 'pmpropbc_plugin_row_meta', 10, 2);
