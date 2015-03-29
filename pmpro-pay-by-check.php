@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-pay-by-check/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: .3
+Version: .3.1
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -30,14 +30,14 @@ Author URI: http://www.strangerstudios.com
 //add option to checkout along with JS
 function pmpropbc_checkout_boxes()
 {
-	global $gateway, $pmpro_level;
+	global $gateway, $pmpro_level, $pmpro_review;
 	$gateway_setting = pmpro_getOption("gateway");
 
 	//only show if the main gateway is not check
 	if($gateway_setting != "check")
 	{
 	?>
-	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0">
+	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0" <?php if(!empty($pmpro_review)) { ?>style="display: none;"<?php } ?>>
 			<thead>
 					<tr>
 							<th>Choose Your Payment Method</th>
