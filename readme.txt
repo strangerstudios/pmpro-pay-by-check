@@ -25,12 +25,15 @@ An email is sent to the user RE the status change.
 1. Activate the plugin through the 'Plugins' menu in WordPress.
 1. Change your Payment Settings to the "Pay by Check" gateway and make sure to set the "Instructions" with instructions for how to pay by check. Save.
 1. Change the Payment Settings back to use your gateway of choice. Behind the scenes the Pay by Check settings are still stored.
+1. Edit your membership levels and set the "Pay by Check Settings" for each level.
+
+If you would like to change the wording from "Pay by Check" to something else, you can use this custom code:
+https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog == 
 = .4 =
 * Added ability to set certain levels to be check only.
-* Added filters to easily change language from "check" to "wire transfer" etc.
-* When renewing by check, existing members will still have access through the end of their pay period even if the new orders is status pending.
+* Updated readme with info on using gettext filter to change language from "check" to "wire transfer" etc.
 
 = .3.1 =
 * Hiding the payment option radio buttons on the review page when using PayPal Express/Standard/etc.
