@@ -2,8 +2,8 @@
 Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 3.5
-Tested up to: 4.1.1
-Stable tag: .3.1
+Tested up to: 4.2.2
+Stable tag: .4
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -27,6 +27,11 @@ An email is sent to the user RE the status change.
 1. Change the Payment Settings back to use your gateway of choice. Behind the scenes the Pay by Check settings are still stored.
 
 == Changelog == 
+= .4 =
+* Added ability to set certain levels to be check only.
+* Added filters to easily change language from "check" to "wire transfer" etc.
+* When renewing by check, existing members will still have access through the end of their pay period even if the new orders is status pending.
+
 = .3.1 =
 * Hiding the payment option radio buttons on the review page when using PayPal Express/Standard/etc.
 

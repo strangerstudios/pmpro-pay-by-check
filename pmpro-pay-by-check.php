@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-pay-by-check/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: .3.1
+Version: .4
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -23,6 +23,48 @@ Author URI: http://www.strangerstudios.com
 	Settings, Globals and Constants
 */
 
+/*
+	Add settings to the edit levels page
+*/
+//show the checkbox on the edit level page
+function pmpropbc_pmpro_membership_level_after_other_settings()
+{	
+	$level_id = intval($_REQUEST['edit']);
+	if($level_id > 0)
+		$pbc_setting = get_option('pmpro_pay_by_check_setting_' . $level_id);	
+	else
+		$pbc_setting = 0;
+?>
+<h3 class="topborder">Pay by Check Settings</h3>
+<p>Change this setting to allow or disallow the pay by check option for this level.</p>
+<table>
+<tbody class="form-table">
+	<tr>
+		<th scope="row" valign="top"><label for="pbc_setting"><?php _e('Allow Pay by Check:', 'pmpro');?></label></th>
+		<td>
+			<select name="pbc_setting">
+				<option value="0" <?php selected($pbc_setting, 0);?>>No. Use the default gateway only.</option>
+				<option value="1" <?php selected($pbc_setting, 1);?>>Yes. Users choose between default gateway and check.</option>
+				<option value="2" <?php selected($pbc_setting, 2);?>>Yes. Users can only pay by check.</option>
+			</select>
+		</td>
+	</tr>
+</tbody>
+</table>
+<?php
+}
+add_action('pmpro_membership_level_after_other_settings', 'pmpropbc_pmpro_membership_level_after_other_settings');
+//save hide shipping setting when the level is saved/added
+function pmpropbc_pmpro_save_membership_level($level_id)
+{
+	if(isset($_REQUEST['pbc_setting']))
+		$pbc_setting = intval($_REQUEST['pbc_setting']);
+	else
+		$pbc_setting = 0;
+	delete_option('pmpro_pay_by_check_setting_' . $level_id);
+	add_option('pmpro_pay_by_check_setting_' . intval($level_id), $pbc_setting, "", "no");
+}
+add_action("pmpro_save_membership_level", "pmpropbc_pmpro_save_membership_level");
 
 /*
 	Add pay by check as an option
@@ -33,8 +75,10 @@ function pmpropbc_checkout_boxes()
 	global $gateway, $pmpro_level, $pmpro_review;
 	$gateway_setting = pmpro_getOption("gateway");
 
-	//only show if the main gateway is not check
-	if($gateway_setting != "check")
+	$pbc_setting = get_option('pmpro_pay_by_check_setting_' . $pmpro_level->id, 0);
+
+	//only show if the main gateway is not check and setting value == 1 (value == 2 means only do check payments)
+	if($gateway_setting != "check" && $pbc_setting == 1)
 	{
 	?>
 	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0" <?php if(!empty($pmpro_review)) { ?>style="display: none;"<?php } ?>>
@@ -135,6 +179,47 @@ function pmpropbc_pmpro_valid_gateways($gateways)
 add_filter("pmpro_valid_gateways", "pmpropbc_pmpro_valid_gateways");
 
 /*
+	Force check gateway if pbc_setting is 2
+*/
+function pmpropbc_pmpro_get_gateway($gateway)
+{
+	if(!empty($_REQUEST['level']))
+	{
+		$level_id = intval($_REQUEST['level']);
+		$pbc_setting = get_option('pmpro_pay_by_check_setting_' . $level_id, 0);
+    	
+    	if($pbc_setting == 2)
+    		$gateway = "check";
+	}
+
+	return $gateway;
+}
+add_filter('pmpro_get_gateway', 'pmpropbc_pmpro_get_gateway');
+add_filter('option_pmpro_gateway', 'pmpropbc_pmpro_get_gateway');
+
+/*
+	Need to remove this filter added by the check gateway.
+	The default gateway will have it's own idea RE this.
+*/
+function pmpropbc_init_include_billing_address_fields()
+{
+	if(pmpro_getGateway() !== 'check')
+		remove_filter('pmpro_include_billing_address_fields', '__return_false');
+	elseif(!empty($_REQUEST['level']))
+	{
+		$level_id = intval($_REQUEST['level']);
+		$pbc_setting = get_option('pmpro_pay_by_check_setting_' . $level_id);
+		if($pbc_setting == 2)
+		{
+			//hide billing address and payment info fields
+			add_filter('pmpro_include_billing_address_fields', '__return_false', 20);
+			add_filter('pmpro_include_payment_information_fields', '__return_false', 20);
+		}
+	}
+}
+add_action('init', 'pmpropbc_init_include_billing_address_fields', 20);
+
+/*
 	Handle pending check payments
 */
 //add pending as a default status when editing orders
@@ -175,6 +260,9 @@ function pmpropbc_pmpro_has_membership_access_filter($hasaccess, $mypost, $myuse
 	{
 		if($order->status == "pending")
 		{
+			//unless the previous order has status success and we are still within that pay period
+
+
 			$hasaccess = false;	//this is where the magic happens
 		}
 	}
@@ -187,11 +275,50 @@ add_filter("pmpro_has_membership_access_filter", "pmpropbc_pmpro_has_membership_
 	Some notes RE pending status.
 */
 //add note to account page RE waiting for check to clear
+function pmpropbc_pmpro_account_bullets_bottom()
+{
+	//get invoice from DB
+	if(!empty($_REQUEST['invoice']))
+	{
+	    $invoice_code = $_REQUEST['invoice'];
+
+	    if (!empty($invoice_code))
+	    	$pmpro_invoice = new MemberOrder($invoice_code);
+	}
+	
+	//no specific invoice, check current user's last order
+	if(empty($pmpro_invoice) || empty($pmpro_invoice->id))
+	{
+		$pmpro_invoice = new MemberOrder();
+		$pmpro_invoice->getLastMemberOrder(NULL, array('success', 'pending', 'cancelled', ''));
+	}
+
+	if(!empty($pmpro_invoice) && !empty($pmpro_invoice->id))
+	{
+		if($pmpro_invoice->status == "pending" && $pmpro_invoice->gateway == "check")
+		{
+			if(!empty($_REQUEST['invoice']))
+			{
+				?>
+				<li><?php _e('<strong>Membership pending.</strong> We are still waiting for payment of this invoice.', 'pmpropbc');?></li>
+				<?php
+			}
+			else
+			{
+				?>
+				<li><?php printf(__('<strong>Membership pending.</strong> We are still waiting for payment for <a href="%s">your latest invoice</a>.', 'pmpropbc'), pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code));?></li>
+				<?php
+			}
+		}
+	}
+}
+add_action('pmpro_account_bullets_bottom', 'pmpropbc_pmpro_account_bullets_bottom');
+add_action('pmpro_invoice_bullets_bottom', 'pmpropbc_pmpro_account_bullets_bottom');
 
 //add note to non-member text RE waiting for check to clear
 
 /*
-	Send email to user when order status is changed to success
+	TODO Send email to user when order status is changed to success
 */
 
 
