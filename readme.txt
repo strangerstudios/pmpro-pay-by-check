@@ -2,8 +2,8 @@
 Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 3.5
-Tested up to: 4.2.2
-Stable tag: .4
+Tested up to: 4.3.1
+Stable tag: .5
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,13 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog == 
+= .5 =
+* Added support for recurring levels.
+* Create a new "pending" invoice automatically on renewal date.
+* Send emails when the invoice is created asking for payment.
+* Send email if the invoice isn't paid within 30, 45 days.
+* Cancel the subscription and mark invoice as "unpaid" after 60 days.
+
 = .4 =
 * Added ability to set certain levels to be check only.
 * Updated readme with info on using gettext filter to change language from "check" to "wire transfer" etc.
