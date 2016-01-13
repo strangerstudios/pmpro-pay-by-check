@@ -2,8 +2,8 @@
 Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 3.5
-Tested up to: 4.3.1
-Stable tag: .5
+Tested up to: 4.4.1
+Stable tag: .6
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,9 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog == 
+= .6 =
+* FEATURE: Updated for localization with new pmpropbc.pot/po files.
+
 = .5 =
 * Added support for recurring levels.
 * Create a new "pending" invoice automatically on renewal date.

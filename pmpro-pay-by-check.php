@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-pay-by-check/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: .5
+Version: .6
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -25,6 +25,15 @@ Author URI: http://www.strangerstudios.com
 define("PMPRO_PAY_BY_CHECK_DIR", dirname(__FILE__));
 
 /*
+	Load plugin textdomain.
+*/
+function pmpropbc_load_textdomain() {
+  load_plugin_textdomain( 'pmpropbc', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' ); 
+}
+add_action( 'plugins_loaded', 'pmpropbc_load_textdomain' );
+
+
+/*
 	Add settings to the edit levels page
 */
 //show the checkbox on the edit level page
@@ -33,36 +42,36 @@ function pmpropbc_pmpro_membership_level_after_other_settings()
 	$level_id = intval($_REQUEST['edit']);
 	$options = pmpropbc_getOptions($level_id);	
 ?>
-<h3 class="topborder">Pay by Check Settings</h3>
-<p>Change this setting to allow or disallow the pay by check option for this level.</p>
+<h3 class="topborder"><?php _e('Pay by Check Settings', 'pmpropbc');?></h3>
+<p><?php _e('Change this setting to allow or disallow the pay by check option for this level.', 'pmpropbc');?></p>
 <table>
 <tbody class="form-table">
 	<tr>
-		<th scope="row" valign="top"><label for="pbc_setting"><?php _e('Allow Pay by Check:', 'pmpro');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_setting"><?php _e('Allow Pay by Check:', 'pmpropbc');?></label></th>
 		<td>
 			<select id="pbc_setting" name="pbc_setting">
-				<option value="0" <?php selected($options['setting'], 0);?>>No. Use the default gateway only.</option>
-				<option value="1" <?php selected($options['setting'], 1);?>>Yes. Users choose between default gateway and check.</option>
-				<option value="2" <?php selected($options['setting'], 2);?>>Yes. Users can only pay by check.</option>
+				<option value="0" <?php selected($options['setting'], 0);?>><?php _e('No. Use the default gateway only.', 'pmprobpc');?></option>
+				<option value="1" <?php selected($options['setting'], 1);?>><?php _e('Yes. Users choose between default gateway and check.', 'pmprobpc');?></option>
+				<option value="2" <?php selected($options['setting'], 2);?>><?php _e('Yes. Users can only pay by check.', 'pmprobpc');?></option>
 			</select>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
-		<th scope="row" valign="top"><label for="pbc_renewal_days"><?php _e('Send Renewal Emails:', 'pmpro');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_renewal_days"><?php _e('Send Renewal Emails:', 'pmpropbc');?></label></th>
 		<td>
-			<input type="text" id="pbc_renewal_days" name="pbc_renewal_days" size="5" value="<?php echo esc_attr($options['renewal_days']);?>" /> days before renewal.
+			<input type="text" id="pbc_renewal_days" name="pbc_renewal_days" size="5" value="<?php echo esc_attr($options['renewal_days']);?>" /> <?php _e('days before renewal.', 'pmprobpc');?>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
-		<th scope="row" valign="top"><label for="pbc_reminder_days"><?php _e('Send Reminder Emails:', 'pmpro');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_reminder_days"><?php _e('Send Reminder Emails:', 'pmpropbc');?></label></th>
 		<td>
-			<input type="text" id="pbc_reminder_days" name="pbc_reminder_days" size="5" value="<?php echo esc_attr($options['reminder_days']);?>" /> days after a missed payment.
+			<input type="text" id="pbc_reminder_days" name="pbc_reminder_days" size="5" value="<?php echo esc_attr($options['reminder_days']);?>" /> <?php _e('days after a missed payment.', 'pmprobpc');?>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
-		<th scope="row" valign="top"><label for="pbc_cancel_days"><?php _e('Cancel Membership:', 'pmpro');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_cancel_days"><?php _e('Cancel Membership:', 'pmpropbc');?></label></th>
 		<td>
-			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> days after a missed payment.
+			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> <?php _e('days after a missed payment.', 'pmprobpc');?>
 		</td>
 	</tr>
 	<script>
@@ -170,7 +179,7 @@ function pmpropbc_checkout_boxes()
 	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0" <?php if(!empty($pmpro_review)) { ?>style="display: none;"<?php } ?>>
 			<thead>
 					<tr>
-							<th>Choose Your Payment Method</th>
+							<th><?php _e('Choose Your Payment Method', 'pmprobpc');?></th>
 					</tr>
 			</thead>
 			<tbody>
@@ -295,6 +304,10 @@ add_filter('option_pmpro_gateway', 'pmpropbc_pmpro_get_gateway');
 */
 function pmpropbc_init_include_billing_address_fields()
 {
+	//make sure PMPro is active
+	if(!function_exists('pmpro_getGateway'))
+		return;
+
 	if(pmpro_getGateway() !== 'check')
 		remove_filter('pmpro_include_billing_address_fields', '__return_false');
 	elseif(!empty($_REQUEST['level']))
