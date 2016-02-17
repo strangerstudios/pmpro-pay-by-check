@@ -890,15 +890,3 @@ function pmpropbc_plugin_row_meta($links, $file) {
 	return $links;
 }
 add_filter('plugin_row_meta', 'pmpropbc_plugin_row_meta', 10, 2);
-
-function init_test()
-{
-	if(!empty($_REQUEST['test']))
-	{
-		//pmprobpc_recurring_orders();
-		//pmpropbc_reminder_emails();
-		pmpropbc_cancel_overdue_orders();
-		exit;
-	}
-}
-add_action('init', 'init_test');
