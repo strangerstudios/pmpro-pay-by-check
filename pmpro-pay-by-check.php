@@ -24,6 +24,9 @@ Author URI: http://www.strangerstudios.com
 */
 define("PMPRO_PAY_BY_CHECK_DIR", dirname(__FILE__));
 
+// quitely exit if PMPro isn't active
+if (! defined('PMPRO_DIR') && ! function_exists('pmpro_init'))
+	return;
 /*
 	Load plugin textdomain.
 */
