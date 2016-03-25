@@ -50,28 +50,28 @@ function pmpropbc_pmpro_membership_level_after_other_settings()
 		<th scope="row" valign="top"><label for="pbc_setting"><?php _e('Allow Pay by Check:', 'pmpropbc');?></label></th>
 		<td>
 			<select id="pbc_setting" name="pbc_setting">
-				<option value="0" <?php selected($options['setting'], 0);?>><?php _e('No. Use the default gateway only.', 'pmprobpc');?></option>
-				<option value="1" <?php selected($options['setting'], 1);?>><?php _e('Yes. Users choose between default gateway and check.', 'pmprobpc');?></option>
-				<option value="2" <?php selected($options['setting'], 2);?>><?php _e('Yes. Users can only pay by check.', 'pmprobpc');?></option>
+				<option value="0" <?php selected($options['setting'], 0);?>><?php _e('No. Use the default gateway only.', 'pmpropbc');?></option>
+				<option value="1" <?php selected($options['setting'], 1);?>><?php _e('Yes. Users choose between default gateway and check.', 'pmpropbc');?></option>
+				<option value="2" <?php selected($options['setting'], 2);?>><?php _e('Yes. Users can only pay by check.', 'pmpropbc');?></option>
 			</select>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
 		<th scope="row" valign="top"><label for="pbc_renewal_days"><?php _e('Send Renewal Emails:', 'pmpropbc');?></label></th>
 		<td>
-			<input type="text" id="pbc_renewal_days" name="pbc_renewal_days" size="5" value="<?php echo esc_attr($options['renewal_days']);?>" /> <?php _e('days before renewal.', 'pmprobpc');?>
+			<input type="text" id="pbc_renewal_days" name="pbc_renewal_days" size="5" value="<?php echo esc_attr($options['renewal_days']);?>" /> <?php _e('days before renewal.', 'pmpropbc');?>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
 		<th scope="row" valign="top"><label for="pbc_reminder_days"><?php _e('Send Reminder Emails:', 'pmpropbc');?></label></th>
 		<td>
-			<input type="text" id="pbc_reminder_days" name="pbc_reminder_days" size="5" value="<?php echo esc_attr($options['reminder_days']);?>" /> <?php _e('days after a missed payment.', 'pmprobpc');?>
+			<input type="text" id="pbc_reminder_days" name="pbc_reminder_days" size="5" value="<?php echo esc_attr($options['reminder_days']);?>" /> <?php _e('days after a missed payment.', 'pmpropbc');?>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
 		<th scope="row" valign="top"><label for="pbc_cancel_days"><?php _e('Cancel Membership:', 'pmpropbc');?></label></th>
 		<td>
-			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> <?php _e('days after a missed payment.', 'pmprobpc');?>
+			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> <?php _e('days after a missed payment.', 'pmpropbc');?>
 		</td>
 	</tr>
 	<script>
@@ -179,7 +179,7 @@ function pmpropbc_checkout_boxes()
 	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0" <?php if(!empty($pmpro_review)) { ?>style="display: none;"<?php } ?>>
 			<thead>
 					<tr>
-							<th><?php _e('Choose Your Payment Method', 'pmprobpc');?></th>
+							<th><?php _e('Choose Your Payment Method', 'pmpropbc');?></th>
 					</tr>
 			</thead>
 			<tbody>
@@ -353,16 +353,16 @@ add_filter("pmpro_check_status_after_checkout", "pmpropbc_pmpro_check_status_aft
  * @param user_id ID of the user to check.
  * @since .5
  */
-function pmprobpc_isMemberPending($user_id)
+function pmpropbc_isMemberPending($user_id)
 {
-	global $pmprobpc_pending_member_cache;
+	global $pmpropbc_pending_member_cache;
 		
 	//check the cache first
-	if(isset($pmprobpc_pending_member_cache[$user_id]))
-		return $pmprobpc_pending_member_cache[$user_id];
+	if(isset($pmpropbc_pending_member_cache[$user_id]))
+		return $pmpropbc_pending_member_cache[$user_id];
 	
 	//no cache, assume they aren't pending
-	$pmprobpc_pending_member_cache[$user_id] = false;
+	$pmpropbc_pending_member_cache[$user_id] = false;
 	
 	//check their last order
 	$order = new MemberOrder();
@@ -388,27 +388,32 @@ function pmprobpc_isMemberPending($user_id)
 					
 					//too long ago?
 					if($paid_order->timestamp < $cutoff)
-						$pmprobpc_pending_member_cache[$user_id] = true;
+						$pmpropbc_pending_member_cache[$user_id] = true;
 					else
-						$pmprobpc_pending_member_cache[$user_id] = false;
+						$pmpropbc_pending_member_cache[$user_id] = false;
 					
 				}
 				else
 				{
 					//no previous order, this must be the first
-					$pmprobpc_pending_member_cache[$user_id] = true;
+					$pmpropbc_pending_member_cache[$user_id] = true;
 				}								
 			}
 			else
 			{
 				//one time payment, so only interested in the last payment
-				$pmprobpc_pending_member_cache[$user_id] = true;
+				$pmpropbc_pending_member_cache[$user_id] = true;
 			}
 		}
 	}
 	
-	return $pmprobpc_pending_member_cache[$user_id];
+	return $pmpropbc_pending_member_cache[$user_id];
 }
+
+/*
+	In case anyone was using the typo'd function name.
+*/
+pmprobpc_isMemberPending($user_id) { return pmpropbc_isMemberPending($user_id); }
 
 //if a user's last order is pending status, don't give them access
 function pmpropbc_pmpro_has_membership_access_filter($hasaccess, $mypost, $myuser, $post_membership_levels)
@@ -421,7 +426,7 @@ function pmpropbc_pmpro_has_membership_access_filter($hasaccess, $mypost, $myuse
 	if(empty($post_membership_levels))
 		return $hasaccess;
 	
-	$hasaccess = ! pmprobpc_isMemberPending($myuser->ID);
+	$hasaccess = ! pmpropbc_isMemberPending($myuser->ID);
 	
 	return $hasaccess;
 }
@@ -458,7 +463,7 @@ function pmpropbc_pmpro_account_bullets_bottom()
 				?>
 				<li>
 					<?php						
-						if(pmprobpc_isMemberPending($pmpro_invoice->user_id))
+						if(pmpropbc_isMemberPending($pmpro_invoice->user_id))
 							_e('<strong>Membership pending.</strong> We are still waiting for payment of this invoice.', 'pmpropbc');
 						else						
 							_e('<strong>Important Notice:</strong> We are still waiting for payment of this invoice.', 'pmpropbc');
@@ -470,7 +475,7 @@ function pmpropbc_pmpro_account_bullets_bottom()
 			{
 				?>
 				<li><?php						
-						if(pmprobpc_isMemberPending($pmpro_invoice->user_id))
+						if(pmpropbc_isMemberPending($pmpro_invoice->user_id))
 							printf(__('<strong>Membership pending.</strong> We are still waiting for payment for <a href="%s">your latest invoice</a>.', 'pmpropbc'), pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code));
 						else
 							printf(__('<strong>Important Notice:</strong> We are still waiting for payment for <a href="%s">your latest invoice</a>.', 'pmpropbc'), pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code));
@@ -495,7 +500,7 @@ add_action('pmpro_invoice_bullets_bottom', 'pmpropbc_pmpro_account_bullets_botto
 /*
 	Create pending orders for recurring levels.
 */
-function pmprobpc_recurring_orders()
+function pmpropbc_recurring_orders()
 {
 	global $wpdb;
 	
@@ -618,7 +623,7 @@ function pmprobpc_recurring_orders()
 		}
 	}	
 }
-add_action('pmprobpc_recurring_orders', 'pmprobpc_recurring_orders');
+add_action('pmpropbc_recurring_orders', 'pmpropbc_recurring_orders');
 
 /*
 	Send reminder emails for pending invoices.
@@ -858,7 +863,7 @@ function pmpropbc_activation()
 {
 	//schedule crons
 	wp_schedule_event(current_time('timestamp'), 'daily', 'pmpropbc_cancel_overdue_orders');
-	wp_schedule_event(current_time('timestamp')+1, 'daily', 'pmprobpc_recurring_orders');
+	wp_schedule_event(current_time('timestamp')+1, 'daily', 'pmpropbc_recurring_orders');
 	wp_schedule_event(current_time('timestamp')+2, 'daily', 'pmpropbc_reminder_emails');	
 
 	do_action('pmpropbc_activation');
@@ -867,7 +872,7 @@ function pmpropbc_deactivation()
 {
 	//remove crons
 	wp_clear_scheduled_hook('pmpropbc_cancel_overdue_orders');
-	wp_clear_scheduled_hook('pmprobpc_recurring_orders');
+	wp_clear_scheduled_hook('pmpropbc_recurring_orders');
 	wp_clear_scheduled_hook('pmpropbc_reminder_emails');	
 
 	do_action('pmpropbc_deactivation');
