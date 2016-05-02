@@ -541,7 +541,7 @@ function pmprobpc_recurring_orders()
 			$sqlQuery = "
 				SELECT o1.id FROM
 				    (SELECT id, user_id, timestamp
-				    FROM $wpdb->pmpro_membership_orders
+				    FROM {$wpdb->pmpro_membership_orders}
 				    WHERE membership_id = $level->id
 				        AND gateway = 'check' 
 				        AND status IN('pending', 'success')
@@ -550,7 +550,7 @@ function pmprobpc_recurring_orders()
 					LEFT OUTER JOIN 
 					
 					(SELECT id, user_id, timestamp
-				    FROM dev_pmpro_membership_orders
+				    FROM {$wpdb->pmpro_membership_orders}
 				    WHERE membership_id = $level->id
 				        AND gateway = 'check' 
 				        AND status IN('pending', 'success')
