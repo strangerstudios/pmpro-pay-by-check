@@ -355,7 +355,7 @@ function pmprobpc_isMemberPending($user_id)
 	$order = new MemberOrder();
 	$order->getLastMemberOrder($user_id, NULL);		//NULL here means any status
 		
-	if(!empty($order))
+	if(isset($order->status))
 	{
 		if($order->status == "pending")
 		{
