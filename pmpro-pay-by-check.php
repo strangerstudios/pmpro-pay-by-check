@@ -416,7 +416,7 @@ function pmpropbc_isMemberPending($user_id)
 /*
 	In case anyone was using the typo'd function name.
 */
-pmprobpc_isMemberPending($user_id) { return pmpropbc_isMemberPending($user_id); }
+function pmprobpc_isMemberPending($user_id) { return pmpropbc_isMemberPending($user_id); }
 
 //if a user's last order is pending status, don't give them access
 function pmpropbc_pmpro_has_membership_access_filter($hasaccess, $mypost, $myuser, $post_membership_levels)
