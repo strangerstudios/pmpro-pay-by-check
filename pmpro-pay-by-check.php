@@ -190,8 +190,10 @@ function pmpropbc_checkout_boxes()
 							<td>
 									<div>
 											<input type="radio" name="gateway" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
-													<?php if($gateway == "paypalexpress" || $gateway == "paypalstandard") { ?>
+													<?php if($gateway_setting == "paypalexpress" || $gateway_setting == "paypalstandard") { ?>
 														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpropbc');?></a> &nbsp;
+													<?php } elseif($gateway_setting == 'twocheckout') { ?>
+														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with 2Checkout', 'pmpropbc');?></a> &nbsp;
 													<?php } else { ?>
 														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpropbc');?></a> &nbsp;
 													<?php } ?>
@@ -203,39 +205,52 @@ function pmpropbc_checkout_boxes()
 			</tbody>
 	</table>
 	<div class="clear"></div>
-	<script>        
-		jQuery(document).ready(function() {			
-			var pmpro_gateway = '<?php echo pmpro_getOption('gateway');?>';
-			
-			//choosing payment method
-			jQuery('input[name=gateway]').click(function() {                
-					if(jQuery(this).val() == 'check')
+	<script>
+		var pmpro_gateway = '<?php echo pmpro_getOption('gateway');?>';
+
+		function pmpropbc_toggleCheckoutFields() {
+			if(jQuery('input[name=gateway]:checked').val() == 'check')
+			{
+					jQuery('#pmpro_billing_address_fields').hide();
+					jQuery('#pmpro_payment_information_fields').hide();
+					
+					jQuery('.pmpro_check_instructions').show();
+
+					if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
 					{
-							jQuery('#pmpro_billing_address_fields').hide();
-							jQuery('#pmpro_payment_information_fields').hide();
-							
-							if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
-							{
-								jQuery('#pmpro_paypalexpress_checkout').hide();
-								jQuery('#pmpro_submit_span').show();
-							}
-							
-							pmpro_require_billing = false;
+						jQuery('#pmpro_paypalexpress_checkout').hide();
+						jQuery('#pmpro_submit_span').show();
 					}
-					else
-					{                        
-							jQuery('#pmpro_billing_address_fields').show();
-							jQuery('#pmpro_payment_information_fields').show();                                                
-							
-							if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
-							{
-								jQuery('#pmpro_paypalexpress_checkout').show();
-								jQuery('#pmpro_submit_span').hide();
-							}
-							
-							pmpro_require_billing = true;
+					
+					pmpro_require_billing = false;
+			}
+			else
+			{                        
+					jQuery('#pmpro_billing_address_fields').show();
+					jQuery('#pmpro_payment_information_fields').show();                                                
+					
+					jQuery('.pmpro_check_instructions').hide();
+
+					if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
+					{
+						jQuery('#pmpro_paypalexpress_checkout').show();
+						jQuery('#pmpro_submit_span').hide();
 					}
+					
+					pmpro_require_billing = true;
+			}
+		}
+
+		jQuery(document).ready(function() {
+			//choosing payment method
+			jQuery('input[name=gateway]').bind('click change keyup', function() {                
+					pmpropbc_toggleCheckoutFields();
 			});
+
+			//run on load
+			<?php if(empty($pmpro_review)) { ?>
+				pmpropbc_toggleCheckoutFields();
+			<?php } ?>
 			
 			//select the radio button if the label is clicked on
 			jQuery('a.pmpro_radio').click(function() {
@@ -257,6 +272,8 @@ function pmpropbc_checkout_boxes()
 						//free
 						jQuery('#pmpro_payment_method').hide();
 					}
+
+					pmpropbc_toggleCheckoutFields();
 				}
 				pmpro_toggle_payment_method_box_timer = setTimeout(function(){togglePaymentMethodBox();}, 200);
 			}
@@ -302,7 +319,7 @@ add_filter('pmpro_get_gateway', 'pmpropbc_pmpro_get_gateway');
 add_filter('option_pmpro_gateway', 'pmpropbc_pmpro_get_gateway');
 
 /*
-	Need to remove this filter added by the check gateway.
+	Need to remove some filters added by the check gateway.
 	The default gateway will have it's own idea RE this.
 */
 function pmpropbc_init_include_billing_address_fields()
@@ -311,9 +328,8 @@ function pmpropbc_init_include_billing_address_fields()
 	if(!function_exists('pmpro_getGateway'))
 		return;
 
-	if(pmpro_getGateway() !== 'check')
-		remove_filter('pmpro_include_billing_address_fields', '__return_false');
-	elseif(!empty($_REQUEST['level']))
+	//billing address and payment info fields
+	if(!empty($_REQUEST['level']))
 	{
 		$level_id = intval($_REQUEST['level']);
 		$options = pmpropbc_getOptions($level_id);		    
@@ -322,10 +338,50 @@ function pmpropbc_init_include_billing_address_fields()
 			//hide billing address and payment info fields
 			add_filter('pmpro_include_billing_address_fields', '__return_false', 20);
 			add_filter('pmpro_include_payment_information_fields', '__return_false', 20);
+		} else {
+			//keep paypal buttons, billing address fields/etc at checkout
+			$default_gateway = pmpro_getOption('gateway');
+			if($default_gateway == 'paypalexpress') {
+				add_filter('pmpro_checkout_default_submit_button', array('PMProGateway_paypalexpress', 'pmpro_checkout_default_submit_button'));
+				add_action('pmpro_checkout_after_form', array('PMProGateway_paypalexpress', 'pmpro_checkout_after_form'));
+			} elseif($default_gateway == 'paypalstandard') {
+				add_filter('pmpro_checkout_default_submit_button', array('PMProGateway_paypalstandard', 'pmpro_checkout_default_submit_button'));
+			} elseif($default_gateway == 'twocheckout') {
+				//undo the filter to change the checkout button text
+				remove_filter('pmpro_checkout_default_submit_button', array('PMProGateway_twocheckout', 'pmpro_checkout_default_submit_button'));
+			} else {
+				//onsite checkouts
+				if(class_exists('PMProGateway_' . $default_gateway) && method_exists('PMProGateway_' . $default_gateway, 'pmpro_include_billing_address_fields'))
+					add_filter('pmpro_include_billing_address_fields', array('PMProGateway_' . $default_gateway, 'pmpro_include_billing_address_fields'));
+				else
+					add_filter('pmpro_include_billing_address_fields', '__return_true', 20);
+			}
 		}
 	}
+
+	//instructions at checkout
+	remove_filter('pmpro_checkout_after_payment_information_fields', array('PMProGateway_check', 'pmpro_checkout_after_payment_information_fields'));
+	add_filter('pmpro_checkout_after_payment_information_fields', 'pmpropbc_pmpro_checkout_after_payment_information_fields');
 }
 add_action('init', 'pmpropbc_init_include_billing_address_fields', 20);
+
+/*
+	Show instructions on the checkout page.
+*/
+function pmpropbc_pmpro_checkout_after_payment_information_fields() {
+	global $gateway, $pmpro_level;
+
+	$options = pmpropbc_getOptions($pmpro_level->id);
+
+	if(!empty($options) && $options['setting'] > 0 && !pmpro_isLevelFree($pmpro_level)) {
+		$instructions = pmpro_getOption("instructions");
+		if($gateway != 'check')
+			$hidden = 'style="display:none;"';
+		else
+			$hidden = '';
+		echo '<div class="pmpro_check_instructions" ' . $hidden . '>' . wpautop($instructions) . '</div>';
+	}
+}
 
 /*
 	Handle pending check payments
