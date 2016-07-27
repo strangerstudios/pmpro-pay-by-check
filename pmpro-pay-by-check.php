@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-pay-by-check/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: .5
+Version: .7
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -24,6 +24,18 @@ Author URI: http://www.strangerstudios.com
 */
 define("PMPRO_PAY_BY_CHECK_DIR", dirname(__FILE__));
 
+// quitely exit if PMPro isn't active
+if (! defined('PMPRO_DIR') && ! function_exists('pmpro_init'))
+	return;
+/*
+	Load plugin textdomain.
+*/
+function pmpropbc_load_textdomain() {
+  load_plugin_textdomain( 'pmpropbc', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' ); 
+}
+add_action( 'plugins_loaded', 'pmpropbc_load_textdomain' );
+
+
 /*
 	Add settings to the edit levels page
 */
@@ -33,56 +45,38 @@ function pmpropbc_pmpro_membership_level_after_other_settings()
 	$level_id = intval($_REQUEST['edit']);
 	$options = pmpropbc_getOptions($level_id);	
 ?>
-<h3 class="topborder">Pay by Check Settings</h3>
-<p>Change this setting to allow or disallow the pay by check option for this level.</p>
+<h3 class="topborder"><?php _e('Pay by Check Settings', 'pmpropbc');?></h3>
+<p><?php _e('Change this setting to allow or disallow the pay by check option for this level.', 'pmpropbc');?></p>
 <table>
 <tbody class="form-table">
 	<tr>
-		<th scope="row" valign="top"><label for="pbc_setting"><?php _e('Allow Pay by Check:', 'pmpro');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_setting"><?php _e('Allow Pay by Check:', 'pmpropbc');?></label></th>
 		<td>
 			<select id="pbc_setting" name="pbc_setting">
-				<option value="0" <?php selected($options['setting'], 0);?>>No. Use the default gateway only.</option>
-				<option value="1" <?php selected($options['setting'], 1);?>>Yes. Users choose between default gateway and check.</option>
-				<option value="2" <?php selected($options['setting'], 2);?>>Yes. Users can only pay by check.</option>
+				<option value="0" <?php selected($options['setting'], 0);?>><?php _e('No. Use the default gateway only.', 'pmpropbc');?></option>
+				<option value="1" <?php selected($options['setting'], 1);?>><?php _e('Yes. Users choose between default gateway and check.', 'pmpropbc');?></option>
+				<option value="2" <?php selected($options['setting'], 2);?>><?php _e('Yes. Users can only pay by check.', 'pmpropbc');?></option>
 			</select>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
-		<th scope="row" valign="top"><label for="pbc_renewal_days"><?php _e('Send Renewal Emails:', 'pmpro');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_renewal_days"><?php _e('Send Renewal Emails:', 'pmpropbc');?></label></th>
 		<td>
-			<input type="text" id="pbc_renewal_days" name="pbc_renewal_days" size="5" value="<?php echo esc_attr($options['renewal_days']);?>" /> days before renewal.
+			<input type="text" id="pbc_renewal_days" name="pbc_renewal_days" size="5" value="<?php echo esc_attr($options['renewal_days']);?>" /> <?php _e('days before renewal.', 'pmpropbc');?>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
-		<th scope="row" valign="top"><label for="pbc_reminder_days"><?php _e('Send Reminder Emails:', 'pmpro');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_reminder_days"><?php _e('Send Reminder Emails:', 'pmpropbc');?></label></th>
 		<td>
-			<input type="text" id="pbc_reminder_days" name="pbc_reminder_days" size="5" value="<?php echo esc_attr($options['reminder_days']);?>" /> days after a missed payment.
+			<input type="text" id="pbc_reminder_days" name="pbc_reminder_days" size="5" value="<?php echo esc_attr($options['reminder_days']);?>" /> <?php _e('days after a missed payment.', 'pmpropbc');?>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
-		<th scope="row" valign="top"><label for="pbc_cancel_days"><?php _e('Cancel Membership:', 'pmpro');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_cancel_days"><?php _e('Cancel Membership:', 'pmpropbc');?></label></th>
 		<td>
-			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> days after a missed payment.
+			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> <?php _e('days after a missed payment.', 'pmpropbc');?>
 		</td>
 	</tr>
-	<script>
-		function togglePBCRecurringOptions() {
-			if(jQuery('#pbc_setting').val() > 0 && jQuery('#recurring').is(':checked')) { 
-				jQuery('tr.pbc_recurring_field').show(); 
-			} else {
-				jQuery('tr.pbc_recurring_field').hide(); 
-			}
-		}
-		
-		jQuery(document).ready(function(){
-			//hide/show recurring fields on page load
-			togglePBCRecurringOptions();
-			
-			//hide/show recurring fields when pbc or recurring settings change
-			jQuery('#pbc_setting').change(function() { togglePBCRecurringOptions() });
-			jQuery('#recurring').change(function() { togglePBCRecurringOptions() });
-		});
-	</script>
 </tbody>
 </table>
 <?php
@@ -170,7 +164,7 @@ function pmpropbc_checkout_boxes()
 	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0" <?php if(!empty($pmpro_review)) { ?>style="display: none;"<?php } ?>>
 			<thead>
 					<tr>
-							<th>Choose Your Payment Method</th>
+							<th><?php _e('Choose Your Payment Method', 'pmpropbc');?></th>
 					</tr>
 			</thead>
 			<tbody>
@@ -178,8 +172,10 @@ function pmpropbc_checkout_boxes()
 							<td>
 									<div>
 											<input type="radio" name="gateway" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
-													<?php if($gateway == "paypalexpress" || $gateway == "paypalstandard") { ?>
+													<?php if($gateway_setting == "paypalexpress" || $gateway_setting == "paypalstandard") { ?>
 														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpropbc');?></a> &nbsp;
+													<?php } elseif($gateway_setting == 'twocheckout') { ?>
+														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with 2Checkout', 'pmpropbc');?></a> &nbsp;
 													<?php } else { ?>
 														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpropbc');?></a> &nbsp;
 													<?php } ?>
@@ -191,70 +187,29 @@ function pmpropbc_checkout_boxes()
 			</tbody>
 	</table>
 	<div class="clear"></div>
-	<script>        
-		jQuery(document).ready(function() {			
-			var pmpro_gateway = '<?php echo pmpro_getOption('gateway');?>';
-			
-			//choosing payment method
-			jQuery('input[name=gateway]').click(function() {                
-					if(jQuery(this).val() == 'check')
-					{
-							jQuery('#pmpro_billing_address_fields').hide();
-							jQuery('#pmpro_payment_information_fields').hide();
-							
-							if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
-							{
-								jQuery('#pmpro_paypalexpress_checkout').hide();
-								jQuery('#pmpro_submit_span').show();
-							}
-							
-							pmpro_require_billing = false;
-					}
-					else
-					{                        
-							jQuery('#pmpro_billing_address_fields').show();
-							jQuery('#pmpro_payment_information_fields').show();                                                
-							
-							if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
-							{
-								jQuery('#pmpro_paypalexpress_checkout').show();
-								jQuery('#pmpro_submit_span').hide();
-							}
-							
-							pmpro_require_billing = true;
-					}
-			});
-			
-			//select the radio button if the label is clicked on
-			jQuery('a.pmpro_radio').click(function() {
-					jQuery(this).prev().click();
-			});
-			
-			//every couple seconds, hide the payment method box if the level is free
-			function togglePaymentMethodBox()
-			{
-				if (typeof code_level !== 'undefined')
-				{
-					if(parseFloat(code_level.billing_amount) > 0 || parseFloat(code_level.initial_payent) > 0)
-					{
-						//not free
-						jQuery('#pmpro_payment_method').show();
-					}
-					else
-					{
-						//free
-						jQuery('#pmpro_payment_method').hide();
-					}
-				}
-				pmpro_toggle_payment_method_box_timer = setTimeout(function(){togglePaymentMethodBox();}, 200);
-			}
-			togglePaymentMethodBox();
-		});
-	</script>
 	<?php
 	}
 }
 add_action("pmpro_checkout_boxes", "pmpropbc_checkout_boxes");
+
+function pmpropbc_enqueue_scripts() {
+
+	global $gateway, $pmpro_level, $pmpro_review;
+
+	wp_register_script('pmpropbc', plugins_url( 'js/pmpro-pay-by-check.js', __FILE__ ), array( 'jquery' ), '0.7' );
+
+	wp_localize_script('pmpropbc', 'pmpropbc', array(
+			'gateway' => pmpro_getOption('gateway'),
+			'pmpro_review' => empty($pmpro_review),
+			'is_admin'  =>  is_admin(),
+		)
+	);
+
+	wp_enqueue_script('pmpropbc');
+
+}
+add_action("wp_enqueue_scripts", 'pmpropbc_enqueue_scripts');
+add_action('admin_enqueue_scripts', 'pmpropbc_enqueue_scripts' );
 
 //add check as a valid gateway
 function pmpropbc_pmpro_valid_gateways($gateways)
@@ -290,14 +245,17 @@ add_filter('pmpro_get_gateway', 'pmpropbc_pmpro_get_gateway');
 add_filter('option_pmpro_gateway', 'pmpropbc_pmpro_get_gateway');
 
 /*
-	Need to remove this filter added by the check gateway.
+	Need to remove some filters added by the check gateway.
 	The default gateway will have it's own idea RE this.
 */
 function pmpropbc_init_include_billing_address_fields()
 {
-	if(pmpro_getGateway() !== 'check')
-		remove_filter('pmpro_include_billing_address_fields', '__return_false');
-	elseif(!empty($_REQUEST['level']))
+	//make sure PMPro is active
+	if(!function_exists('pmpro_getGateway'))
+		return;
+
+	//billing address and payment info fields
+	if(!empty($_REQUEST['level']))
 	{
 		$level_id = intval($_REQUEST['level']);
 		$options = pmpropbc_getOptions($level_id);		    
@@ -306,10 +264,50 @@ function pmpropbc_init_include_billing_address_fields()
 			//hide billing address and payment info fields
 			add_filter('pmpro_include_billing_address_fields', '__return_false', 20);
 			add_filter('pmpro_include_payment_information_fields', '__return_false', 20);
+		} else {
+			//keep paypal buttons, billing address fields/etc at checkout
+			$default_gateway = pmpro_getOption('gateway');
+			if($default_gateway == 'paypalexpress') {
+				add_filter('pmpro_checkout_default_submit_button', array('PMProGateway_paypalexpress', 'pmpro_checkout_default_submit_button'));
+				add_action('pmpro_checkout_after_form', array('PMProGateway_paypalexpress', 'pmpro_checkout_after_form'));
+			} elseif($default_gateway == 'paypalstandard') {
+				add_filter('pmpro_checkout_default_submit_button', array('PMProGateway_paypalstandard', 'pmpro_checkout_default_submit_button'));
+			} elseif($default_gateway == 'twocheckout') {
+				//undo the filter to change the checkout button text
+				remove_filter('pmpro_checkout_default_submit_button', array('PMProGateway_twocheckout', 'pmpro_checkout_default_submit_button'));
+			} else {
+				//onsite checkouts
+				if(class_exists('PMProGateway_' . $default_gateway) && method_exists('PMProGateway_' . $default_gateway, 'pmpro_include_billing_address_fields'))
+					add_filter('pmpro_include_billing_address_fields', array('PMProGateway_' . $default_gateway, 'pmpro_include_billing_address_fields'));
+				else
+					add_filter('pmpro_include_billing_address_fields', '__return_true', 20);
+			}
 		}
 	}
+
+	//instructions at checkout
+	remove_filter('pmpro_checkout_after_payment_information_fields', array('PMProGateway_check', 'pmpro_checkout_after_payment_information_fields'));
+	add_filter('pmpro_checkout_after_payment_information_fields', 'pmpropbc_pmpro_checkout_after_payment_information_fields');
 }
 add_action('init', 'pmpropbc_init_include_billing_address_fields', 20);
+
+/*
+	Show instructions on the checkout page.
+*/
+function pmpropbc_pmpro_checkout_after_payment_information_fields() {
+	global $gateway, $pmpro_level;
+
+	$options = pmpropbc_getOptions($pmpro_level->id);
+
+	if(!empty($options) && $options['setting'] > 0 && !pmpro_isLevelFree($pmpro_level)) {
+		$instructions = pmpro_getOption("instructions");
+		if($gateway != 'check')
+			$hidden = 'style="display:none;"';
+		else
+			$hidden = '';
+		echo '<div class="pmpro_check_instructions" ' . $hidden . '>' . wpautop($instructions) . '</div>';
+	}
+}
 
 /*
 	Handle pending check payments
@@ -340,22 +338,22 @@ add_filter("pmpro_check_status_after_checkout", "pmpropbc_pmpro_check_status_aft
  * @param user_id ID of the user to check.
  * @since .5
  */
-function pmprobpc_isMemberPending($user_id)
+function pmpropbc_isMemberPending($user_id)
 {
-	global $pmprobpc_pending_member_cache;
+	global $pmpropbc_pending_member_cache;
 		
 	//check the cache first
-	if(isset($pmprobpc_pending_member_cache[$user_id]))
-		return $pmprobpc_pending_member_cache[$user_id];
+	if(isset($pmpropbc_pending_member_cache[$user_id]))
+		return $pmpropbc_pending_member_cache[$user_id];
 	
 	//no cache, assume they aren't pending
-	$pmprobpc_pending_member_cache[$user_id] = false;
+	$pmpropbc_pending_member_cache[$user_id] = false;
 	
 	//check their last order
 	$order = new MemberOrder();
 	$order->getLastMemberOrder($user_id, NULL);		//NULL here means any status
 		
-	if(isset($order->status))
+	if(!empty($order))
 	{
 		if($order->status == "pending")
 		{
@@ -375,27 +373,32 @@ function pmprobpc_isMemberPending($user_id)
 					
 					//too long ago?
 					if($paid_order->timestamp < $cutoff)
-						$pmprobpc_pending_member_cache[$user_id] = true;
+						$pmpropbc_pending_member_cache[$user_id] = true;
 					else
-						$pmprobpc_pending_member_cache[$user_id] = false;
+						$pmpropbc_pending_member_cache[$user_id] = false;
 					
 				}
 				else
 				{
 					//no previous order, this must be the first
-					$pmprobpc_pending_member_cache[$user_id] = true;
+					$pmpropbc_pending_member_cache[$user_id] = true;
 				}								
 			}
 			else
 			{
 				//one time payment, so only interested in the last payment
-				$pmprobpc_pending_member_cache[$user_id] = true;
+				$pmpropbc_pending_member_cache[$user_id] = true;
 			}
 		}
 	}
 	
-	return $pmprobpc_pending_member_cache[$user_id];
+	return $pmpropbc_pending_member_cache[$user_id];
 }
+
+/*
+	In case anyone was using the typo'd function name.
+*/
+function pmprobpc_isMemberPending($user_id) { return pmpropbc_isMemberPending($user_id); }
 
 //if a user's last order is pending status, don't give them access
 function pmpropbc_pmpro_has_membership_access_filter($hasaccess, $mypost, $myuser, $post_membership_levels)
@@ -408,7 +411,7 @@ function pmpropbc_pmpro_has_membership_access_filter($hasaccess, $mypost, $myuse
 	if(empty($post_membership_levels))
 		return $hasaccess;
 	
-	$hasaccess = ! pmprobpc_isMemberPending($myuser->ID);
+	$hasaccess = ! pmpropbc_isMemberPending($myuser->ID);
 	
 	return $hasaccess;
 }
@@ -445,7 +448,7 @@ function pmpropbc_pmpro_account_bullets_bottom()
 				?>
 				<li>
 					<?php						
-						if(pmprobpc_isMemberPending($pmpro_invoice->user_id))
+						if(pmpropbc_isMemberPending($pmpro_invoice->user_id))
 							_e('<strong>Membership pending.</strong> We are still waiting for payment of this invoice.', 'pmpropbc');
 						else						
 							_e('<strong>Important Notice:</strong> We are still waiting for payment of this invoice.', 'pmpropbc');
@@ -457,7 +460,7 @@ function pmpropbc_pmpro_account_bullets_bottom()
 			{
 				?>
 				<li><?php						
-						if(pmprobpc_isMemberPending($pmpro_invoice->user_id))
+						if(pmpropbc_isMemberPending($pmpro_invoice->user_id))
 							printf(__('<strong>Membership pending.</strong> We are still waiting for payment for <a href="%s">your latest invoice</a>.', 'pmpropbc'), pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code));
 						else
 							printf(__('<strong>Important Notice:</strong> We are still waiting for payment for <a href="%s">your latest invoice</a>.', 'pmpropbc'), pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code));
@@ -482,7 +485,7 @@ add_action('pmpro_invoice_bullets_bottom', 'pmpropbc_pmpro_account_bullets_botto
 /*
 	Create pending orders for recurring levels.
 */
-function pmprobpc_recurring_orders()
+function pmpropbc_recurring_orders()
 {
 	global $wpdb;
 	
@@ -525,7 +528,7 @@ function pmprobpc_recurring_orders()
 			$sqlQuery = "
 				SELECT o1.id FROM
 				    (SELECT id, user_id, timestamp
-				    FROM $wpdb->pmpro_membership_orders
+				    FROM {$wpdb->pmpro_membership_orders}
 				    WHERE membership_id = $level->id
 				        AND gateway = 'check' 
 				        AND status IN('pending', 'success')
@@ -534,7 +537,7 @@ function pmprobpc_recurring_orders()
 					LEFT OUTER JOIN 
 					
 					(SELECT id, user_id, timestamp
-				    FROM dev_pmpro_membership_orders
+				    FROM {$wpdb->pmpro_membership_orders}
 				    WHERE membership_id = $level->id
 				        AND gateway = 'check' 
 				        AND status IN('pending', 'success')
@@ -605,7 +608,7 @@ function pmprobpc_recurring_orders()
 		}
 	}	
 }
-add_action('pmprobpc_recurring_orders', 'pmprobpc_recurring_orders');
+add_action('pmpropbc_recurring_orders', 'pmpropbc_recurring_orders');
 
 /*
 	Send reminder emails for pending invoices.
@@ -845,7 +848,7 @@ function pmpropbc_activation()
 {
 	//schedule crons
 	wp_schedule_event(current_time('timestamp'), 'daily', 'pmpropbc_cancel_overdue_orders');
-	wp_schedule_event(current_time('timestamp')+1, 'daily', 'pmprobpc_recurring_orders');
+	wp_schedule_event(current_time('timestamp')+1, 'daily', 'pmpropbc_recurring_orders');
 	wp_schedule_event(current_time('timestamp')+2, 'daily', 'pmpropbc_reminder_emails');	
 
 	do_action('pmpropbc_activation');
@@ -854,7 +857,7 @@ function pmpropbc_deactivation()
 {
 	//remove crons
 	wp_clear_scheduled_hook('pmpropbc_cancel_overdue_orders');
-	wp_clear_scheduled_hook('pmprobpc_recurring_orders');
+	wp_clear_scheduled_hook('pmpropbc_recurring_orders');
 	wp_clear_scheduled_hook('pmpropbc_reminder_emails');	
 
 	do_action('pmpropbc_deactivation');
@@ -877,15 +880,3 @@ function pmpropbc_plugin_row_meta($links, $file) {
 	return $links;
 }
 add_filter('plugin_row_meta', 'pmpropbc_plugin_row_meta', 10, 2);
-
-function init_test()
-{
-	if(!empty($_REQUEST['test']))
-	{
-		//pmprobpc_recurring_orders();
-		//pmpropbc_reminder_emails();
-		pmpropbc_cancel_overdue_orders();
-		exit;
-	}
-}
-add_action('init', 'init_test');
