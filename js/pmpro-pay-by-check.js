@@ -6,6 +6,7 @@ jQuery.noConflict();
 
 if ( typeof pmpro_require_billing === 'undefined' ) {
     var pmpro_require_billing;
+    var pmpro_pbc_interval_handle;
 }
 
 function pmpropbc_toggleCheckoutFields() {
@@ -31,9 +32,11 @@ function pmpropbc_toggleCheckoutFields() {
 
         togglePaymentMethodBox();
 
-        // jQuery('#pmpro_payment_information_fields').show();
+        if ( (typeof code_level !== 'undefined') && (parseFloat(code_level.billing_amount) > 0 || parseFloat(code_level.initial_payent) > 0) ) {
+            jQuery('#pmpro_payment_information_fields').show();
+        }
 
-        jQuery('.pmpro_check_instructions').hide();
+        // jQuery('.pmpro_check_instructions').hide();
 
         if(pmpropbc.gateway === 'paypalexpress' || pmpropbc.gateway === 'paypalstandard')
         {
@@ -107,7 +110,7 @@ jQuery(document).ready(function () {
         });
 
         //every couple seconds, hide the payment method box if the level is free
-        setInterval(togglePaymentMethodBox, 2000);
+        pmpro_pbc_interval_handle = setInterval(togglePaymentMethodBox, 2000);
 
     }
 });
