@@ -1,5 +1,5 @@
 === Paid Memberships Pro: Pay by Check Add On ===
-Contributors: strangerstudios
+Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 3.5
 Tested up to: 4.5.3
