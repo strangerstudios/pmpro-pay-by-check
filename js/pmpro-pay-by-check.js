@@ -30,7 +30,7 @@ function pmpropbc_toggleCheckoutFields() {
     {
         jQuery('#pmpro_billing_address_fields').show();
 
-        if ( (code_level != null) && (parseFloat(code_level.billing_amount) > 0 || parseFloat(code_level.initial_payent) > 0) ) {
+        if ( (code_level != null) && (parseFloat(code_level.billing_amount) > 0 || parseFloat(code_level.initial_payment) > 0) ) {
             jQuery('#pmpro_payment_information_fields').show();
             pmpro_require_billing = true;
         } else {
