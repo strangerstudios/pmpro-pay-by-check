@@ -30,8 +30,11 @@ function pmpropbc_toggleCheckoutFields() {
     {
         jQuery('#pmpro_billing_address_fields').show();
 
-        if ( (typeof code_level !== 'undefined') && (parseFloat(code_level.billing_amount) > 0 || parseFloat(code_level.initial_payent) > 0) ) {
+        if ( (code_level != null) && (parseFloat(code_level.billing_amount) > 0 || parseFloat(code_level.initial_payent) > 0) ) {
             jQuery('#pmpro_payment_information_fields').show();
+            pmpro_require_billing = true;
+        } else {
+            pmpro_require_billing = false;
         }
 
         // jQuery('.pmpro_check_instructions').hide();
@@ -41,8 +44,6 @@ function pmpropbc_toggleCheckoutFields() {
             jQuery('#pmpro_paypalexpress_checkout').show();
             jQuery('#pmpro_submit_span').hide();
         }
-
-        pmpro_require_billing = true;
     }
 }
 
