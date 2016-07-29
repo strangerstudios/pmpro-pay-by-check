@@ -28,7 +28,10 @@ function pmpropbc_toggleCheckoutFields() {
     else
     {
         jQuery('#pmpro_billing_address_fields').show();
-        jQuery('#pmpro_payment_information_fields').show();
+
+        togglePaymentMethodBox();
+
+        // jQuery('#pmpro_payment_information_fields').show();
 
         jQuery('.pmpro_check_instructions').hide();
 
