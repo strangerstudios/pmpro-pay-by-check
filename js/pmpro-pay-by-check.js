@@ -30,8 +30,6 @@ function pmpropbc_toggleCheckoutFields() {
     {
         jQuery('#pmpro_billing_address_fields').show();
 
-        togglePaymentMethodBox();
-
         if ( (typeof code_level !== 'undefined') && (parseFloat(code_level.billing_amount) > 0 || parseFloat(code_level.initial_payent) > 0) ) {
             jQuery('#pmpro_payment_information_fields').show();
         }
