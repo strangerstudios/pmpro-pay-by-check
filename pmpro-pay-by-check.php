@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-pay-by-check/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: .6
+Version: .7
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -206,84 +206,106 @@ function pmpropbc_checkout_boxes()
 	</table>
 	<div class="clear"></div>
 	<script>
-		var pmpro_gateway = '<?php echo pmpro_getOption('gateway');?>';
-
-		function pmpropbc_toggleCheckoutFields() {
-			if(jQuery('input[name=gateway]:checked').val() == 'check')
+		var pmpro_gateway = '<?php echo pmpro_getOption('gateway');?>';		
+		var code_level;
+		code_level = <?php echo json_encode($pmpro_level); ?>;
+		
+		//function toggle billing address, payment info and checkout button
+		function pmpropbc_toggleCheckoutFields() {			
+			if (typeof code_level !== 'undefined' && parseFloat(code_level.billing_amount) == 0 && parseFloat(code_level.initial_payment) == 0) 
 			{
-					jQuery('#pmpro_billing_address_fields').hide();
-					jQuery('#pmpro_payment_information_fields').hide();
-					
-					jQuery('.pmpro_check_instructions').show();
+				//discount code makes the level free
+				jQuery('#pmpro_billing_address_fields').hide();
+				jQuery('#pmpro_payment_information_fields').hide();
+				
+				jQuery('.pmpro_check_instructions').hide();
 
-					if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
-					{
-						jQuery('#pmpro_paypalexpress_checkout').hide();
-						jQuery('#pmpro_submit_span').show();
-					}
-					
-					pmpro_require_billing = false;
+				if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
+				{
+					jQuery('#pmpro_paypalexpress_checkout').hide();
+					jQuery('#pmpro_submit_span').show();
+				}
+				
+				pmpro_require_billing = false;
 			}
+			else if(jQuery('input[name=gateway]:checked').val() == 'check')
+			{
+				//check chosen
+				jQuery('#pmpro_billing_address_fields').hide();
+				jQuery('#pmpro_payment_information_fields').hide();
+				
+				jQuery('.pmpro_check_instructions').show();
+
+				if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
+				{
+					jQuery('#pmpro_paypalexpress_checkout').hide();
+					jQuery('#pmpro_submit_span').show();
+				}
+				
+				pmpro_require_billing = false;
+			}			
 			else
 			{                        
-					jQuery('#pmpro_billing_address_fields').show();
-					jQuery('#pmpro_payment_information_fields').show();                                                
-					
-					jQuery('.pmpro_check_instructions').hide();
+				//check out with onsite gateway
+				jQuery('#pmpro_billing_address_fields').show();
+				jQuery('#pmpro_payment_information_fields').show();                                                
+				
+				jQuery('.pmpro_check_instructions').hide();
 
-					if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
-					{
-						jQuery('#pmpro_paypalexpress_checkout').show();
-						jQuery('#pmpro_submit_span').hide();
-					}
-					
-					pmpro_require_billing = true;
+				if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
+				{
+					jQuery('#pmpro_paypalexpress_checkout').show();
+					jQuery('#pmpro_submit_span').hide();
+				}
+				
+				pmpro_require_billing = true;
 			}
 		}
+		
+		//function to toggle the payment method box
+		function pmpropbc_togglePaymentMethodBox()
+		{
+			if (typeof code_level !== 'undefined' && parseFloat(code_level.billing_amount) == 0 && parseFloat(code_level.initial_payment) == 0) {
+				//free
+				jQuery('#pmpro_payment_method').hide();					
+			}
+			else {
+				//not free
+				jQuery('#pmpro_payment_method').show();
+			}
+			pmpropbc_toggleCheckoutFields();			
+		}
 
+		//set things up on load
 		jQuery(document).ready(function() {
 			//choosing payment method
 			jQuery('input[name=gateway]').bind('click change keyup', function() {                
 					pmpropbc_toggleCheckoutFields();
-			});
-
-			//run on load
-			<?php if(empty($pmpro_review)) { ?>
-				pmpropbc_toggleCheckoutFields();
-			<?php } ?>
+			});			
 			
 			//select the radio button if the label is clicked on
 			jQuery('a.pmpro_radio').click(function() {
 					jQuery(this).prev().click();
 			});
 			
-			//every couple seconds, hide the payment method box if the level is free
-			function togglePaymentMethodBox()
-			{
-				if (typeof code_level !== 'undefined')
-				{
-					if(parseFloat(code_level.billing_amount) > 0 || parseFloat(code_level.initial_payent) > 0)
-					{
-						//not free
-						jQuery('#pmpro_payment_method').show();
-					}
-					else
-					{
-						//free
-						jQuery('#pmpro_payment_method').hide();
-					}
-
-					pmpropbc_toggleCheckoutFields();
-				}
-				pmpro_toggle_payment_method_box_timer = setTimeout(function(){togglePaymentMethodBox();}, 200);
-			}
-			togglePaymentMethodBox();
+			//make sure the payment method box is shown or hidden as needed, but not on PayPal review page
+			<?php if(empty($pmpro_review)) { ?>
+				pmpropbc_togglePaymentMethodBox();
+			<?php } ?>			
 		});
 	</script>
 	<?php
 	}
 }
 add_action("pmpro_checkout_boxes", "pmpropbc_checkout_boxes");
+
+//toggle payment method when discount code is updated
+function pmpropbc_pmpro_applydiscountcode_return_js() {
+	?>
+	pmpropbc_togglePaymentMethodBox();
+	<?php
+}
+add_action('pmpro_applydiscountcode_return_js', 'pmpropbc_pmpro_applydiscountcode_return_js');
 
 //add check as a valid gateway
 function pmpropbc_pmpro_valid_gateways($gateways)

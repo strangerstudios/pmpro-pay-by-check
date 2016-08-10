@@ -1,9 +1,9 @@
 === Paid Memberships Pro: Pay by Check Add On ===
 Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
-Requires at least: 3.5
-Tested up to: 4.4.1
-Stable tag: .6
+Requires at least: 4
+Tested up to: 4.5.3
+Stable tag: .7
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,11 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog == 
+= .7 =
+* NOTE: Changed togglePaymentMethodBox() function to have a prefix, pmpropbc_togglePaymentMethodBox().
+* BUG: Along with update 1.8.10.4 of PMPro, fixes an issue where users could not checkout when they applied a discount code that made the level free.
+* BUG/ENHANCEMENT: Better integration with the Address for Free Levels addon.
+
 = .6 =
 * FEATURE: Updated for localization with new pmpropbc.pot/po files.
 
