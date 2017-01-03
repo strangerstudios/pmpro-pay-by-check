@@ -201,8 +201,10 @@ function pmpropbc_enqueue_scripts() {
 
 	wp_localize_script('pmpropbc', 'pmpropbc', array(
 			'gateway' => pmpro_getOption('gateway'),
+			'code_level' => $pmpro_level,
 			'pmpro_review' => empty($pmpro_review),
 			'is_admin'  =>  is_admin(),
+            'hide_billing_address_fields' => apply_filters('pmpro_hide_billing_address_fields', false ),
 		)
 	);
 
@@ -306,7 +308,9 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 			$hidden = 'style="display:none;"';
 		else
 			$hidden = '';
-		echo '<div class="pmpro_check_instructions" ' . $hidden . '>' . wpautop($instructions) . '</div>';
+		?>
+		<div class="pmpro_check_instructions" <?php echo $hidden; ?>><?php wpautop($instructions); ?></div>
+		<?php
 	}
 }
 
