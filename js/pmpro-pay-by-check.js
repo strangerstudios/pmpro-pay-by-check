@@ -1,6 +1,23 @@
 /**
- * Created by sjolshag on 7/27/16.
- */
+ * Copyright (c) 2017 - Stranger Studios LLC (Thomas Sjolshagen <thomas@eighty20results.com>). ALL RIGHTS RESERVED
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * PMPro Pay By Check add-on, Copyright 2016 - 2017 Stranger Studios, LLC.
+ * PMPro Pay By Check add-on is distributed under the terms of the GNU GPL
+ *
+ **/
 
 jQuery.noConflict();
 
@@ -10,10 +27,14 @@ if ( typeof pmpro_require_billing === 'undefined' ) {
 }
 
 function pmpropbc_toggleCheckoutFields() {
+    "use strict";
 
-    if(jQuery('input[name=gateway]:checked').val() === 'check')
-    {
-        jQuery('#pmpro_billing_address_fields').hide();
+    if(jQuery('input[name=gateway]:checked').val() === 'check') {
+
+        if (1 === parseInt(pmpropbc.hide_billing_address_fields)) {
+            jQuery('#pmpro_billing_address_fields').hide();
+        }
+
         jQuery('#pmpro_payment_information_fields').hide();
 
         jQuery('.pmpro_check_instructions').show();
@@ -30,7 +51,7 @@ function pmpropbc_toggleCheckoutFields() {
     {
         jQuery('#pmpro_billing_address_fields').show();
 
-        if ( (code_level != null) && (parseFloat(code_level.billing_amount) > 0 || parseFloat(code_level.initial_payment) > 0) ) {
+        if ( (pmpropbc.code_level !== null) && (parseFloat(pmpropbc.code_level.billing_amount) > 0 || parseFloat(pmpropbc.code_level.initial_payment) > 0) ) {
             jQuery('#pmpro_payment_information_fields').show();
             pmpro_require_billing = true;
         } else {
@@ -48,7 +69,7 @@ function pmpropbc_toggleCheckoutFields() {
 }
 
 function togglePaymentMethodBox()  {
-
+    "use strict";
     if (typeof code_level !== 'undefined')
     {
         if(parseFloat(code_level.billing_amount) > 0 || parseFloat(code_level.initial_payent) > 0)
@@ -68,6 +89,8 @@ function togglePaymentMethodBox()  {
 }
 
 function togglePBCRecurringOptions() {
+    "use strict";
+
     if (jQuery('#pbc_setting').val() > 0 && jQuery('#recurring').is(':checked')) {
         jQuery('tr.pbc_recurring_field').show();
     } else {
@@ -77,7 +100,7 @@ function togglePBCRecurringOptions() {
 
 
 jQuery(document).ready(function () {
-
+    "use strict";
     if (pmpropbc.is_admin) {
 
         togglePBCRecurringOptions();
@@ -99,7 +122,7 @@ jQuery(document).ready(function () {
         });
 
         //run on load
-        if (false === pmpropbc.pmpro_review) {
+        if ( 1 !== parseInt( pmpropbc.pmpro_review ) ) {
             pmpropbc_toggleCheckoutFields();
         }
 
