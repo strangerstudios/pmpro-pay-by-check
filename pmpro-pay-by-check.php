@@ -574,10 +574,24 @@ add_action('pmpro_invoice_bullets_bottom', 'pmpropbc_pmpro_account_bullets_botto
 	TODO Add note to non-member text RE waiting for check to clear
 */
 
-/*
-	TODO Send email to user when order status is changed to success
-*/
+/**
+ * Send Invoice to user if/when changing order status to "success" for Check based payment.
+ *
+ * @param MemberOrder $morder - Updated order as it's being saved
+ */
+function pmpropbc_send_invoice_email( $morder ) {
 
+    // Only worry about this if the order status was changed to "success"
+    if ( 'check' === strtolower( $morder->payment_type ) && 'success' === $morder->status ) {
+
+        $recipient = get_user_by( 'ID', $morder->user_id );
+
+        $invoice_email = new PMProEmail();
+        $invoice_email->sendInvoiceEmail( $recipient, $invoice_email );
+    }
+}
+
+add_action( 'pmpro_updated_order', 'pmpropbc_send_invoice_email', 10, 1 );
 /*
 	Create pending orders for recurring levels.
 */
