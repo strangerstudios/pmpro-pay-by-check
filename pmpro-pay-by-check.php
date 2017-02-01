@@ -3,16 +3,16 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-pay-by-check/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: .7
+Version: .7.5
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
 /*
 	Sample use case: You have a paid level that you want to allow people to pay by check for.
-	
+
 	1. Change your Payment Settings to the "Pay by Check" gateway and make sure to set the "Instructions" with instructions for how to pay by check. Save.
 	2. Change the Payment Settings back to use your gateway of choice. Behind the scenes the Pay by Check settings are still stored.
-	
+
 	* Users who choose to pay by check will have their order to "pending" status.
 	* Users with a pending order will not have access based on their level.
 	* After you recieve and cash the check, you can edit the order to change the status to "success", which will give the user access.
@@ -23,10 +23,8 @@ Author URI: http://www.strangerstudios.com
 	Settings, Globals and Constants
 */
 define("PMPRO_PAY_BY_CHECK_DIR", dirname(__FILE__));
+define("PMPROPBC_VER", '0.7.5');
 
-// quitely exit if PMPro isn't active
-if (! defined('PMPRO_DIR') && ! function_exists('pmpro_init'))
-	return;
 /*
 	Load plugin textdomain.
 */
@@ -35,15 +33,14 @@ function pmpropbc_load_textdomain() {
 }
 add_action( 'plugins_loaded', 'pmpropbc_load_textdomain' );
 
-
 /*
 	Add settings to the edit levels page
 */
 //show the checkbox on the edit level page
 function pmpropbc_pmpro_membership_level_after_other_settings()
-{	
+{
 	$level_id = intval($_REQUEST['edit']);
-	$options = pmpropbc_getOptions($level_id);	
+	$options = pmpropbc_getOptions($level_id);
 ?>
 <h3 class="topborder"><?php _e('Pay by Check Settings', 'pmpropbc');?></h3>
 <p><?php _e('Change this setting to allow or disallow the pay by check option for this level.', 'pmpropbc');?></p>
@@ -77,24 +74,6 @@ function pmpropbc_pmpro_membership_level_after_other_settings()
 			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> <?php _e('days after a missed payment.', 'pmpropbc');?>
 		</td>
 	</tr>
-	<script>
-		function togglePBCRecurringOptions() {
-			if(jQuery('#pbc_setting').val() > 0 && jQuery('#recurring').is(':checked')) { 
-				jQuery('tr.pbc_recurring_field').show(); 
-			} else {
-				jQuery('tr.pbc_recurring_field').hide(); 
-			}
-		}
-		
-		jQuery(document).ready(function(){
-			//hide/show recurring fields on page load
-			togglePBCRecurringOptions();
-			
-			//hide/show recurring fields when pbc or recurring settings change
-			jQuery('#pbc_setting').change(function() { togglePBCRecurringOptions() });
-			jQuery('#recurring').change(function() { togglePBCRecurringOptions() });
-		});
-	</script>
 </tbody>
 </table>
 <?php
@@ -109,11 +88,11 @@ function pmpropbc_pmpro_save_membership_level($level_id)
 		$pbc_setting = intval($_REQUEST['pbc_setting']);
 	else
 		$pbc_setting = 0;
-		
+
 	$renewal_days = intval($_REQUEST['pbc_renewal_days']);
 	$reminder_days = intval($_REQUEST['pbc_reminder_days']);
 	$cancel_days = intval($_REQUEST['pbc_cancel_days']);
-	
+
 	//build array
 	$options = array(
 		'setting' => $pbc_setting,
@@ -121,7 +100,7 @@ function pmpropbc_pmpro_save_membership_level($level_id)
 		'reminder_days' => $reminder_days,
 		'cancel_days' => $cancel_days,
 	);
-	
+
 	//save
 	delete_option('pmpro_pay_by_check_setting_' . $level_id);
 	delete_option('pmpro_pay_by_check_options_' . $level_id);
@@ -141,7 +120,7 @@ function pmpropbc_getOptions($level_id)
 		if(empty($options))
 		{
 			//check for old format to convert (_setting_ without an s)
-			$options = get_option('pmpro_pay_by_check_setting_' . $level_id, false);						
+			$options = get_option('pmpro_pay_by_check_setting_' . $level_id, false);
 			if(!empty($options))
 			{
 				delete_option('pmpro_pay_by_check_setting_' . $level_id);
@@ -160,7 +139,7 @@ function pmpropbc_getOptions($level_id)
 		//default for new level
 		$options = array('setting'=>0, 'renewal_days'=>'', 'reminder_days'=>'', 'cancel_days'=>'');
 	}
-	
+
 	return $options;
 }
 
@@ -198,114 +177,70 @@ function pmpropbc_checkout_boxes()
 														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpropbc');?></a> &nbsp;
 													<?php } ?>
 											<input type="radio" name="gateway" value="check" <?php if($gateway == "check") { ?>checked="checked"<?php } ?> />
-													<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Check', 'pmpropbc');?></a> &nbsp;                                        
+													<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Check', 'pmpropbc');?></a> &nbsp;
 									</div>
 							</td>
 					</tr>
 			</tbody>
 	</table>
 	<div class="clear"></div>
-	<script>
-		var pmpro_gateway = '<?php echo pmpro_getOption('gateway');?>';		
-		var code_level;
-		code_level = <?php echo json_encode($pmpro_level); ?>;
-		
-		//function toggle billing address, payment info and checkout button
-		function pmpropbc_toggleCheckoutFields() {			
-			if (typeof code_level !== 'undefined' && parseFloat(code_level.billing_amount) == 0 && parseFloat(code_level.initial_payment) == 0) 
-			{
-				//discount code makes the level free
-				jQuery('#pmpro_billing_address_fields').hide();
-				jQuery('#pmpro_payment_information_fields').hide();
-				
-				jQuery('.pmpro_check_instructions').hide();
-
-				if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
-				{
-					jQuery('#pmpro_paypalexpress_checkout').hide();
-					jQuery('#pmpro_submit_span').show();
-				}
-				
-				pmpro_require_billing = false;
-			}
-			else if(jQuery('input[name=gateway]:checked').val() == 'check')
-			{
-				//check chosen
-				jQuery('#pmpro_billing_address_fields').hide();
-				jQuery('#pmpro_payment_information_fields').hide();
-				
-				jQuery('.pmpro_check_instructions').show();
-
-				if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
-				{
-					jQuery('#pmpro_paypalexpress_checkout').hide();
-					jQuery('#pmpro_submit_span').show();
-				}
-				
-				pmpro_require_billing = false;
-			}			
-			else
-			{                        
-				//check out with onsite gateway
-				jQuery('#pmpro_billing_address_fields').show();
-				jQuery('#pmpro_payment_information_fields').show();                                                
-				
-				jQuery('.pmpro_check_instructions').hide();
-
-				if(pmpro_gateway == 'paypalexpress' || pmpro_gateway == 'paypalstandard')
-				{
-					jQuery('#pmpro_paypalexpress_checkout').show();
-					jQuery('#pmpro_submit_span').hide();
-				}
-				
-				pmpro_require_billing = true;
-			}
-		}
-		
-		//function to toggle the payment method box
-		function pmpropbc_togglePaymentMethodBox()
-		{
-			if (typeof code_level !== 'undefined' && parseFloat(code_level.billing_amount) == 0 && parseFloat(code_level.initial_payment) == 0) {
-				//free
-				jQuery('#pmpro_payment_method').hide();					
-			}
-			else {
-				//not free
-				jQuery('#pmpro_payment_method').show();
-			}
-			pmpropbc_toggleCheckoutFields();			
-		}
-
-		//set things up on load
-		jQuery(document).ready(function() {
-			//choosing payment method
-			jQuery('input[name=gateway]').bind('click change keyup', function() {                
-					pmpropbc_toggleCheckoutFields();
-			});			
-			
-			//select the radio button if the label is clicked on
-			jQuery('a.pmpro_radio').click(function() {
-					jQuery(this).prev().click();
-			});
-			
-			//make sure the payment method box is shown or hidden as needed, but not on PayPal review page
-			<?php if(empty($pmpro_review)) { ?>
-				pmpropbc_togglePaymentMethodBox();
-			<?php } ?>			
-		});
-	</script>
 	<?php
 	}
 }
 add_action("pmpro_checkout_boxes", "pmpropbc_checkout_boxes");
 
-//toggle payment method when discount code is updated
+/**
+ * Toggle payment method when discount code is updated
+ */
 function pmpropbc_pmpro_applydiscountcode_return_js() {
 	?>
 	pmpropbc_togglePaymentMethodBox();
 	<?php
 }
 add_action('pmpro_applydiscountcode_return_js', 'pmpropbc_pmpro_applydiscountcode_return_js');
+
+/**
+ * Enqueue scripts on the frontend.
+ */
+function pmpropbc_enqueue_scripts() {
+
+	global $gateway, $pmpro_level, $pmpro_review, $pmpro_pages, $post;
+
+	//make sure we're on the checkout page
+	if(!is_page($pmpro_pages['checkout']) && strpos($post->post_content, "[pmpro_checkout") === false)
+		return;
+	
+	wp_register_script('pmpropbc', plugins_url( 'js/pmpro-pay-by-check.js', __FILE__ ), array( 'jquery' ), PMPROPBC_VER );	
+	
+	//get original checkout level and another with discount code applied
+	$pmpro_nocode_level = pmpro_getLevelAtCheckout(false, '^*NOTAREALCODE*^');
+	$pmpro_code_level = pmpro_getLevelAtCheckout();			//NOTE: could be same as $pmpro_nocode_level if no code was used
+	
+	wp_localize_script('pmpropbc', 'pmpropbc', array(
+			'gateway' => pmpro_getOption('gateway'),
+			'nocode_level' => $pmpro_nocode_level,
+			'code_level' => $pmpro_code_level,
+			'pmpro_review' => (bool)$pmpro_review,
+			'is_admin'  =>  is_admin(),
+            'hide_billing_address_fields' => apply_filters('pmpro_hide_billing_address_fields', false ),
+		)
+	);
+
+	wp_enqueue_script('pmpropbc');
+
+}
+add_action("wp_enqueue_scripts", 'pmpropbc_enqueue_scripts');
+
+/**
+ * Enqueue scripts in the dashboard.
+ */
+function pmpropbc_admin_enqueue_scripts() {
+	//make sure this is the edit level page
+	
+	wp_register_script('pmpropbc-admin', plugins_url( 'js/pmpro-pay-by-check-admin.js', __FILE__ ), array( 'jquery' ), PMPROPBC_VER );
+	wp_enqueue_script('pmpropbc-admin');
+}
+add_action('admin_enqueue_scripts', 'pmpropbc_admin_enqueue_scripts' );
 
 //add check as a valid gateway
 function pmpropbc_pmpro_valid_gateways($gateways)
@@ -321,20 +256,20 @@ add_filter("pmpro_valid_gateways", "pmpropbc_pmpro_valid_gateways");
 function pmpropbc_pmpro_get_gateway($gateway)
 {
 	global $pmpro_level;
-	
+
 	if(!empty($pmpro_level) || !empty($_REQUEST['level']))
 	{
 		if(!empty($pmpro_level))
 			$level_id = $pmpro_level->id;
 		else
 			$level_id = intval($_REQUEST['level']);
-		
+
 		$options = pmpropbc_getOptions($level_id);
-		    	
+
     	if($options['setting'] == 2)
     		$gateway = "check";
-	}	
-	
+	}
+
 	return $gateway;
 }
 add_filter('pmpro_get_gateway', 'pmpropbc_pmpro_get_gateway');
@@ -354,7 +289,7 @@ function pmpropbc_init_include_billing_address_fields()
 	if(!empty($_REQUEST['level']))
 	{
 		$level_id = intval($_REQUEST['level']);
-		$options = pmpropbc_getOptions($level_id);		    
+		$options = pmpropbc_getOptions($level_id);
     	if($options['setting'] == 2)
 		{
 			//hide billing address and payment info fields
@@ -401,7 +336,9 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 			$hidden = 'style="display:none;"';
 		else
 			$hidden = '';
-		echo '<div class="pmpro_check_instructions" ' . $hidden . '>' . wpautop($instructions) . '</div>';
+		?>
+		<div class="pmpro_check_instructions" <?php echo $hidden; ?>><?php echo wpautop($instructions); ?></div>
+		<?php
 	}
 }
 
@@ -415,15 +352,15 @@ function pmpropbc_pmpro_order_statuses($statuses)
 	{
 		$statuses[] = 'pending';
 	}
-	
+
 	return $statuses;
 }
 add_filter('pmpro_order_statuses', 'pmpropbc_pmpro_order_statuses');
 
 //set check orders to pending until they are paid
-function pmpropbc_pmpro_check_status_after_checkout($status) 
-{	
-	return "pending"; 
+function pmpropbc_pmpro_check_status_after_checkout($status)
+{
+	return "pending";
 }
 add_filter("pmpro_check_status_after_checkout", "pmpropbc_pmpro_check_status_after_checkout");
 
@@ -437,18 +374,18 @@ add_filter("pmpro_check_status_after_checkout", "pmpropbc_pmpro_check_status_aft
 function pmpropbc_isMemberPending($user_id)
 {
 	global $pmpropbc_pending_member_cache;
-		
+
 	//check the cache first
 	if(isset($pmpropbc_pending_member_cache[$user_id]))
 		return $pmpropbc_pending_member_cache[$user_id];
-	
+
 	//no cache, assume they aren't pending
 	$pmpropbc_pending_member_cache[$user_id] = false;
-	
+
 	//check their last order
 	$order = new MemberOrder();
 	$order->getLastMemberOrder($user_id, NULL);		//NULL here means any status
-		
+
 	if(!empty($order))
 	{
 		if($order->status == "pending")
@@ -456,29 +393,28 @@ function pmpropbc_isMemberPending($user_id)
 			//for recurring levels, we should check if there is an older successful order
 			$membership_level = pmpro_getMembershipLevelForUser($user_id);
 			if(pmpro_isLevelRecurring($membership_level))
-			{			
+			{
 				//unless the previous order has status success and we are still within the grace period
 				$paid_order = new MemberOrder();
 				$paid_order->getLastMemberOrder($user_id, 'success', $order->membership_id);
-				
+
 				if(!empty($paid_order) && !empty($paid_order->id))
-				{					
+				{
 					//how long ago is too long?
 					$options = pmpropbc_getOptions($membership_level->id);
 					$cutoff = strtotime("- " . $membership_level->cycle_number . " " . $membership_level->cycle_period, current_time("timestamp")) - ($options['cancel_days']*3600*24);
-					
+
 					//too long ago?
 					if($paid_order->timestamp < $cutoff)
 						$pmpropbc_pending_member_cache[$user_id] = true;
 					else
 						$pmpropbc_pending_member_cache[$user_id] = false;
-					
 				}
 				else
 				{
 					//no previous order, this must be the first
 					$pmpropbc_pending_member_cache[$user_id] = true;
-				}								
+				}
 			}
 			else
 			{
@@ -487,7 +423,7 @@ function pmpropbc_isMemberPending($user_id)
 			}
 		}
 	}
-	
+
 	return $pmpropbc_pending_member_cache[$user_id];
 }
 
@@ -502,13 +438,13 @@ function pmpropbc_pmpro_has_membership_access_filter($hasaccess, $mypost, $myuse
 	//if they don't have access, ignore this
 	if(!$hasaccess)
 		return $hasaccess;
-	
+
 	//if this isn't locked by level, ignore this
 	if(empty($post_membership_levels))
 		return $hasaccess;
-	
+
 	$hasaccess = ! pmpropbc_isMemberPending($myuser->ID);
-	
+
 	return $hasaccess;
 }
 add_filter("pmpro_has_membership_access_filter", "pmpropbc_pmpro_has_membership_access_filter", 10, 4);
@@ -527,7 +463,7 @@ function pmpropbc_pmpro_account_bullets_bottom()
 	    if (!empty($invoice_code))
 	    	$pmpro_invoice = new MemberOrder($invoice_code);
 	}
-	
+
 	//no specific invoice, check current user's last order
 	if(empty($pmpro_invoice) || empty($pmpro_invoice->id))
 	{
@@ -543,10 +479,10 @@ function pmpropbc_pmpro_account_bullets_bottom()
 			{
 				?>
 				<li>
-					<?php						
+					<?php
 						if(pmpropbc_isMemberPending($pmpro_invoice->user_id))
 							_e('<strong>Membership pending.</strong> We are still waiting for payment of this invoice.', 'pmpropbc');
-						else						
+						else
 							_e('<strong>Important Notice:</strong> We are still waiting for payment of this invoice.', 'pmpropbc');
 					?>
 				</li>
@@ -555,7 +491,7 @@ function pmpropbc_pmpro_account_bullets_bottom()
 			else
 			{
 				?>
-				<li><?php						
+				<li><?php
 						if(pmpropbc_isMemberPending($pmpro_invoice->user_id))
 							printf(__('<strong>Membership pending.</strong> We are still waiting for payment for <a href="%s">your latest invoice</a>.', 'pmpropbc'), pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code));
 						else
@@ -584,36 +520,36 @@ add_action('pmpro_invoice_bullets_bottom', 'pmpropbc_pmpro_account_bullets_botto
 function pmpropbc_recurring_orders()
 {
 	global $wpdb;
-	
+
 	//make sure we only run once a day
 	$now = current_time('timestamp');
 	$today = date("Y-m-d", $now);
-	
+
 	//have to run for each level, so get levels
 	$levels = pmpro_getAllLevels(true, true);
 
 	if(empty($levels))
 		return;
-		
+
 	foreach($levels as $level)
 	{
 		//get options
-		$options = pmpropbc_getOptions($level->id);	
+		$options = pmpropbc_getOptions($level->id);
 		if(!empty($options['renewal_days']))
 			$date = date("Y-m-d", strtotime("+ " . $options['renewal_days'] . " days", $now));
 		else
 			$date = $today;
-	
+
 		//need to get all combos of pay cycle and period
-		$sqlQuery = "SELECT DISTINCT(CONCAT(cycle_number, ' ', cycle_period)) FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $level->id . "' AND cycle_number > 0 AND status = 'active'";		
+		$sqlQuery = "SELECT DISTINCT(CONCAT(cycle_number, ' ', cycle_period)) FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $level->id . "' AND cycle_number > 0 AND status = 'active'";
 		$combos = $wpdb->get_col($sqlQuery);
-				
+
 		if(empty($combos))
 			continue;
-		
+
 		foreach($combos as $combo)
-		{			
-			//check if it's been one pay period since the last payment		
+		{
+			//check if it's been one pay period since the last payment
 			/*
 				- Check should create an invoice X days before expiration based on a setting on the levels page.
 				- Set invoice date based on cycle and the day of the month of the member start date.
@@ -646,28 +582,28 @@ function pmpropbc_recurring_orders()
 					o2.id IS NULL
 					AND DATE_ADD(o1.timestamp, INTERVAL $combo) <= '" . $date . "'
 			";
-			
+
 			if(defined('PMPRO_CRON_LIMIT'))
 				$sqlQuery .= " LIMIT " . PMPRO_CRON_LIMIT;
-			
+
 			$orders = $wpdb->get_col($sqlQuery);
-		
+
 			if(empty($orders))
 				continue;
-			
+
 			foreach($orders as $order_id)
 			{
 				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
 				$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
-				
+
 				//check that user still has same level?
 				if(empty($user->membership_level) || $order->membership_id != $user->membership_level->id)
 					continue;
-				
+
 				//create new pending order
 				$morder = new MemberOrder();
-				$morder->user_id = $order->user_id;				
+				$morder->user_id = $order->user_id;
 				$morder->membership_id = $user->membership_level->id;
 				$morder->InitialPayment = $user->membership_level->billing_amount;
 				$morder->PaymentAmount = $user->membership_level->billing_amount;
@@ -681,28 +617,28 @@ function pmpropbc_recurring_orders()
 
 				//get timestamp for new order
 				$order_timestamp = strtotime("+" . $combo, $order->timestamp);
-				
+
 				//let's skip if there is already an order for this user/level/timestamp
-				$sqlQuery = "SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . $order->user_id . "' AND membership_id = '" . $order->membership_id . "' AND timestamp = '" . date('d', $order_timestamp) . "' LIMIT 1";			
-				$dupe = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . $order->user_id . "' AND membership_id = '" . $order->membership_id . "' AND timestamp = '" . $order_timestamp . "' LIMIT 1");				
+				$sqlQuery = "SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . $order->user_id . "' AND membership_id = '" . $order->membership_id . "' AND timestamp = '" . date('d', $order_timestamp) . "' LIMIT 1";
+				$dupe = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . $order->user_id . "' AND membership_id = '" . $order->membership_id . "' AND timestamp = '" . $order_timestamp . "' LIMIT 1");
 				if(!empty($dupe))
 					continue;
-				
+
 				//save it
 				$morder->process();
 				$morder->saveOrder();
 
-				//update the timestamp				
+				//update the timestamp
 				$morder->updateTimestamp(date("Y", $order_timestamp), date("m", $order_timestamp), date("d", $order_timestamp));
 
-				//send emails				
+				//send emails
 				$email = new PMProEmail();
 				$email->template = "check_pending";
 				$email->email = $user->user_email;
 				$email->subject = sprintf(__("New Invoice for %s at %s", "pmpropbc"), $user->membership_level->name, get_option("blogname"));
 			}
 		}
-	}	
+	}
 }
 add_action('pmpropbc_recurring_orders', 'pmpropbc_recurring_orders');
 
@@ -712,35 +648,35 @@ add_action('pmpropbc_recurring_orders', 'pmpropbc_recurring_orders');
 function pmpropbc_reminder_emails()
 {
 	global $wpdb;
-	
+
 	//make sure we only run once a day
 	$now = current_time('timestamp');
 	$today = date("Y-m-d", $now);
-	
+
 	//have to run for each level, so get levels
 	$levels = pmpro_getAllLevels(true, true);
-	
+
 	if(empty($levels))
 		return;
-		
+
 	foreach($levels as $level)
 	{
 		//get options
-		$options = pmpropbc_getOptions($level->id);	
+		$options = pmpropbc_getOptions($level->id);
 		if(!empty($options['reminder_days']))
 			$date = date("Y-m-d", strtotime("+ " . $options['reminder_days'] . " days", $now));
 		else
 			$date = $today;
-	
+
 		//need to get all combos of pay cycle and period
-		$sqlQuery = "SELECT DISTINCT(CONCAT(cycle_number, ' ', cycle_period)) FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $level->id . "' AND cycle_number > 0 AND status = 'active'";		
+		$sqlQuery = "SELECT DISTINCT(CONCAT(cycle_number, ' ', cycle_period)) FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $level->id . "' AND cycle_number > 0 AND status = 'active'";
 		$combos = $wpdb->get_col($sqlQuery);
-				
+
 		if(empty($combos))
 			continue;
-		
+
 		foreach($combos as $combo)
-		{	
+		{
 			//get all check orders still pending after X days
 			$sqlQuery = "
 				SELECT id 
@@ -752,7 +688,7 @@ function pmpropbc_reminder_emails()
 					AND notes NOT LIKE '%Reminder Sent:%' AND notes NOT LIKE '%Reminder Skipped:%'
 				ORDER BY id
 			";
-						
+
 			if(defined('PMPRO_CRON_LIMIT'))
 				$sqlQuery .= " LIMIT " . PMPRO_CRON_LIMIT;
 
@@ -760,14 +696,14 @@ function pmpropbc_reminder_emails()
 
 			if(empty($orders))
 				continue;
-						
+
 			foreach($orders as $order_id)
 			{
 				//get some data
 				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
 				$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
-				
+
 				//if they are no longer a member, let's not send them an email
 				if(empty($user->membership_level) || empty($user->membership_level->ID) || $user->membership_level->id != $order->membership_id)
 				{
@@ -786,24 +722,24 @@ function pmpropbc_reminder_emails()
 				$email = new PMProEmail();
 				$email->template = "check_pending_reminder";
 				$email->email = $user->user_email;
-				$email->subject = sprintf(__("Reminder: New Invoice for %s at %s", "pmpropbc"), $user->membership_level->name, get_option("blogname"));											
+				$email->subject = sprintf(__("Reminder: New Invoice for %s at %s", "pmpropbc"), $user->membership_level->name, get_option("blogname"));
 				//get body from template
 				$email->body = file_get_contents(PMPRO_PAY_BY_CHECK_DIR . "/email/" . $email->template . ".html");
-				
+
 				//setup more data
-				$email->data = array(					
-					"name" => $user->display_name, 
+				$email->data = array(
+					"name" => $user->display_name,
 					"user_login" => $user->user_login,
 					"sitename" => get_option("blogname"),
 					"siteemail" => pmpro_getOption("from_email"),
 					"membership_id" => $user->membership_level->id,
 					"membership_level_name" => $user->membership_level->name,
-					"membership_cost" => pmpro_getLevelCost($user->membership_level),								
+					"membership_cost" => pmpro_getLevelCost($user->membership_level),
 					"login_link" => wp_login_url(pmpro_url("account")),
 					"display_name" => $user->display_name,
-					"user_email" => $user->user_email,								
+					"user_email" => $user->user_email,
 				);
-				
+
 				$email->data["instructions"] = pmpro_getOption('instructions');
 				$email->data["invoice_id"] = $order->code;
 				$email->data["invoice_total"] = pmpro_formatPrice($order->total);
@@ -827,17 +763,17 @@ function pmpropbc_reminder_emails()
 																	 $order->billing->zip,
 																	 $order->billing->country,
 																	 $order->billing->phone);
-				
+
 				if($order->getDiscountCode())
 					$email->data["discount_code"] = "<p>" . __("Discount Code", "pmpro") . ": " . $order->discount_code->code . "</p>\n";
 				else
 					$email->data["discount_code"] = "";
-	
+
 				//send the email
 				$email->sendEmail();
 			}
 		}
-	}		
+	}
 }
 add_action('pmpropbc_reminder_emails', 'pmpropbc_reminder_emails');
 
@@ -847,35 +783,35 @@ add_action('pmpropbc_reminder_emails', 'pmpropbc_reminder_emails');
 function pmpropbc_cancel_overdue_orders()
 {
 	global $wpdb;
-	
+
 	//make sure we only run once a day
 	$now = current_time('timestamp');
 	$today = date("Y-m-d", $now);
-	
+
 	//have to run for each level, so get levels
 	$levels = pmpro_getAllLevels(true, true);
-	
+
 	if(empty($levels))
 		return;
-		
+
 	foreach($levels as $level)
 	{
 		//get options
-		$options = pmpropbc_getOptions($level->id);	
+		$options = pmpropbc_getOptions($level->id);
 		if(!empty($options['cancel_days']))
 			$date = date("Y-m-d", strtotime("+ " . $options['cancel_days'] . " days", $now));
 		else
 			$date = $today;
-	
+
 		//need to get all combos of pay cycle and period
-		$sqlQuery = "SELECT DISTINCT(CONCAT(cycle_number, ' ', cycle_period)) FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $level->id . "' AND cycle_number > 0 AND status = 'active'";		
+		$sqlQuery = "SELECT DISTINCT(CONCAT(cycle_number, ' ', cycle_period)) FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $level->id . "' AND cycle_number > 0 AND status = 'active'";
 		$combos = $wpdb->get_col($sqlQuery);
-				
+
 		if(empty($combos))
 			continue;
-		
+
 		foreach($combos as $combo)
-		{	
+		{
 			//get all check orders still pending after X days
 			$sqlQuery = "
 				SELECT id 
@@ -887,7 +823,7 @@ function pmpropbc_cancel_overdue_orders()
 					AND notes NOT LIKE '%Cancelled:%' AND notes NOT LIKE '%Cancellation Skipped:%'
 				ORDER BY id
 			";
-						
+
 			if(defined('PMPRO_CRON_LIMIT'))
 				$sqlQuery .= " LIMIT " . PMPRO_CRON_LIMIT;
 
@@ -895,14 +831,14 @@ function pmpropbc_cancel_overdue_orders()
 
 			if(empty($orders))
 				continue;
-						
+
 			foreach($orders as $order_id)
-			{		
+			{
 				//get the order and user data
-				$order = new MemberOrder($order_id);								
+				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
 				$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
-				
+
 				//if they are no longer a member, let's not send them an email
 				if(empty($user->membership_level) || empty($user->membership_level->ID) || $user->membership_level->id != $order->membership_id)
 				{
@@ -912,10 +848,10 @@ function pmpropbc_cancel_overdue_orders()
 
 					continue;
 				}
-				
+
 				//cancel the order and subscription
 				do_action("pmpro_membership_pre_membership_expiry", $order->user_id, $order->membership_id );
-				
+
 				//remove their membership
 				pmpro_changeMembershipLevel(false, $order->user_id, 'expired');
 				do_action("pmpro_membership_post_membership_expiry", $order->user_id, $order->membership_id );
@@ -933,7 +869,7 @@ function pmpropbc_cancel_overdue_orders()
 				}
 			}
 		}
-	}		
+	}
 }
 add_action('pmpropbc_cancel_overdue_orders', 'pmpropbc_cancel_overdue_orders');
 
@@ -945,7 +881,7 @@ function pmpropbc_activation()
 	//schedule crons
 	wp_schedule_event(current_time('timestamp'), 'daily', 'pmpropbc_cancel_overdue_orders');
 	wp_schedule_event(current_time('timestamp')+1, 'daily', 'pmpropbc_recurring_orders');
-	wp_schedule_event(current_time('timestamp')+2, 'daily', 'pmpropbc_reminder_emails');	
+	wp_schedule_event(current_time('timestamp')+2, 'daily', 'pmpropbc_reminder_emails');
 
 	do_action('pmpropbc_activation');
 }
@@ -954,7 +890,7 @@ function pmpropbc_deactivation()
 	//remove crons
 	wp_clear_scheduled_hook('pmpropbc_cancel_overdue_orders');
 	wp_clear_scheduled_hook('pmpropbc_recurring_orders');
-	wp_clear_scheduled_hook('pmpropbc_reminder_emails');	
+	wp_clear_scheduled_hook('pmpropbc_reminder_emails');
 
 	do_action('pmpropbc_deactivation');
 }

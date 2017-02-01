@@ -1,9 +1,15 @@
 === Paid Memberships Pro: Pay by Check Add On ===
-Contributors: strangerstudios
+Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
+<<<<<<< HEAD
 Requires at least: 4
 Tested up to: 4.5.3
 Stable tag: .7
+=======
+Requires at least: 3.5
+Tested up to: 4.5.3
+Stable tag: .7.5
+>>>>>>> d4888cd78b221d466cb039d52160c1063825700c
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,10 +37,21 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog == 
+<<<<<<< HEAD
 = .7 =
 * NOTE: Changed togglePaymentMethodBox() function to have a prefix, pmpropbc_togglePaymentMethodBox().
 * BUG: Along with update 1.8.10.4 of PMPro, fixes an issue where users could not checkout when they applied a discount code that made the level free.
 * BUG/ENHANCEMENT: Better integration with the Address for Free Levels addon.
+=======
+= .7.5 =
+* BUG: Check of discounted price would sometimes fail
+* BUG: Would sometimes cause JavaScript error if Stripe gateway was configured & discount code set cost to 0
+* BUG: Infinite loop when discount code sets cost to 0
+* BUG: Correctly toggle payment information field when discount code(s) are present
+* BUG: Warning when order isn't found
+* ENHANCEMENT: Added a PMPROPBC_VER constant used during enqueue operations
+* ENHANCEMENT: Make JavaScript debuggable & load during enqueue operations
+>>>>>>> d4888cd78b221d466cb039d52160c1063825700c
 
 = .6 =
 * FEATURE: Updated for localization with new pmpropbc.pot/po files.
