@@ -15,16 +15,16 @@ if ( typeof code_level === 'undefined' ) {
 
 function pmpropbc_isLevelFree() {
 	var check_level;
-	if(typeof code_level === 'undefined' || !code_level) {
+	if(typeof code_level === 'undefined' || code_level === false) {
 		//no code or an invalid code was applied
 		check_level = pmpropbc.nocode_level;
 	} else {
 		//default pmpro_level or level with current code applied
 		check_level = code_level;
 	}
-	
+		
 	//check if level is paid or free
-	if(parseFloat(check_level.billing_amount) > 0 || parseFloat(check_level.initial_payent) > 0) {
+	if(parseFloat(check_level.billing_amount) > 0 || parseFloat(check_level.initial_payment) > 0) {
 		return false;
 	} else {
 		return true;
