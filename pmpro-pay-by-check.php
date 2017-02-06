@@ -187,7 +187,7 @@ function pmpropbc_checkout_boxes()
 	<?php
 	}
 }
-add_action("pmpro_checkout_boxes", "pmpropbc_checkout_boxes");
+add_action("pmpro_checkout_boxes", "pmpropbc_checkout_boxes", 20);
 
 /**
  * Toggle payment method when discount code is updated
