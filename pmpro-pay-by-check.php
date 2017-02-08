@@ -523,7 +523,7 @@ function pmpropbc_send_invoice_email( $morder ) {
         $recipient = get_user_by( 'ID', $morder->user_id );
 
         $invoice_email = new PMProEmail();
-        $invoice_email->sendInvoiceEmail( $recipient, $invoice_email );
+        $invoice_email->sendInvoiceEmail( $recipient, $morder );
     }
 }
 
