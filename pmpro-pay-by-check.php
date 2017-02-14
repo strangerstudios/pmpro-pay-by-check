@@ -204,6 +204,9 @@ add_action('pmpro_applydiscountcode_return_js', 'pmpropbc_pmpro_applydiscountcod
  */
 function pmpropbc_enqueue_scripts() {
 
+	if(!function_exists('pmpro_getLevelAtCheckout'))
+		return;
+	
 	global $gateway, $pmpro_level, $pmpro_review, $pmpro_pages, $post;
 
 	//make sure we're on the checkout page
