@@ -210,7 +210,7 @@ function pmpropbc_enqueue_scripts() {
 	global $gateway, $pmpro_level, $pmpro_review, $pmpro_pages, $post;
 
 	//make sure we're on the checkout page
-	if(!is_page($pmpro_pages['checkout']) && strpos($post->post_content, "[pmpro_checkout") === false)
+	if(!is_page($pmpro_pages['checkout']) && !empty($post) && strpos($post->post_content, "[pmpro_checkout") === false)
 		return;
 	
 	wp_register_script('pmpropbc', plugins_url( 'js/pmpro-pay-by-check.js', __FILE__ ), array( 'jquery' ), PMPROPBC_VER );	
