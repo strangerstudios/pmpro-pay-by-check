@@ -34,6 +34,7 @@ https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 = .7.6 =
 * BUG: Fixed bug in pmpropbc_send_invoice_email().
 * BUG: Fixed issue with PMPro 1.8.14+ where a discount code error would show up at checkout even if no code was used.
+* BUG/ENHANCEMENT: Users are no longer considered "pending" (although the order still is) if they renew their expiring membership early. The code will check if the user has successfully paid order within the membership period, including the grace period set for the level in the pay by check options. We were doing this check for recurring memberships before, but will do them for one time payments as well now.
 
 = .7.5 =
 * BUG: Check of discounted price would sometimes fail

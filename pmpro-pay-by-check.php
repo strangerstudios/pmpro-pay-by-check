@@ -396,45 +396,43 @@ function pmpropbc_isMemberPending($user_id)
 	//check their last order
 	$order = new MemberOrder();
 	$order->getLastMemberOrder($user_id, NULL);		//NULL here means any status
-
+	
 	if(!empty($order))
 	{
 		if($order->status == "pending")
 		{
 			//for recurring levels, we should check if there is an older successful order
 			$membership_level = pmpro_getMembershipLevelForUser($user_id);
-			if(pmpro_isLevelRecurring($membership_level))
+						
+			//unless the previous order has status success and we are still within the grace period
+			$paid_order = new MemberOrder();
+			$paid_order->getLastMemberOrder($user_id, array('success', 'cancelled'), $order->membership_id);
+			
+			if(!empty($paid_order) && !empty($paid_order->id))
 			{
-				//unless the previous order has status success and we are still within the grace period
-				$paid_order = new MemberOrder();
-				$paid_order->getLastMemberOrder($user_id, 'success', $order->membership_id);
-
-				if(!empty($paid_order) && !empty($paid_order->id))
-				{
-					//how long ago is too long?
-					$options = pmpropbc_getOptions($membership_level->id);
+				//how long ago is too long?
+				$options = pmpropbc_getOptions($membership_level->id);
+				
+				if(pmpro_isLevelRecurring($membership_level)) {
 					$cutoff = strtotime("- " . $membership_level->cycle_number . " " . $membership_level->cycle_period, current_time("timestamp")) - ($options['cancel_days']*3600*24);
-
-					//too long ago?
-					if($paid_order->timestamp < $cutoff)
-						$pmpropbc_pending_member_cache[$user_id] = true;
-					else
-						$pmpropbc_pending_member_cache[$user_id] = false;
+				} else {
+					$cutoff = strtotime("- " . $membership_level->expiration_number . " " . $membership_level->expiration_period, current_time("timestamp")) - ($options['cancel_days']*3600*24);
 				}
-				else
-				{
-					//no previous order, this must be the first
+				
+				//too long ago?
+				if($paid_order->timestamp < $cutoff)
 					$pmpropbc_pending_member_cache[$user_id] = true;
-				}
+				else
+					$pmpropbc_pending_member_cache[$user_id] = false;
 			}
 			else
 			{
-				//one time payment, so only interested in the last payment
+				//no previous order, this must be the first
 				$pmpropbc_pending_member_cache[$user_id] = true;
-			}
+			}			
 		}
 	}
-
+	
 	return $pmpropbc_pending_member_cache[$user_id];
 }
 
