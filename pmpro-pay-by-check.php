@@ -207,7 +207,7 @@ function pmpropbc_enqueue_scripts() {
 	if(!function_exists('pmpro_getLevelAtCheckout'))
 		return;
 	
-	global $gateway, $pmpro_level, $pmpro_review, $pmpro_pages, $post;
+	global $gateway, $pmpro_level, $pmpro_review, $pmpro_pages, $post, $pmpro_msg, $pmpro_msgt;
 
 	//make sure we're on the checkout page
 	if(!is_page($pmpro_pages['checkout']) && !empty($post) && strpos($post->post_content, "[pmpro_checkout") === false)
@@ -215,9 +215,17 @@ function pmpropbc_enqueue_scripts() {
 	
 	wp_register_script('pmpropbc', plugins_url( 'js/pmpro-pay-by-check.js', __FILE__ ), array( 'jquery' ), PMPROPBC_VER );	
 	
-	//get original checkout level and another with discount code applied
+	//store original msg and msgt values in case these function calls below affect them
+	$omsg = $pmpro_msg;
+	$omsgt = $pmpro_msgt;
+
+	//get original checkout level and another with discount code applied	
 	$pmpro_nocode_level = pmpro_getLevelAtCheckout(false, '^*NOTAREALCODE*^');
 	$pmpro_code_level = pmpro_getLevelAtCheckout();			//NOTE: could be same as $pmpro_nocode_level if no code was used
+	
+	//restore these values
+	$pmpro_msg = $omsg;
+	$pmpro_msgt = $omsgt;
 	
 	wp_localize_script('pmpropbc', 'pmpropbc', array(
 			'gateway' => pmpro_getOption('gateway'),
@@ -526,7 +534,7 @@ function pmpropbc_send_invoice_email( $morder ) {
         $recipient = get_user_by( 'ID', $morder->user_id );
 
         $invoice_email = new PMProEmail();
-        $invoice_email->sendInvoiceEmail( $recipient, $invoice_email );
+        $invoice_email->sendInvoiceEmail( $recipient, $morder );
     }
 }
 

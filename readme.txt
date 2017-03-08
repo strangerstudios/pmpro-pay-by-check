@@ -2,8 +2,8 @@
 Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 4
-Tested up to: 4.7.2
-Stable tag: .7.5
+Tested up to: 4.7.3
+Stable tag: .7.6
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,10 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog == 
+= .7.6 =
+* BUG: Fixed bug in pmpropbc_send_invoice_email().
+* BUG: Fixed issue with PMPro 1.8.14+ where a discount code error would show up at checkout even if no code was used.
+
 = .7.5 =
 * BUG: Check of discounted price would sometimes fail
 * BUG: Would sometimes cause JavaScript error if Stripe gateway was configured & discount code set cost to 0
