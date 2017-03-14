@@ -178,6 +178,17 @@ function pmpropbc_checkout_boxes()
 													<?php } ?>
 											<input type="radio" name="gateway" value="check" <?php if($gateway == "check") { ?>checked="checked"<?php } ?> />
 													<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Check', 'pmpropbc');?></a> &nbsp;
+											<?php
+												//support the PayPal Website Payments Pro Gateway which has PayPal Express as a second option natively
+												if($gateway_setting == "paypal") {
+												?>
+												<span class="gateway_paypalexpress">
+													<input type="radio" name="gateway" value="paypalexpress">
+													<a href="javascript:void(0);" class="pmpro_radio">Check Out with PayPal</a>
+												</span>
+												<?php
+												}
+											?>
 									</div>
 							</td>
 					</tr>
@@ -314,9 +325,12 @@ function pmpropbc_init_include_billing_address_fields()
 				add_action('pmpro_checkout_after_form', array('PMProGateway_paypalexpress', 'pmpro_checkout_after_form'));
 			} elseif($default_gateway == 'paypalstandard') {
 				add_filter('pmpro_checkout_default_submit_button', array('PMProGateway_paypalstandard', 'pmpro_checkout_default_submit_button'));
+			} elseif($default_gateway == 'paypal') {
+				add_action('pmpro_checkout_after_form', array('PMProGateway_paypal', 'pmpro_checkout_after_form'));				
+				add_filter('pmpro_include_payment_option_for_paypal', '__return_false');
 			} elseif($default_gateway == 'twocheckout') {
 				//undo the filter to change the checkout button text
-				remove_filter('pmpro_checkout_default_submit_button', array('PMProGateway_twocheckout', 'pmpro_checkout_default_submit_button'));
+				remove_filter('pmpro_checkout_default_submit_button', array('PMProGateway_twocheckout', 'pmpro_checkout_default_submit_button'));			
 			} else {
 				//onsite checkouts
 				if(class_exists('PMProGateway_' . $default_gateway) && method_exists('PMProGateway_' . $default_gateway, 'pmpro_include_billing_address_fields'))
@@ -329,7 +343,7 @@ function pmpropbc_init_include_billing_address_fields()
 
 	//instructions at checkout
 	remove_filter('pmpro_checkout_after_payment_information_fields', array('PMProGateway_check', 'pmpro_checkout_after_payment_information_fields'));
-	add_filter('pmpro_checkout_after_payment_information_fields', 'pmpropbc_pmpro_checkout_after_payment_information_fields');
+	add_filter('pmpro_checkout_after_payment_information_fields', 'pmpropbc_pmpro_checkout_after_payment_information_fields');	
 }
 add_action('init', 'pmpropbc_init_include_billing_address_fields', 20);
 

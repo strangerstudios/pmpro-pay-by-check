@@ -31,8 +31,16 @@ function pmpropbc_isLevelFree() {
 	}
 }
 
-function pmprobpc_isCheckGatewayChosen() {
+function pmpropbc_isCheckGatewayChosen() {
 	if(jQuery('input[name=gateway]:checked').val() === 'check') {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function pmpropbc_isPayPalExpressChosen() {
+	if(jQuery('input[name=gateway]:checked').val() == 'paypalexpress') {
 		return true;
 	} else {
 		return false;
@@ -58,11 +66,18 @@ function pmpropbc_toggleCheckoutFields() {
 		}
 	} else {
 		//paid, now check if using check gateway
-		if(pmprobpc_isCheckGatewayChosen()) {
+		if(pmpropbc_isCheckGatewayChosen()) {
 			//paid and check
 			jQuery('#pmpro_billing_address_fields').show();
 			jQuery('#pmpro_payment_information_fields').hide();			
 			jQuery('.pmpro_check_instructions').show();
+			pmpro_require_billing = false;
+		} else if(pmpropbc_isPayPalExpressChosen()) {
+			//paypal express
+			jQuery('#pmpro_billing_address_fields').hide();
+			jQuery('#pmpro_payment_information_fields').hide();			
+			jQuery('#pmpro_submit_span').hide();
+			jQuery('#pmpro_paypalexpress_checkout').show();			
 			pmpro_require_billing = false;
 		} else {
 			//paid and default
