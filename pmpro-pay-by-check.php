@@ -183,7 +183,7 @@ function pmpropbc_checkout_boxes()
 												if($gateway_setting == "paypal") {
 												?>
 												<span class="gateway_paypalexpress">
-													<input type="radio" name="gateway" value="paypalexpress">
+													<input type="radio" name="gateway" value="paypalexpress" <?php if($gateway == "paypalexpress") { ?>checked="checked"<?php } ?> />
 													<a href="javascript:void(0);" class="pmpro_radio">Check Out with PayPal</a>
 												</span>
 												<?php
