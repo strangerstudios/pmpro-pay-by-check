@@ -88,10 +88,15 @@ function pmpropbc_toggleCheckoutFields() {
 		}
 		
 		//show paypal button if applicable
-		if(pmpropbc.gateway === 'paypalexpress' || pmpropbc.gateway === 'paypalstandard')
+		if( !pmpropbc_isCheckGatewayChosen() && ( pmpropbc.gateway === 'paypalexpress' || pmpropbc.gateway === 'paypalstandard' ))
 		{
 			jQuery('#pmpro_paypalexpress_checkout').show();
 			jQuery('#pmpro_submit_span').hide();
+		}
+		
+		if ( pmpropbc_isCheckGatewayChosen() ) {
+			jQuery('#pmpro_paypalexpress_checkout').hide();
+			jQuery('#pmpro_submit_span').show();
 		}
 	}
 	
