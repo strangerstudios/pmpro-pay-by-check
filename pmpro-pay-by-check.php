@@ -344,6 +344,9 @@ function pmpropbc_init_include_billing_address_fields()
 	//instructions at checkout
 	remove_filter('pmpro_checkout_after_payment_information_fields', array('PMProGateway_check', 'pmpro_checkout_after_payment_information_fields'));
 	add_filter('pmpro_checkout_after_payment_information_fields', 'pmpropbc_pmpro_checkout_after_payment_information_fields');	
+	
+	//Show a different message for users whose checks are pending
+	add_filter( 'pmpro_non_member_text_filter', 'pmpro_non_member_text_filter' );
 }
 add_action('init', 'pmpropbc_init_include_billing_address_fields', 20);
 
@@ -909,6 +912,21 @@ function pmpropbc_cancel_overdue_orders()
 	}
 }
 add_action('pmpropbc_cancel_overdue_orders', 'pmpropbc_cancel_overdue_orders');
+
+/**
+ *  Show a different message for users whose checks are pending
+ */
+function pmpro_non_member_text_filter( $text ){
+	global $current_user;
+	//if a user does not have a membership level, return default text.
+	if( !pmpro_hasMembershipLevel() ){
+		return $text;
+	}elseif(pmpropbc_isMemberPending($current_user->ID)==true){
+		$text = __("Your check is currently pending. You will gain access to this page once it is approved.", "pmpropbc");
+	}
+	return $text;
+}
+
 
 /*
 	Activation/Deactivation
