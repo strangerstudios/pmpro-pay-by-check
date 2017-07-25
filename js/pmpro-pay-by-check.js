@@ -51,48 +51,36 @@ function pmpropbc_toggleCheckoutFields() {
     "use strict";
 			
 	//check for free/paid
-	if(pmpropbc_isLevelFree()) {
-		//free, now check if using check gateway
-		jQuery('#pmpro_billing_address_fields').hide();
-		jQuery('#pmpro_payment_information_fields').hide();			
-		jQuery('.pmpro_check_instructions').hide();
-		pmpro_require_billing = false;
-		
-		//hide paypal button if applicable
-		if(pmpropbc.gateway === 'paypalexpress' || pmpropbc.gateway === 'paypalstandard')
-		{
-			jQuery('#pmpro_paypalexpress_checkout').hide();
-			jQuery('#pmpro_submit_span').show();
-		}
-	} else {
-		//paid, now check if using check gateway
-		if(pmpropbc_isCheckGatewayChosen()) {
-			//paid and check
-			jQuery('#pmpro_billing_address_fields').show();
-			jQuery('#pmpro_payment_information_fields').hide();			
-			jQuery('.pmpro_check_instructions').show();
-			pmpro_require_billing = false;
-		} else if(pmpropbc_isPayPalExpressChosen()) {
-			//paypal express
-			jQuery('#pmpro_billing_address_fields').hide();
-			jQuery('#pmpro_payment_information_fields').hide();			
-			jQuery('#pmpro_submit_span').hide();
-			jQuery('#pmpro_paypalexpress_checkout').show();			
-			pmpro_require_billing = false;
-		} else {
-			//paid and default
-			jQuery('#pmpro_billing_address_fields').show();
-			jQuery('#pmpro_payment_information_fields').show();			
-			jQuery('.pmpro_check_instructions').hide();
-			pmpro_require_billing = true;
-		}
-		
-		//show paypal button if applicable
-		if(pmpropbc.gateway === 'paypalexpress' || pmpropbc.gateway === 'paypalstandard')
-		{
-			jQuery('#pmpro_paypalexpress_checkout').show();
-			jQuery('#pmpro_submit_span').hide();
-		}
+	 if(pmpropbc_isLevelFree()) {
+                //free, now check if using check gateway
+                jQuery('#pmpro_billing_address_fields').hide();
+                jQuery('#pmpro_payment_information_fields').hide();
+                jQuery('.pmpro_check_instructions').hide();
+                pmpro_require_billing = false;
+        } else {
+                //paid, now check if using check gateway
+                if(pmpropbc_isCheckGatewayChosen()) {
+                        //paid and check
+                        jQuery('#pmpro_billing_address_fields').show();
+                        jQuery('#pmpro_payment_information_fields').hide();
+                        jQuery('.pmpro_check_instructions').show();
+                        jQuery('#pmpro_paypalexpress_checkout').hide();
+                        jQuery('#pmpro_submit_span').show();
+                        pmpro_require_billing = false;
+                } else if(pmpropbc_isPayPalExpressChosen()) {
+                        //paypal express
+                        jQuery('#pmpro_billing_address_fields').hide();
+                        jQuery('#pmpro_payment_information_fields').hide();
+                        jQuery('#pmpro_submit_span').hide();
+                        jQuery('#pmpro_paypalexpress_checkout').show();
+                        pmpro_require_billing = false;
+                } else {
+                        //paid and default
+                        jQuery('#pmpro_billing_address_fields').show();
+                        jQuery('#pmpro_payment_information_fields').show();
+                        jQuery('.pmpro_check_instructions').hide();
+                        pmpro_require_billing = true;
+                }
 	}
 	
 	//check if billing address hide/show is overriden by filters
