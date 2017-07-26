@@ -346,7 +346,7 @@ function pmpropbc_init_include_billing_address_fields()
 	add_filter('pmpro_checkout_after_payment_information_fields', 'pmpropbc_pmpro_checkout_after_payment_information_fields');	
 	
 	//Show a different message for users whose checks are pending
-	add_filter( 'pmpro_non_member_text_filter', 'pmpro_non_member_text_filter' );
+	add_filter( 'pmpro_non_member_text_filter', 'pmpropbc_check_pending_lock_text' );
 }
 add_action('init', 'pmpropbc_init_include_billing_address_fields', 20);
 
@@ -399,7 +399,7 @@ add_filter("pmpro_check_status_after_checkout", "pmpropbc_pmpro_check_status_aft
  * @param user_id ID of the user to check.
  * @since .5
  */
-function pmpropbc_isMemberPending($user_id)
+function pmpropbc_isMemberPending($user_id, $level_id = NULL)
 {
 	global $pmpropbc_pending_member_cache;
 
@@ -412,7 +412,9 @@ function pmpropbc_isMemberPending($user_id)
 
 	//check their last order
 	$order = new MemberOrder();
-	$order->getLastMemberOrder($user_id, NULL);		//NULL here means any status
+	
+	//$order->getLastMemberOrder($user_id, false, $level_id);		//NULL here means any status
+	$order->getLastMemberOrder($user_id, false);		//TODO: switch to line above
 	
 	if(!empty($order))
 	{
@@ -916,15 +918,28 @@ add_action('pmpropbc_cancel_overdue_orders', 'pmpropbc_cancel_overdue_orders');
 /**
  *  Show a different message for users whose checks are pending
  */
-function pmpro_non_member_text_filter( $text ){
+function pmpropbc_check_pending_lock_text( $text ){
 	global $current_user;
 	//if a user does not have a membership level, return default text.
 	if( !pmpro_hasMembershipLevel() ){
 		return $text;
-	}elseif(pmpropbc_isMemberPending($current_user->ID)==true){
-		$text = __("Your check is currently pending. You will gain access to this page once it is approved.", "pmpropbc");
+	}
+	
+	if(pmpropbc_isMemberPending($current_user->ID)==true && pmpropbc_wouldHaveMembershipAccessIfNotPending()==true){
+		$text = __("Your payment is currently pending. You will gain access to this page once it is approved.", "pmpropbc");
 	}
 	return $text;
+}
+
+function pmpropbc_wouldHaveMembershipAccessIfNotPending($user_id = NULL){
+	global $current_user;
+	if(!$user_id)
+		$user_id = $current_user->ID;
+	
+	remove_filter("pmpro_has_membership_access_filter", "pmpropbc_pmpro_has_membership_access_filter", 10, 4);
+	$toReturn = pmpro_has_membership_access(NULL, NULL, true)[0];
+	add_filter("pmpro_has_membership_access_filter", "pmpropbc_pmpro_has_membership_access_filter", 10, 4);
+	return $toReturn;
 }
 
 
