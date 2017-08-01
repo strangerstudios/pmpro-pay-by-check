@@ -2,8 +2,8 @@
 Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 4
-Tested up to: 4.7.3
-Stable tag: .7.7
+Tested up to: 4.8
+Stable tag: .7.8
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,10 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog == 
+= .7.8 =
+* BUG FIX: Fixed issue where PayPal button was showing sometimes when "check" was chosen.
+* ENHANCEMENT: Now showing a better non-member-text notice when pending members try to access content.
+
 = .7.7 =
 * BUG: Updated to better support the PayPal Website Payments Pro gateway option. Shows 3 gateway options in one box now.
 
