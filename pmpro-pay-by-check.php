@@ -413,8 +413,7 @@ function pmpropbc_isMemberPending($user_id, $level_id = NULL)
 	//check their last order
 	$order = new MemberOrder();
 	
-	//$order->getLastMemberOrder($user_id, false, $level_id);		//NULL here means any status
-	$order->getLastMemberOrder($user_id, false);		//TODO: switch to line above
+	$order->getLastMemberOrder($user_id, false, $level_id);
 	
 	if(!empty($order))
 	{
@@ -456,6 +455,20 @@ function pmpropbc_isMemberPending($user_id, $level_id = NULL)
 }
 
 /*
+	For use with multiple memberships per user
+*/
+function pmprobpc_memberHasAccessWithAnyLevel($user_id){
+	$levels = pmpro_getMembershipLevelsForUser($user_id);
+	foreach($levels as $level){
+		if(!pmpropbc_isMemberPending($user_id, $level->id)){
+			return true;
+		}
+	}
+	return false;
+}
+
+
+/*
 	In case anyone was using the typo'd function name.
 */
 function pmprobpc_isMemberPending($user_id) { return pmpropbc_isMemberPending($user_id); }
@@ -471,7 +484,7 @@ function pmpropbc_pmpro_has_membership_access_filter($hasaccess, $mypost, $myuse
 	if(empty($post_membership_levels))
 		return $hasaccess;
 
-	$hasaccess = ! pmpropbc_isMemberPending($myuser->ID);
+	$hasaccess = pmprobpc_memberHasAccessWithAnyLevel($myuser->ID);
 
 	return $hasaccess;
 }
