@@ -32,6 +32,9 @@ https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog == 
 = .7.8 =
+* BUG FIX/ENHANCEMENT: pmpropbc_isMemberPending can now accept a level ID as a 2nd parameter to check status for a user's specific level.
+
+= .7.8 =
 * BUG FIX: Fixed issue where PayPal button was showing sometimes when "check" was chosen.
 * ENHANCEMENT: Now showing a better non-member-text notice when pending members try to access content.
 

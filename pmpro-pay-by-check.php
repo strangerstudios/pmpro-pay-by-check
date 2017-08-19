@@ -400,23 +400,28 @@ add_filter("pmpro_check_status_after_checkout", "pmpropbc_pmpro_check_status_aft
  * @param user_id ID of the user to check.
  * @since .5
  */
-function pmpropbc_isMemberPending($user_id, $level_id = NULL)
+function pmpropbc_isMemberPending($user_id, $level_id = 0)
 {
 	global $pmpropbc_pending_member_cache;
 
 	//check the cache first
-	if(isset($pmpropbc_pending_member_cache[$user_id]))
-		return $pmpropbc_pending_member_cache[$user_id];
-
-	//no cache, assume they aren't pending
-	$pmpropbc_pending_member_cache[$user_id] = false;
+	if(isset($pmpropbc_pending_member_cache) && 
+	   isset($pmpropbc_pending_member_cache[$user_id]) && 
+	   isset($pmpropbc_pending_member_cache[$user_id][$level_id]))
+		return $pmpropbc_pending_member_cache[$user_id][$level_id];
 
 	//check their last order
 	$order = new MemberOrder();
+	$order->getLastMemberOrder($user_id, false, $level_id);		//NULL here means any status
 	
-	//$order->getLastMemberOrder($user_id, false, $level_id);		//NULL here means any status
-	$order->getLastMemberOrder($user_id, false);		//TODO: switch to line above
-	
+	//make room for this user's data in the cache
+	if(!is_array($pmpropbc_pending_member_cache)) {
+		$pmpropbc_pending_member_cache = array();
+	} elseif(!is_array($pmpropbc_pending_member_cache[$user_id])) {
+		$pmpropbc_pending_member_cache[$user_id] = array();
+	}	
+	$pmpropbc_pending_member_cache[$user_id][$level_id] = false;
+
 	if(!empty($order))
 	{
 		if($order->status == "pending")
@@ -441,19 +446,19 @@ function pmpropbc_isMemberPending($user_id, $level_id = NULL)
 				
 				//too long ago?
 				if($paid_order->timestamp < $cutoff)
-					$pmpropbc_pending_member_cache[$user_id] = true;
+					$pmpropbc_pending_member_cache[$user_id][$level_id] = true;
 				else
-					$pmpropbc_pending_member_cache[$user_id] = false;
+					$pmpropbc_pending_member_cache[$user_id][$level_id] = false;
 			}
 			else
 			{
 				//no previous order, this must be the first
-				$pmpropbc_pending_member_cache[$user_id] = true;
+				$pmpropbc_pending_member_cache[$user_id][$level_id] = true;
 			}			
 		}
 	}
 	
-	return $pmpropbc_pending_member_cache[$user_id];
+	return $pmpropbc_pending_member_cache[$user_id][$level_id];
 }
 
 /*
