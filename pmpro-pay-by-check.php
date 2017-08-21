@@ -1,11 +1,12 @@
 <?php
 /*
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
-Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-pay-by-check/
+Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: .7.7
+Version: .7.8
 Author: Stranger Studios
-Author URI: http://www.strangerstudios.com
+Author URI: https://www.paidmembershipspro.com
+Text Domain: pmpropbc
 */
 /*
 	Sample use case: You have a paid level that you want to allow people to pay by check for.
@@ -23,7 +24,7 @@ Author URI: http://www.strangerstudios.com
 	Settings, Globals and Constants
 */
 define("PMPRO_PAY_BY_CHECK_DIR", dirname(__FILE__));
-define("PMPROPBC_VER", '0.7.7');
+define("PMPROPBC_VER", '0.7.8');
 
 /*
 	Load plugin textdomain.
@@ -399,22 +400,28 @@ add_filter("pmpro_check_status_after_checkout", "pmpropbc_pmpro_check_status_aft
  * @param user_id ID of the user to check.
  * @since .5
  */
-function pmpropbc_isMemberPending($user_id, $level_id = NULL)
+function pmpropbc_isMemberPending($user_id, $level_id = 0)
 {
 	global $pmpropbc_pending_member_cache;
 
 	//check the cache first
-	if(isset($pmpropbc_pending_member_cache[$user_id]))
-		return $pmpropbc_pending_member_cache[$user_id];
-
-	//no cache, assume they aren't pending
-	$pmpropbc_pending_member_cache[$user_id] = false;
+	if(isset($pmpropbc_pending_member_cache) && 
+	   isset($pmpropbc_pending_member_cache[$user_id]) && 
+	   isset($pmpropbc_pending_member_cache[$user_id][$level_id]))
+		return $pmpropbc_pending_member_cache[$user_id][$level_id];
 
 	//check their last order
 	$order = new MemberOrder();
+	$order->getLastMemberOrder($user_id, false, $level_id);		//NULL here means any status
 	
-	$order->getLastMemberOrder($user_id, false, $level_id);
-	
+	//make room for this user's data in the cache
+	if(!is_array($pmpropbc_pending_member_cache)) {
+		$pmpropbc_pending_member_cache = array();
+	} elseif(!is_array($pmpropbc_pending_member_cache[$user_id])) {
+		$pmpropbc_pending_member_cache[$user_id] = array();
+	}	
+	$pmpropbc_pending_member_cache[$user_id][$level_id] = false;
+
 	if(!empty($order))
 	{
 		if($order->status == "pending")
@@ -439,19 +446,19 @@ function pmpropbc_isMemberPending($user_id, $level_id = NULL)
 				
 				//too long ago?
 				if($paid_order->timestamp < $cutoff)
-					$pmpropbc_pending_member_cache[$user_id] = true;
+					$pmpropbc_pending_member_cache[$user_id][$level_id] = true;
 				else
-					$pmpropbc_pending_member_cache[$user_id] = false;
+					$pmpropbc_pending_member_cache[$user_id][$level_id] = false;
 			}
 			else
 			{
 				//no previous order, this must be the first
-				$pmpropbc_pending_member_cache[$user_id] = true;
+				$pmpropbc_pending_member_cache[$user_id][$level_id] = true;
 			}			
 		}
 	}
 	
-	return $pmpropbc_pending_member_cache[$user_id];
+	return $pmpropbc_pending_member_cache[$user_id][$level_id];
 }
 
 /*
@@ -987,7 +994,7 @@ function pmpropbc_plugin_row_meta($links, $file) {
 	if(strpos($file, 'pmpro-pay-by-check.php') !== false)
 	{
 		$new_links = array(
-			'<a href="' . esc_url('http://www.paidmembershipspro.com/add-ons/plugins-on-github/pmpro-pay-by-check-add-on/')  . '" title="' . esc_attr( __( 'View Documentation', 'pmpro' ) ) . '">' . __( 'Docs', 'pmpro' ) . '</a>',
+			'<a href="' . esc_url('https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/')  . '" title="' . esc_attr( __( 'View Documentation', 'pmpro' ) ) . '">' . __( 'Docs', 'pmpro' ) . '</a>',
 			'<a href="' . esc_url('http://paidmembershipspro.com/support/') . '" title="' . esc_attr( __( 'Visit Customer Support Forum', 'pmpro' ) ) . '">' . __( 'Support', 'pmpro' ) . '</a>',
 		);
 		$links = array_merge($links, $new_links);
