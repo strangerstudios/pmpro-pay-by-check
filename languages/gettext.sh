@@ -1,14 +1,14 @@
 #---------------------------
-# This script generates a new pmpropbc.pot file for use in translations.
-# To generate a new pmpropbc.pot, cd to the main /pmpro-pay-by-check/ directory,
+# This script generates a new pmpro-pay-by-check.pot file for use in translations.
+# To generate a new pmpro-pay-by-check.pot, cd to the main /pmpro-pay-by-check/ directory,
 # then execute `languages/gettext.sh` from the command line.
-# then fix the header info (helps to have the old pmpropbc.pot open before running script above)
-# then execute `cp languages/pmpropbc.pot languages/pmpropbc.po` to copy the .pot to .po
+# then fix the header info (helps to have the old pmpro-pay-by-check.pot open before running script above)
+# then execute `cp languages/pmpro-pay-by-check.pot languages/pmpropbc.po` to copy the .pot to .po
 # then execute `msgfmt languages/pmpropbc.po --output-file languages/pmpropbc.mo` to generate the .mo
 #---------------------------
-echo "Updating pmpropbc.pot... "
-xgettext -j -o languages/pmpropbc.pot \
---default-domain=pmpropbc \
+echo "Updating pmpro-pay-by-check.pot... "
+xgettext -j -o languages/pmpro-pay-by-check.pot \
+--default-domain=pmpro-pay-by-check \
 --language=PHP \
 --keyword=_ \
 --keyword=__ \
