@@ -3,7 +3,7 @@ Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 4
 Tested up to: 4.8
-Stable tag: .7.8
+Stable tag: .7.9
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,10 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog == 
+= .7.9 =
+* ENHANCEMENT: Change Text Domain for plugin/add-on
+* BUG FIX: Didn't support Variable Pricing add-on
+
 = .7.8 =
 * BUG FIX/ENHANCEMENT: pmpropbc_isMemberPending can now accept a level ID as a 2nd parameter to check status for a user's specific level.
 

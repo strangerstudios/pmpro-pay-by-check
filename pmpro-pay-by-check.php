@@ -3,10 +3,10 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: .7.8
+Version: .7.9
 Author: Stranger Studios
 Author URI: https://www.paidmembershipspro.com
-Text Domain: pmpropbc
+Text Domain: pmpro-pay-by-check
 */
 /*
 	Sample use case: You have a paid level that you want to allow people to pay by check for.
@@ -30,7 +30,7 @@ define("PMPROPBC_VER", '0.7.8');
 	Load plugin textdomain.
 */
 function pmpropbc_load_textdomain() {
-  load_plugin_textdomain( 'pmpropbc', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' ); 
+  load_plugin_textdomain( 'pmpro-pay-by-check', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
 }
 add_action( 'plugins_loaded', 'pmpropbc_load_textdomain' );
 
@@ -43,36 +43,36 @@ function pmpropbc_pmpro_membership_level_after_other_settings()
 	$level_id = intval($_REQUEST['edit']);
 	$options = pmpropbc_getOptions($level_id);
 ?>
-<h3 class="topborder"><?php _e('Pay by Check Settings', 'pmpropbc');?></h3>
-<p><?php _e('Change this setting to allow or disallow the pay by check option for this level.', 'pmpropbc');?></p>
+<h3 class="topborder"><?php _e('Pay by Check Settings', 'pmpro-pay-by-check');?></h3>
+<p><?php _e('Change this setting to allow or disallow the pay by check option for this level.', 'pmpro-pay-by-check');?></p>
 <table>
 <tbody class="form-table">
 	<tr>
-		<th scope="row" valign="top"><label for="pbc_setting"><?php _e('Allow Pay by Check:', 'pmpropbc');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_setting"><?php _e('Allow Pay by Check:', 'pmpro-pay-by-check');?></label></th>
 		<td>
 			<select id="pbc_setting" name="pbc_setting">
-				<option value="0" <?php selected($options['setting'], 0);?>><?php _e('No. Use the default gateway only.', 'pmpropbc');?></option>
-				<option value="1" <?php selected($options['setting'], 1);?>><?php _e('Yes. Users choose between default gateway and check.', 'pmpropbc');?></option>
-				<option value="2" <?php selected($options['setting'], 2);?>><?php _e('Yes. Users can only pay by check.', 'pmpropbc');?></option>
+				<option value="0" <?php selected($options['setting'], 0);?>><?php _e('No. Use the default gateway only.', 'pmpro-pay-by-check');?></option>
+				<option value="1" <?php selected($options['setting'], 1);?>><?php _e('Yes. Users choose between default gateway and check.', 'pmpro-pay-by-check');?></option>
+				<option value="2" <?php selected($options['setting'], 2);?>><?php _e('Yes. Users can only pay by check.', 'pmpro-pay-by-check');?></option>
 			</select>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
-		<th scope="row" valign="top"><label for="pbc_renewal_days"><?php _e('Send Renewal Emails:', 'pmpropbc');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_renewal_days"><?php _e('Send Renewal Emails:', 'pmpro-pay-by-check');?></label></th>
 		<td>
-			<input type="text" id="pbc_renewal_days" name="pbc_renewal_days" size="5" value="<?php echo esc_attr($options['renewal_days']);?>" /> <?php _e('days before renewal.', 'pmpropbc');?>
+			<input type="text" id="pbc_renewal_days" name="pbc_renewal_days" size="5" value="<?php echo esc_attr($options['renewal_days']);?>" /> <?php _e('days before renewal.', 'pmpro-pay-by-check');?>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
-		<th scope="row" valign="top"><label for="pbc_reminder_days"><?php _e('Send Reminder Emails:', 'pmpropbc');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_reminder_days"><?php _e('Send Reminder Emails:', 'pmpro-pay-by-check');?></label></th>
 		<td>
-			<input type="text" id="pbc_reminder_days" name="pbc_reminder_days" size="5" value="<?php echo esc_attr($options['reminder_days']);?>" /> <?php _e('days after a missed payment.', 'pmpropbc');?>
+			<input type="text" id="pbc_reminder_days" name="pbc_reminder_days" size="5" value="<?php echo esc_attr($options['reminder_days']);?>" /> <?php _e('days after a missed payment.', 'pmpro-pay-by-check');?>
 		</td>
 	</tr>
 	<tr class="pbc_recurring_field">
-		<th scope="row" valign="top"><label for="pbc_cancel_days"><?php _e('Cancel Membership:', 'pmpropbc');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_cancel_days"><?php _e('Cancel Membership:', 'pmpro-pay-by-check');?></label></th>
 		<td>
-			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> <?php _e('days after a missed payment.', 'pmpropbc');?>
+			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> <?php _e('days after a missed payment.', 'pmpro-pay-by-check');?>
 		</td>
 	</tr>
 </tbody>
@@ -162,7 +162,7 @@ function pmpropbc_checkout_boxes()
 	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0" <?php if(!empty($pmpro_review)) { ?>style="display: none;"<?php } ?>>
 			<thead>
 					<tr>
-							<th><?php _e('Choose Your Payment Method', 'pmpropbc');?></th>
+							<th><?php _e('Choose Your Payment Method', 'pmpro-pay-by-check');?></th>
 					</tr>
 			</thead>
 			<tbody>
@@ -171,14 +171,14 @@ function pmpropbc_checkout_boxes()
 									<div>
 											<input type="radio" name="gateway" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
 													<?php if($gateway_setting == "paypalexpress" || $gateway_setting == "paypalstandard") { ?>
-														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpropbc');?></a> &nbsp;
+														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpro-pay-by-check');?></a> &nbsp;
 													<?php } elseif($gateway_setting == 'twocheckout') { ?>
-														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with 2Checkout', 'pmpropbc');?></a> &nbsp;
+														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with 2Checkout', 'pmpro-pay-by-check');?></a> &nbsp;
 													<?php } else { ?>
-														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpropbc');?></a> &nbsp;
+														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpro-pay-by-check');?></a> &nbsp;
 													<?php } ?>
 											<input type="radio" name="gateway" value="check" <?php if($gateway == "check") { ?>checked="checked"<?php } ?> />
-													<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Check', 'pmpropbc');?></a> &nbsp;
+													<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Check', 'pmpro-pay-by-check');?></a> &nbsp;
 											<?php
 												//support the PayPal Website Payments Pro Gateway which has PayPal Express as a second option natively
 												if($gateway_setting == "paypal") {
@@ -225,7 +225,7 @@ function pmpropbc_enqueue_scripts() {
 	if(!is_page($pmpro_pages['checkout']) && !empty($post) && strpos($post->post_content, "[pmpro_checkout") === false)
 		return;
 	
-	wp_register_script('pmpropbc', plugins_url( 'js/pmpro-pay-by-check.js', __FILE__ ), array( 'jquery' ), PMPROPBC_VER );	
+	wp_register_script('pmpro-pay-by-check', plugins_url( 'js/pmpro-pay-by-check.js', __FILE__ ), array( 'jquery' ), PMPROPBC_VER );
 	
 	//store original msg and msgt values in case these function calls below affect them
 	$omsg = $pmpro_msg;
@@ -239,7 +239,7 @@ function pmpropbc_enqueue_scripts() {
 	$pmpro_msg = $omsg;
 	$pmpro_msgt = $omsgt;
 	
-	wp_localize_script('pmpropbc', 'pmpropbc', array(
+	wp_localize_script('pmpro-pay-by-check', 'pmpropbc', array(
 			'gateway' => pmpro_getOption('gateway'),
 			'nocode_level' => $pmpro_nocode_level,
 			'code_level' => $pmpro_code_level,
@@ -249,7 +249,7 @@ function pmpropbc_enqueue_scripts() {
 		)
 	);
 
-	wp_enqueue_script('pmpropbc');
+	wp_enqueue_script('pmpro-pay-by-check');
 
 }
 add_action("wp_enqueue_scripts", 'pmpropbc_enqueue_scripts');
@@ -366,7 +366,7 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 		else
 			$hidden = '';
 		?>
-		<div class="pmpro_check_instructions" <?php echo $hidden; ?>><?php echo wpautop($instructions); ?></div>
+		<div class="pmpro_check_instructions" <?php echo $hidden; ?>><?php echo wpautop(wp_unslash( $instructions ) ); ?></div>
 		<?php
 	}
 }
@@ -515,9 +515,9 @@ function pmpropbc_pmpro_account_bullets_bottom()
 				<li>
 					<?php
 						if(pmpropbc_isMemberPending($pmpro_invoice->user_id))
-							_e('<strong>Membership pending.</strong> We are still waiting for payment of this invoice.', 'pmpropbc');
+							printf( __('%sMembership pending.%s We are still waiting for payment of this invoice.', 'pmpro-pay-by-check'), '<strong>', '</strong>' );
 						else
-							_e('<strong>Important Notice:</strong> We are still waiting for payment of this invoice.', 'pmpropbc');
+							printf( __('%sImportant Notice:%s We are still waiting for payment of this invoice.', 'pmpro-pay-by-check'), '<strong>', '</strong>' );
 					?>
 				</li>
 				<?php
@@ -527,9 +527,9 @@ function pmpropbc_pmpro_account_bullets_bottom()
 				?>
 				<li><?php
 						if(pmpropbc_isMemberPending($pmpro_invoice->user_id))
-							printf(__('<strong>Membership pending.</strong> We are still waiting for payment for <a href="%s">your latest invoice</a>.', 'pmpropbc'), pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code));
+							printf(__('%sMembership pending.%s We are still waiting for payment for %syour latest invoice%s.', 'pmpro-pay-by-check'), '<strong>', '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code) ), '</a>' );
 						else
-							printf(__('<strong>Important Notice:</strong> We are still waiting for payment for <a href="%s">your latest invoice</a>.', 'pmpropbc'), pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code));
+							printf(__('%sImportant Notice:%s We are still waiting for payment for %syour latest invoice%s.', 'pmpro-pay-by-check'), '<strong>', '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code ) ), '</a>' );
 					?>
 				</li>
 				<?php
@@ -607,20 +607,20 @@ function pmpropbc_recurring_orders()
 			//get all check orders still pending after X days
 			$sqlQuery = "
 				SELECT o1.id FROM
-				    (SELECT id, user_id, timestamp
-				    FROM {$wpdb->pmpro_membership_orders}
-				    WHERE membership_id = $level->id
-				        AND gateway = 'check' 
-				        AND status IN('pending', 'success')
+				    (SELECT mo.id, mo.user_id, mo.timestamp
+				    FROM {$wpdb->pmpro_membership_orders} AS mo
+				    WHERE mo.membership_id = $level->id
+				        AND mo.gateway = 'check'
+				        AND mo.status IN('pending', 'success')
 				    ) as o1
 
 					LEFT OUTER JOIN 
 					
-					(SELECT id, user_id, timestamp
-				    FROM {$wpdb->pmpro_membership_orders}
-				    WHERE membership_id = $level->id
-				        AND gateway = 'check' 
-				        AND status IN('pending', 'success')
+					(SELECT mo1.id, mo1.user_id, mo1.timestamp
+				    FROM {$wpdb->pmpro_membership_orders} AS mo1
+				    WHERE mo1.membership_id = $level->id
+				        AND mo1.gateway = 'check'
+				        AND mo1.status IN('pending', 'success')
 				    ) as o2
 
 					ON o1.user_id = o2.user_id
@@ -683,7 +683,7 @@ function pmpropbc_recurring_orders()
 				$email = new PMProEmail();
 				$email->template = "check_pending";
 				$email->email = $user->user_email;
-				$email->subject = sprintf(__("New Invoice for %s at %s", "pmpropbc"), $user->membership_level->name, get_option("blogname"));
+				$email->subject = sprintf(__("New Invoice for %s at %s", "pmpro-pay-by-check"), $user->membership_level->name, get_option("blogname"));
 			}
 		}
 	}
@@ -770,7 +770,7 @@ function pmpropbc_reminder_emails()
 				$email = new PMProEmail();
 				$email->template = "check_pending_reminder";
 				$email->email = $user->user_email;
-				$email->subject = sprintf(__("Reminder: New Invoice for %s at %s", "pmpropbc"), $user->membership_level->name, get_option("blogname"));
+				$email->subject = sprintf(__("Reminder: New Invoice for %s at %s", "pmpro-pay-by-check"), $user->membership_level->name, get_option("blogname"));
 				//get body from template
 				$email->body = file_get_contents(PMPRO_PAY_BY_CHECK_DIR . "/email/" . $email->template . ".html");
 
@@ -788,7 +788,7 @@ function pmpropbc_reminder_emails()
 					"user_email" => $user->user_email,
 				);
 
-				$email->data["instructions"] = pmpro_getOption('instructions');
+				$email->data["instructions"] = wp_unslash(  pmpro_getOption('instructions') );
 				$email->data["invoice_id"] = $order->code;
 				$email->data["invoice_total"] = pmpro_formatPrice($order->total);
 				$email->data["invoice_date"] = date(get_option('date_format'), $order->timestamp);
@@ -932,7 +932,7 @@ function pmpropbc_check_pending_lock_text( $text ){
 	}
 	
 	if(pmpropbc_isMemberPending($current_user->ID)==true && pmpropbc_wouldHaveMembershipAccessIfNotPending()==true){
-		$text = __("Your payment is currently pending. You will gain access to this page once it is approved.", "pmpropbc");
+		$text = __("Your payment is currently pending. You will gain access to this page once it is approved.", "pmpro-pay-by-check");
 	}
 	return $text;
 }
@@ -980,8 +980,8 @@ function pmpropbc_plugin_row_meta($links, $file) {
 	if(strpos($file, 'pmpro-pay-by-check.php') !== false)
 	{
 		$new_links = array(
-			'<a href="' . esc_url('https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/')  . '" title="' . esc_attr( __( 'View Documentation', 'pmpro' ) ) . '">' . __( 'Docs', 'pmpro' ) . '</a>',
-			'<a href="' . esc_url('http://paidmembershipspro.com/support/') . '" title="' . esc_attr( __( 'Visit Customer Support Forum', 'pmpro' ) ) . '">' . __( 'Support', 'pmpro' ) . '</a>',
+			'<a href="' . esc_url('https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/')  . '" title="' . esc_attr( __( 'View Documentation', 'paid-memberships-pro' ) ) . '">' . __( 'Docs', 'paid-memberships-pro' ) . '</a>',
+			'<a href="' . esc_url('http://paidmembershipspro.com/support/') . '" title="' . esc_attr( __( 'Visit Customer Support Forum', 'paid-memberships-pro' ) ) . '">' . __( 'Support', 'paid-memberships-pro' ) . '</a>',
 		);
 		$links = array_merge($links, $new_links);
 	}
