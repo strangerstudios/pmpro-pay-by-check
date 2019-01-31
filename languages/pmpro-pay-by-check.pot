@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: jason@strangerstudios.com\n"
-"POT-Creation-Date: 2017-11-13 16:08-0700\n"
+"POT-Creation-Date: 2019-01-31 16:38-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,80 +99,81 @@ msgstr ""
 msgid "Pay by Check"
 msgstr ""
 
-#: pmpro-pay-by-check.php:518
+#: pmpro-pay-by-check.php:537 pmpro-pay-by-check.php:518
 #, php-format
 msgid ""
 "%sMembership pending.%s We are still waiting for payment of this invoice."
 msgstr ""
 
-#: pmpro-pay-by-check.php:520 pmpro-pay-by-check.php:464
-#: pmpro-pay-by-check.php:515
+#: pmpro-pay-by-check.php:539 pmpro-pay-by-check.php:464
+#: pmpro-pay-by-check.php:515 pmpro-pay-by-check.php:520
 #, php-format
 msgid "%sImportant Notice:%s We are still waiting for payment of this invoice."
 msgstr ""
 
-#: pmpro-pay-by-check.php:530 pmpro-pay-by-check.php:474
-#: pmpro-pay-by-check.php:525
+#: pmpro-pay-by-check.php:549 pmpro-pay-by-check.php:474
+#: pmpro-pay-by-check.php:525 pmpro-pay-by-check.php:530
 #, php-format
 msgid ""
 "%sMembership pending.%s We are still waiting for payment for %syour latest "
 "invoice%s."
 msgstr ""
 
-#: pmpro-pay-by-check.php:532 pmpro-pay-by-check.php:476
-#: pmpro-pay-by-check.php:527
+#: pmpro-pay-by-check.php:551 pmpro-pay-by-check.php:476
+#: pmpro-pay-by-check.php:527 pmpro-pay-by-check.php:532
 #, php-format
 msgid ""
 "%sImportant Notice:%s We are still waiting for payment for %syour latest "
 "invoice%s."
 msgstr ""
 
-#: pmpro-pay-by-check.php:686 pmpro-pay-by-check.php:616
-#: pmpro-pay-by-check.php:681
+#: pmpro-pay-by-check.php:705 pmpro-pay-by-check.php:616
+#: pmpro-pay-by-check.php:681 pmpro-pay-by-check.php:686
 #, php-format
 msgid "New Invoice for %s at %s"
 msgstr ""
 
-#: pmpro-pay-by-check.php:773 pmpro-pay-by-check.php:703
-#: pmpro-pay-by-check.php:768
+#: pmpro-pay-by-check.php:792 pmpro-pay-by-check.php:703
+#: pmpro-pay-by-check.php:768 pmpro-pay-by-check.php:773
 #, php-format
 msgid "Reminder: New Invoice for %s at %s"
 msgstr ""
 
-#: pmpro-pay-by-check.php:816 pmpro-pay-by-check.php:746
-#: pmpro-pay-by-check.php:811
+#: pmpro-pay-by-check.php:835 pmpro-pay-by-check.php:746
+#: pmpro-pay-by-check.php:811 pmpro-pay-by-check.php:816
 msgid "Discount Code"
 msgstr ""
 
-#: pmpro-pay-by-check.php:914 pmpro-pay-by-check.php:844
-#: pmpro-pay-by-check.php:909
+#: pmpro-pay-by-check.php:933 pmpro-pay-by-check.php:844
+#: pmpro-pay-by-check.php:909 pmpro-pay-by-check.php:914
 #, php-format
 msgid "Membership expired email sent to %s. "
 msgstr ""
 
-#: pmpro-pay-by-check.php:935 pmpro-pay-by-check.php:930
+#: pmpro-pay-by-check.php:954 pmpro-pay-by-check.php:930
+#: pmpro-pay-by-check.php:935
 msgid ""
 "Your payment is currently pending. You will gain access to this page once it "
 "is approved."
 msgstr ""
 
-#: pmpro-pay-by-check.php:983 pmpro-pay-by-check.php:885
-#: pmpro-pay-by-check.php:978
+#: pmpro-pay-by-check.php:1002 pmpro-pay-by-check.php:885
+#: pmpro-pay-by-check.php:978 pmpro-pay-by-check.php:983
 msgid "Docs"
 msgstr ""
 
-#: pmpro-pay-by-check.php:983 pmpro-pay-by-check.php:885
-#: pmpro-pay-by-check.php:978
+#: pmpro-pay-by-check.php:1002 pmpro-pay-by-check.php:885
+#: pmpro-pay-by-check.php:978 pmpro-pay-by-check.php:983
 msgid "View Documentation"
 msgstr ""
 
-#: pmpro-pay-by-check.php:984 pmpro-pay-by-check.php:886
-#: pmpro-pay-by-check.php:979
+#: pmpro-pay-by-check.php:1003 pmpro-pay-by-check.php:886
+#: pmpro-pay-by-check.php:979 pmpro-pay-by-check.php:984
 msgid "Support"
 msgstr ""
 
-#: pmpro-pay-by-check.php:984 pmpro-pay-by-check.php:886
-#: pmpro-pay-by-check.php:979
+#: pmpro-pay-by-check.php:1003 pmpro-pay-by-check.php:886
+#: pmpro-pay-by-check.php:979 pmpro-pay-by-check.php:984
 msgid "Visit Customer Support Forum"
 msgstr ""
 
