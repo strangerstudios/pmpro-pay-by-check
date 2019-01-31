@@ -221,6 +221,11 @@ function pmpropbc_enqueue_scripts() {
 	
 	global $gateway, $pmpro_level, $pmpro_review, $pmpro_pages, $post, $pmpro_msg, $pmpro_msgt;
 
+	// If post not set, bail.
+	if( ! isset( $post ) ) {
+		return;
+	}
+
 	//make sure we're on the checkout page
 	if(!is_page($pmpro_pages['checkout']) && !empty($post) && strpos($post->post_content, "[pmpro_checkout") === false)
 		return;
