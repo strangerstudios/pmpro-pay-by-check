@@ -371,7 +371,7 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 		else
 			$hidden = '';
 		?>
-		<div class="pmpro_check_instructions" <?php echo $hidden; ?>><?php echo wpautop($instructions); ?></div>
+		<div class="pmpro_check_instructions" <?php echo $hidden; ?>><?php echo wp_kses_post( $instructions ); ?></div>
 		<?php
 	}
 }
