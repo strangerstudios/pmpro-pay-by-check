@@ -31,7 +31,7 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog == 
-= .7.9 =
+= .8 =
 * BUG FIX: Fixed issue where JavaScript was loaded on non-post pages (e.g. archives).
 * BUG FIX: Now using the correct text domain for localization.
 * BUG FIX: Fixed bug in pmprobpc_isMemberPending when the user has no last order.
