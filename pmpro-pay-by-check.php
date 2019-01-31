@@ -427,7 +427,7 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
 	}	
 	$pmpropbc_pending_member_cache[$user_id][$level_id] = false;
 
-	if(!empty($order))
+	if(!empty($order->status))
 	{
 		if($order->status == "pending")
 		{
