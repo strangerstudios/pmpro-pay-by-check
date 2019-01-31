@@ -14,7 +14,10 @@ if ( typeof code_level === 'undefined' ) {
 }
 
 function pmpropbc_isLevelFree() {
+	"use strict";
 	var check_level;
+	var has_variable_pricing = ( jQuery('#price').length > 0 );
+
 	if(typeof code_level === 'undefined' || code_level === false) {
 		//no code or an invalid code was applied
 		check_level = pmpropbc.nocode_level;
@@ -24,11 +27,13 @@ function pmpropbc_isLevelFree() {
 	}
 		
 	//check if level is paid or free
-	if(parseFloat(check_level.billing_amount) > 0 || parseFloat(check_level.initial_payment) > 0) {
+	if( false === has_variable_pricing && ( parseFloat(check_level.billing_amount) > 0 || parseFloat(check_level.initial_payment) > 0 ) ) {
+		return false;
+	} else if ( true === has_variable_pricing && ( parseFloat( jQuery('#price').val() ) > 0 || ( parseFloat(check_level.billing_amount) > 0 || parseFloat(check_level.initial_payment) > 0 ) ) ) {
 		return false;
 	} else {
-		return true;
-	}
+	    return true;
+    }
 }
 
 function pmpropbc_isCheckGatewayChosen() {
