@@ -221,6 +221,11 @@ function pmpropbc_enqueue_scripts() {
 	
 	global $gateway, $pmpro_level, $pmpro_review, $pmpro_pages, $post, $pmpro_msg, $pmpro_msgt;
 
+	// If post not set, bail.
+	if( ! isset( $post ) ) {
+		return;
+	}
+
 	//make sure we're on the checkout page
 	if(!is_page($pmpro_pages['checkout']) && !empty($post) && strpos($post->post_content, "[pmpro_checkout") === false)
 		return;
@@ -366,7 +371,7 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 		else
 			$hidden = '';
 		?>
-		<div class="pmpro_check_instructions" <?php echo $hidden; ?>><?php echo wpautop(wp_unslash( $instructions ) ); ?></div>
+		<div class="pmpro_check_instructions" <?php echo $hidden; ?>><?php echo wp_kses_post( $instructions ); ?></div>
 		<?php
 	}
 }
@@ -422,7 +427,7 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
 	}	
 	$pmpropbc_pending_member_cache[$user_id][$level_id] = false;
 
-	if(!empty($order))
+	if(!empty($order->status))
 	{
 		if($order->status == "pending")
 		{
@@ -462,6 +467,20 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
 }
 
 /*
+	For use with multiple memberships per user
+*/
+function pmprobpc_memberHasAccessWithAnyLevel($user_id){
+	$levels = pmpro_getMembershipLevelsForUser($user_id);
+	foreach($levels as $level){
+		if(!pmpropbc_isMemberPending($user_id, $level->id)){
+			return true;
+		}
+	}
+	return false;
+}
+
+
+/*
 	In case anyone was using the typo'd function name.
 */
 function pmprobpc_isMemberPending($user_id) { return pmpropbc_isMemberPending($user_id); }
@@ -477,7 +496,7 @@ function pmpropbc_pmpro_has_membership_access_filter($hasaccess, $mypost, $myuse
 	if(empty($post_membership_levels))
 		return $hasaccess;
 
-	$hasaccess = ! pmpropbc_isMemberPending($myuser->ID);
+	$hasaccess = pmprobpc_memberHasAccessWithAnyLevel($myuser->ID);
 
 	return $hasaccess;
 }
