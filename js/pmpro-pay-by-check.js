@@ -144,5 +144,6 @@ jQuery(document).ready(function () {
 	//select the radio button if the label is clicked on
 	jQuery('a.pmpro_radio').click(function () {
 		jQuery(this).prev().click();
+    pmpropbc_toggleCheckoutFields();
 	});	
 });
