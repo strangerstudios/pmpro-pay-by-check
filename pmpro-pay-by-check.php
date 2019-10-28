@@ -328,11 +328,25 @@ function pmpropbc_init_include_billing_address_fields()
 			$default_gateway = pmpro_getOption('gateway');
 			if($default_gateway == 'paypalexpress') {
 				add_filter('pmpro_checkout_default_submit_button', array('PMProGateway_paypalexpress', 'pmpro_checkout_default_submit_button'));
-				add_action('pmpro_checkout_after_form', array('PMProGateway_paypalexpress', 'pmpro_checkout_after_form'));
+				if ( version_compare( pmpro_getOption( 'db_version' ), '2.1', '>=' ) ) {
+					add_action( 'pmpro_checkout_preheader', array( 'PMProGateway_paypalexpress', 'pmpro_checkout_preheader' ) );
+				} else if ( version_compare( pmpro_getOption( 'db_version' ), '2.1', '<' ) ) {
+					/**
+					 * @deprecated No longer used since paid-memberships-pro v2.1
+					 */
+					add_action( 'pmpro_checkout_after_form', array( 'PMProGateway_paypalexpress', 'pmpro_checkout_after_form' ) );
+				}
 			} elseif($default_gateway == 'paypalstandard') {
 				add_filter('pmpro_checkout_default_submit_button', array('PMProGateway_paypalstandard', 'pmpro_checkout_default_submit_button'));
 			} elseif($default_gateway == 'paypal') {
-				add_action('pmpro_checkout_after_form', array('PMProGateway_paypal', 'pmpro_checkout_after_form'));				
+				if ( version_compare( pmpro_getOption( 'db_version' ), '2.1', '>=' ) ) {
+					add_action( 'pmpro_checkout_preheader', array( 'PMProGateway_paypal', 'pmpro_checkout_preheader' ) );
+				} else if ( version_compare( pmpro_getOption( 'db_version' ), '2.1', '<' ) ) {
+					/**
+					 * @deprecated No longer used since paid-memberships-pro v2.1
+					 */
+					add_action( 'pmpro_checkout_after_form', array( 'PMProGateway_paypal', 'pmpro_checkout_after_form' ) );
+				}
 				add_filter('pmpro_include_payment_option_for_paypal', '__return_false');
 			} elseif($default_gateway == 'twocheckout') {
 				//undo the filter to change the checkout button text
