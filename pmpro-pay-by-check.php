@@ -318,7 +318,8 @@ function pmpropbc_init_include_billing_address_fields()
 	{
 		$level_id = intval($_REQUEST['level']);
 		$options = pmpropbc_getOptions($level_id);
-    	if($options['setting'] == 2)
+    			
+		if($options['setting'] == 2)
 		{
 			//hide billing address and payment info fields
 			add_filter('pmpro_include_billing_address_fields', '__return_false', 20);
@@ -351,13 +352,18 @@ function pmpropbc_init_include_billing_address_fields()
 			} elseif($default_gateway == 'twocheckout') {
 				//undo the filter to change the checkout button text
 				remove_filter('pmpro_checkout_default_submit_button', array('PMProGateway_twocheckout', 'pmpro_checkout_default_submit_button'));			
-			} else {
+			} else {				
 				//onsite checkouts
-				if(class_exists('PMProGateway_' . $default_gateway) && method_exists('PMProGateway_' . $default_gateway, 'pmpro_include_billing_address_fields'))
+				
+				//the check gateway class in core adds filters like these
+				remove_filter( 'pmpro_include_billing_address_fields', '__return_false' );
+				remove_filter( 'pmpro_include_payment_information_fields', '__return_false' );
+				
+				//make sure the default gateway is loading their billing address fields
+				if(class_exists('PMProGateway_' . $default_gateway) && method_exists('PMProGateway_' . $default_gateway, 'pmpro_include_billing_address_fields')) {
 					add_filter('pmpro_include_billing_address_fields', array('PMProGateway_' . $default_gateway, 'pmpro_include_billing_address_fields'));
-				else
-					add_filter('pmpro_include_billing_address_fields', '__return_true', 20);
-			}
+				}					
+			}			
 		}
 	}
 
