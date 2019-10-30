@@ -2,8 +2,8 @@
 Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 4
-Tested up to: 5.0.3
-Stable tag: .8
+Tested up to: 5.2.4
+Stable tag: .8.1
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
