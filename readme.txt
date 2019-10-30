@@ -30,7 +30,11 @@ An email is sent to the user RE the status change.
 If you would like to change the wording from "Pay by Check" to something else, you can use this custom code:
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
-== Changelog == 
+== Changelog ==
+= .8.1 =
+* BUG FIX: Fixed issue when using PMPro v2.1+.
+* BUG FIX: Fixed issue with billing address or payment info fields not being shown when switching back to the default gateway after having an error with checking out by check.
+
 = .8 =
 * BUG FIX: Fixed issue where JavaScript was loaded on non-post pages (e.g. archives).
 * BUG FIX: Now using the correct text domain for localization.
