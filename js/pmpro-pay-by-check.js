@@ -17,6 +17,7 @@ function pmpropbc_isLevelFree() {
 	"use strict";
 	var check_level;
 	var has_variable_pricing = ( jQuery('#price').length > 0 );
+	var has_donation = ( jQuery('#donation').length > 0 );
 
 	if(typeof code_level === 'undefined' || code_level === false) {
 		//no code or an invalid code was applied
@@ -30,6 +31,8 @@ function pmpropbc_isLevelFree() {
 	if( false === has_variable_pricing && ( parseFloat(check_level.billing_amount) > 0 || parseFloat(check_level.initial_payment) > 0 ) ) {
 		return false;
 	} else if ( true === has_variable_pricing && ( parseFloat( jQuery('#price').val() ) > 0 || ( parseFloat(check_level.billing_amount) > 0 || parseFloat(check_level.initial_payment) > 0 ) ) ) {
+		return false;
+	} else if ( true === has_donation && ( parseFloat( jQuery('#donation').val() ) > 0 || ( parseFloat(check_level.billing_amount) > 0 || parseFloat(check_level.initial_payment) > 0 ) ) ) {
 		return false;
 	} else {
 	    return true;
