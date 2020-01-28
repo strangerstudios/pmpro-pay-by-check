@@ -118,6 +118,14 @@ function pmpropbc_toggleCheckoutFields() {
 				jQuery('#pmpro_submit_span').show();
 			}
 		}
+
+		// If only Pay By Check is chosen.
+		if ( pmpropbc.gateway === 'check' ) {
+			jQuery('#pmpro_billing_address_fields').show();
+			jQuery('#pmpro_payment_information_fields').hide();			
+			jQuery('.pmpro_check_instructions').show();
+			pmpro_require_billing = false;
+		}
 	}
 	
 	//check if billing address hide/show is overriden by filters
