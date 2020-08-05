@@ -45,7 +45,15 @@ function pmpropbc_isCheckGatewayChosen() {
 }
 
 function pmpropbc_isPayPalExpressChosen() {
-	if(jQuery('input[name=gateway]:checked').val() == 'paypalexpress') {
+	if(jQuery('input[name=gateway]:checked').val() == 'paypalexpress'  ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function pmpropbc_isPayFast() {
+	if(jQuery('input[name=gateway]:checked').val() == 'payfast'  ) {
 		return true;
 	} else {
 		return false;
@@ -82,6 +90,12 @@ function pmpropbc_toggleCheckoutFields() {
 			jQuery('#pmpro_billing_address_fields').hide();
 			jQuery('#pmpro_payment_information_fields').hide();			
 			jQuery('#pmpro_submit_span').hide();
+			jQuery('#pmpro_paypalexpress_checkout').show();
+			jQuery('.pmpro_check_instructions').hide();
+			pmpro_require_billing = false;
+		} else if ( pmpropbc_isPayFast()) {
+			jQuery('#pmpro_billing_address_fields').hide();
+			jQuery('#pmpro_payment_information_fields').hide();			
 			jQuery('#pmpro_paypalexpress_checkout').show();
 			jQuery('.pmpro_check_instructions').hide();
 			pmpro_require_billing = false;
