@@ -96,7 +96,6 @@ function pmpropbc_toggleCheckoutFields() {
 		} else if ( pmpropbc_isPayFast()) {
 			jQuery('#pmpro_billing_address_fields').hide();
 			jQuery('#pmpro_payment_information_fields').hide();			
-			jQuery('#pmpro_paypalexpress_checkout').show();
 			jQuery('.pmpro_check_instructions').hide();
 			pmpro_require_billing = false;
 		} else {
