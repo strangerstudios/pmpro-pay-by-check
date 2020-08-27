@@ -158,7 +158,7 @@ function pmpropbc_checkout_boxes()
 	//only show if the main gateway is not check and setting value == 1 (value == 2 means only do check payments)
 	if($gateway_setting != "check" && $options['setting'] == 1)
 	{
-	?>
+?>
 	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0" <?php if(!empty($pmpro_review)) { ?>style="display: none;"<?php } ?>>
 			<thead>
 					<tr>
@@ -174,6 +174,8 @@ function pmpropbc_checkout_boxes()
 														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpro-pay-by-check');?></a> &nbsp;
 													<?php } elseif($gateway_setting == 'twocheckout') { ?>
 														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with 2Checkout', 'pmpro-pay-by-check');?></a> &nbsp;
+													<?php } elseif( $gateway_setting == 'payfast' ) { ?>
+														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayFast', 'pmpro-pay-by-check');?></a> &nbsp;
 													<?php } else { ?>
 														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpro-pay-by-check');?></a> &nbsp;
 													<?php } ?>
@@ -351,7 +353,9 @@ function pmpropbc_init_include_billing_address_fields()
 				add_filter('pmpro_include_payment_option_for_paypal', '__return_false');
 			} elseif($default_gateway == 'twocheckout') {
 				//undo the filter to change the checkout button text
-				remove_filter('pmpro_checkout_default_submit_button', array('PMProGateway_twocheckout', 'pmpro_checkout_default_submit_button'));			
+				remove_filter('pmpro_checkout_default_submit_button', array('PMProGateway_twocheckout', 'pmpro_checkout_default_submit_button'));
+			} else if( $default_gateway == 'payfast' ) {
+				add_filter( 'pmpro_include_billing_address_fields', '__return_false' );	
 			} else {				
 				//onsite checkouts
 				
