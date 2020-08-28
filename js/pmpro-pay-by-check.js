@@ -75,7 +75,7 @@ function pmpropbc_toggleCheckoutFields() {
 		pmpro_require_billing = false;
 		
 		//hide paypal button if applicable
-		if(pmpropbc.gateway === 'paypalexpress' || pmpropbc.gateway === 'paypalstandard')
+		if(pmpropbc.gateway === 'paypalexpress' || pmpropbc.gateway === 'paypalstandard' )
 		{
 			jQuery('#pmpro_paypalexpress_checkout').hide();
 			jQuery('#pmpro_submit_span').show();
@@ -108,17 +108,39 @@ function pmpropbc_toggleCheckoutFields() {
 			jQuery('.pmpro_check_instructions').hide();
 			pmpro_require_billing = true;
 		}
-		
+
 		//show paypal button if applicable
-		if(pmpropbc.gateway === 'paypalexpress' || pmpropbc.gateway === 'paypalstandard') {
+		if(pmpropbc.gateway === 'paypalexpress' || pmpropbc.gateway === 'paypalstandard' ) {
 			if(pmpropbc_isCheckGatewayChosen()) {
 				jQuery('#pmpro_paypalexpress_checkout').hide();
 				jQuery('#pmpro_submit_span').show();				
-			}
-			else {		
+			} else {
 				jQuery('#pmpro_paypalexpress_checkout').show();
 				jQuery('#pmpro_submit_span').hide();
 			}
+		}
+
+		//Integration for PayPal Website Payments Pro.
+		if ( pmpropbc.gateway == 'paypal' ) {
+			// Figure out if they selected check or not.
+			if ( pmpropbc_isCheckGatewayChosen() ) {
+				jQuery('#pmpro_paypalexpress_checkout').hide();
+				jQuery('#pmpro_submit_span').show();				
+			} else if( pmpropbc_isPayPalExpressChosen() ) { // see if PayPal Express is selected.
+				jQuery('#pmpro_paypalexpress_checkout').show();
+				jQuery('#pmpro_submit_span').hide();
+			} else { // Revert back to defaults just in-case.
+				jQuery('#pmpro_paypalexpress_checkout').hide();
+				jQuery('#pmpro_submit_span').show();
+			}
+		}
+
+		// If only Pay By Check is chosen.
+		if ( pmpropbc.gateway === 'check' ) {
+			jQuery('#pmpro_billing_address_fields').show();
+			jQuery('#pmpro_payment_information_fields').hide();			
+			jQuery('.pmpro_check_instructions').show();
+			pmpro_require_billing = false;
 		}
 	}
 	
