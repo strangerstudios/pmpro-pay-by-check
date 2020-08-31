@@ -646,6 +646,7 @@ function pmpropbc_recurring_orders()
 				- Set invoice date based on cycle and the day of the month of the member start date.
 				- Send a reminder email Y days after initial invoice is created if it's still pending.
 				- Cancel membership after Z days if invoice is not paid. Send email.
+// ADDED Extra brackets round OR as sql results were missing some orders (match for same user id was not being used due to the missing brackets) 
 			*/
 			//get all check orders still pending after X days
 			$sqlQuery = "
@@ -667,8 +668,8 @@ function pmpropbc_recurring_orders()
 				    ) as o2
 
 					ON o1.user_id = o2.user_id
-					AND o1.timestamp < o2.timestamp
-					OR (o1.timestamp = o2.timestamp AND o1.id < o2.id)
+					AND (o1.timestamp < o2.timestamp
+					OR (o1.timestamp = o2.timestamp AND o1.id < o2.id))
 				WHERE
 					o2.id IS NULL
 					AND DATE_ADD(o1.timestamp, INTERVAL $combo) <= '" . $date . "'
@@ -691,6 +692,10 @@ function pmpropbc_recurring_orders()
 				//check that user still has same level?
 				if(empty($user->membership_level) || $order->membership_id != $user->membership_level->id)
 					continue;
+
+				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at ths level
+				if( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0)
+				  continue;
 
 				//create new pending order
 				$morder = new MemberOrder();
@@ -754,8 +759,10 @@ function pmpropbc_reminder_emails()
 	{
 		//get options
 		$options = pmpropbc_getOptions($level->id);
+		// subtract reminder_days from current date as we are looking for invoices from or before that date
+		// this is relative to the date the reminder was sent out not when it was due I think
 		if(!empty($options['reminder_days']))
-			$date = date("Y-m-d", strtotime("+ " . $options['reminder_days'] . " days", $now));
+			$date = date("Y-m-d", strtotime("- " . $options['reminder_days'] . " days", $now));
 		else
 			$date = $today;
 
@@ -769,13 +776,14 @@ function pmpropbc_reminder_emails()
 		foreach($combos as $combo)
 		{
 			//get all check orders still pending after X days
+		  // don't add the INTERVAL here!
 			$sqlQuery = "
 				SELECT id 
 				FROM $wpdb->pmpro_membership_orders 
 				WHERE membership_id = $level->id 
 					AND gateway = 'check' 
 					AND status = 'pending' 
-					AND DATE_ADD(timestamp, INTERVAL $combo) <= '" . $date . "'
+					AND timestamp <= '" . $date . "'
 					AND notes NOT LIKE '%Reminder Sent:%' AND notes NOT LIKE '%Reminder Skipped:%'
 				ORDER BY id
 			";
@@ -889,8 +897,11 @@ function pmpropbc_cancel_overdue_orders()
 	{
 		//get options
 		$options = pmpropbc_getOptions($level->id);
+		
+		// subtract cancel_days not add, we want the older orders not paid
+		// this is relative to the date the reminder was sent out not when it was due
 		if(!empty($options['cancel_days']))
-			$date = date("Y-m-d", strtotime("+ " . $options['cancel_days'] . " days", $now));
+			$date = date("Y-m-d", strtotime("- " . $options['cancel_days'] . " days", $now));
 		else
 			$date = $today;
 
@@ -910,7 +921,7 @@ function pmpropbc_cancel_overdue_orders()
 				WHERE membership_id = $level->id 
 					AND gateway = 'check' 
 					AND status = 'pending' 
-					AND DATE_ADD(timestamp, INTERVAL $combo) <= '" . $date . "'
+					AND timestamp <= '" . $date . "'
 					AND notes NOT LIKE '%Cancelled:%' AND notes NOT LIKE '%Cancellation Skipped:%'
 				ORDER BY id
 			";
