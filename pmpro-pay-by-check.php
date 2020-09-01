@@ -388,7 +388,7 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 
 	$options = pmpropbc_getOptions($pmpro_level->id);
 
-	if(!empty($options) && $options['setting'] > 0 && !pmpro_isLevelFree($pmpro_level)) {
+	if( !empty($options) && $options['setting'] > 0 ) {
 		$instructions = pmpro_getOption("instructions");
 		if($gateway != 'check')
 			$hidden = 'style="display:none;"';
