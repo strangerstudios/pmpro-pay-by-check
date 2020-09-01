@@ -2,8 +2,8 @@
 Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 4
-Tested up to: 5.2.4
-Stable tag: .8.1
+Tested up to: 5.5
+Stable tag: 0.9
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,11 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
+= 0.9 - 2020-08-31 =
+* ENHANCEMENT: Improved SQL queries around sending email reminders, cancelling outstanding memberships. Thanks @swhytehead
+* ENHANCEMENT: Support PayFast gateway.
+* ENHANCEMENT: Support PayPal Website Payments Pro.
+
 = .8.1 =
 * BUG FIX: Fixed issue when using PMPro v2.1+.
 * BUG FIX: Fixed issue with billing address or payment info fields not being shown when switching back to the default gateway after having an error with checking out by check.

@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: .8.1
+Version: 0.9
 Author: Stranger Studios
 Author URI: https://www.paidmembershipspro.com
 Text Domain: pmpro-pay-by-check
@@ -24,7 +24,7 @@ Text Domain: pmpro-pay-by-check
 	Settings, Globals and Constants
 */
 define("PMPRO_PAY_BY_CHECK_DIR", dirname(__FILE__));
-define("PMPROPBC_VER", '.8');
+define("PMPROPBC_VER", '0.9');
 
 /*
 	Load plugin textdomain.
@@ -158,7 +158,7 @@ function pmpropbc_checkout_boxes()
 	//only show if the main gateway is not check and setting value == 1 (value == 2 means only do check payments)
 	if($gateway_setting != "check" && $options['setting'] == 1)
 	{
-	?>
+?>
 	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0" <?php if(!empty($pmpro_review)) { ?>style="display: none;"<?php } ?>>
 			<thead>
 					<tr>
@@ -174,6 +174,8 @@ function pmpropbc_checkout_boxes()
 														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpro-pay-by-check');?></a> &nbsp;
 													<?php } elseif($gateway_setting == 'twocheckout') { ?>
 														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with 2Checkout', 'pmpro-pay-by-check');?></a> &nbsp;
+													<?php } elseif( $gateway_setting == 'payfast' ) { ?>
+														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayFast', 'pmpro-pay-by-check');?></a> &nbsp;
 													<?php } else { ?>
 														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpro-pay-by-check');?></a> &nbsp;
 													<?php } ?>
@@ -351,7 +353,9 @@ function pmpropbc_init_include_billing_address_fields()
 				add_filter('pmpro_include_payment_option_for_paypal', '__return_false');
 			} elseif($default_gateway == 'twocheckout') {
 				//undo the filter to change the checkout button text
-				remove_filter('pmpro_checkout_default_submit_button', array('PMProGateway_twocheckout', 'pmpro_checkout_default_submit_button'));			
+				remove_filter('pmpro_checkout_default_submit_button', array('PMProGateway_twocheckout', 'pmpro_checkout_default_submit_button'));
+			} else if( $default_gateway == 'payfast' ) {
+				add_filter( 'pmpro_include_billing_address_fields', '__return_false' );	
 			} else {				
 				//onsite checkouts
 				
@@ -384,7 +388,7 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 
 	$options = pmpropbc_getOptions($pmpro_level->id);
 
-	if(!empty($options) && $options['setting'] > 0 && !pmpro_isLevelFree($pmpro_level)) {
+	if( !empty($options) && $options['setting'] > 0 ) {
 		$instructions = pmpro_getOption("instructions");
 		if($gateway != 'check')
 			$hidden = 'style="display:none;"';
@@ -642,6 +646,7 @@ function pmpropbc_recurring_orders()
 				- Set invoice date based on cycle and the day of the month of the member start date.
 				- Send a reminder email Y days after initial invoice is created if it's still pending.
 				- Cancel membership after Z days if invoice is not paid. Send email.
+// ADDED Extra brackets round OR as sql results were missing some orders (match for same user id was not being used due to the missing brackets) 
 			*/
 			//get all check orders still pending after X days
 			$sqlQuery = "
@@ -663,8 +668,8 @@ function pmpropbc_recurring_orders()
 				    ) as o2
 
 					ON o1.user_id = o2.user_id
-					AND o1.timestamp < o2.timestamp
-					OR (o1.timestamp = o2.timestamp AND o1.id < o2.id)
+					AND (o1.timestamp < o2.timestamp
+					OR (o1.timestamp = o2.timestamp AND o1.id < o2.id))
 				WHERE
 					o2.id IS NULL
 					AND DATE_ADD(o1.timestamp, INTERVAL $combo) <= '" . $date . "'
@@ -687,6 +692,10 @@ function pmpropbc_recurring_orders()
 				//check that user still has same level?
 				if(empty($user->membership_level) || $order->membership_id != $user->membership_level->id)
 					continue;
+
+				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at ths level
+				if( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0)
+				  continue;
 
 				//create new pending order
 				$morder = new MemberOrder();
@@ -750,8 +759,10 @@ function pmpropbc_reminder_emails()
 	{
 		//get options
 		$options = pmpropbc_getOptions($level->id);
+		// subtract reminder_days from current date as we are looking for invoices from or before that date
+		// this is relative to the date the reminder was sent out not when it was due I think
 		if(!empty($options['reminder_days']))
-			$date = date("Y-m-d", strtotime("+ " . $options['reminder_days'] . " days", $now));
+			$date = date("Y-m-d", strtotime("- " . $options['reminder_days'] . " days", $now));
 		else
 			$date = $today;
 
@@ -765,13 +776,14 @@ function pmpropbc_reminder_emails()
 		foreach($combos as $combo)
 		{
 			//get all check orders still pending after X days
+		  // don't add the INTERVAL here!
 			$sqlQuery = "
 				SELECT id 
 				FROM $wpdb->pmpro_membership_orders 
 				WHERE membership_id = $level->id 
 					AND gateway = 'check' 
 					AND status = 'pending' 
-					AND DATE_ADD(timestamp, INTERVAL $combo) <= '" . $date . "'
+					AND timestamp <= '" . $date . "'
 					AND notes NOT LIKE '%Reminder Sent:%' AND notes NOT LIKE '%Reminder Skipped:%'
 				ORDER BY id
 			";
@@ -885,8 +897,11 @@ function pmpropbc_cancel_overdue_orders()
 	{
 		//get options
 		$options = pmpropbc_getOptions($level->id);
+		
+		// subtract cancel_days not add, we want the older orders not paid
+		// this is relative to the date the reminder was sent out not when it was due
 		if(!empty($options['cancel_days']))
-			$date = date("Y-m-d", strtotime("+ " . $options['cancel_days'] . " days", $now));
+			$date = date("Y-m-d", strtotime("- " . $options['cancel_days'] . " days", $now));
 		else
 			$date = $today;
 
@@ -906,7 +921,7 @@ function pmpropbc_cancel_overdue_orders()
 				WHERE membership_id = $level->id 
 					AND gateway = 'check' 
 					AND status = 'pending' 
-					AND DATE_ADD(timestamp, INTERVAL $combo) <= '" . $date . "'
+					AND timestamp <= '" . $date . "'
 					AND notes NOT LIKE '%Cancelled:%' AND notes NOT LIKE '%Cancellation Skipped:%'
 				ORDER BY id
 			";
