@@ -462,7 +462,7 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
 			$paid_order = new MemberOrder();
 			$paid_order->getLastMemberOrder($user_id, array('success', 'cancelled'), $order->membership_id);
 			
-			if(!empty($paid_order) && !empty($paid_order->id))
+			if(!empty($paid_order) && !empty($paid_order->id) && $paid_order->gateway === 'check')
 			{
 				//how long ago is too long?
 				$options = pmpropbc_getOptions($membership_level->id);
