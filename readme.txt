@@ -1,9 +1,9 @@
 === Paid Memberships Pro: Pay by Check Add On ===
 Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
-Requires at least: 4
-Tested up to: 5.5
-Stable tag: 0.9
+Requires at least: 5.0
+Tested up to: 5.9
+Stable tag: 0.10
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,11 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
+= 0.10 - 2022-04-01 =
+* ENHANCEMENT: Changed table layout to div instead for checkout payment method selection.
+* ENHANCEMENT: Added in support for [membership] shortcode logic. Pending members will no longer gain access until approved.
+* BUG FIX: Only reference check orders for grace period settings. Fixes an issue for existing user's having previous orders with other gateways besides 'check'. Resolves issues with MMPU.
+
 = 0.9 - 2020-08-31 =
 * ENHANCEMENT: Improved SQL queries around sending email reminders, cancelling outstanding memberships. Thanks @swhytehead
 * ENHANCEMENT: Support PayFast gateway.
