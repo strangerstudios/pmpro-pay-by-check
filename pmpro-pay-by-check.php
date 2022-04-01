@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: 0.9
+Version: 0.10
 Author: Stranger Studios
 Author URI: https://www.paidmembershipspro.com
 Text Domain: pmpro-pay-by-check
@@ -24,7 +24,7 @@ Text Domain: pmpro-pay-by-check
 	Settings, Globals and Constants
 */
 define("PMPRO_PAY_BY_CHECK_DIR", dirname(__FILE__));
-define("PMPROPBC_VER", '0.9');
+define("PMPROPBC_VER", '0.10');
 
 /*
 	Load plugin textdomain.
@@ -156,48 +156,41 @@ function pmpropbc_checkout_boxes()
 	$options = pmpropbc_getOptions($pmpro_level->id);
 
 	//only show if the main gateway is not check and setting value == 1 (value == 2 means only do check payments)
-	if($gateway_setting != "check" && $options['setting'] == 1)
-	{
-?>
-	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0" <?php if(!empty($pmpro_review)) { ?>style="display: none;"<?php } ?>>
-			<thead>
-					<tr>
-							<th><?php _e('Choose Your Payment Method', 'pmpro-pay-by-check');?></th>
-					</tr>
-			</thead>
-			<tbody>
-					<tr>
-							<td>
-									<div>
-											<input type="radio" name="gateway" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
-													<?php if($gateway_setting == "paypalexpress" || $gateway_setting == "paypalstandard") { ?>
-														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpro-pay-by-check');?></a> &nbsp;
-													<?php } elseif($gateway_setting == 'twocheckout') { ?>
-														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with 2Checkout', 'pmpro-pay-by-check');?></a> &nbsp;
-													<?php } elseif( $gateway_setting == 'payfast' ) { ?>
-														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayFast', 'pmpro-pay-by-check');?></a> &nbsp;
-													<?php } else { ?>
-														<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpro-pay-by-check');?></a> &nbsp;
-													<?php } ?>
-											<input type="radio" name="gateway" value="check" <?php if($gateway == "check") { ?>checked="checked"<?php } ?> />
-													<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Check', 'pmpro-pay-by-check');?></a> &nbsp;
-											<?php
-												//support the PayPal Website Payments Pro Gateway which has PayPal Express as a second option natively
-												if($gateway_setting == "paypal") {
-												?>
-												<span class="gateway_paypalexpress">
-													<input type="radio" name="gateway" value="paypalexpress" <?php if($gateway == "paypalexpress") { ?>checked="checked"<?php } ?> />
-													<a href="javascript:void(0);" class="pmpro_radio">Check Out with PayPal</a>
-												</span>
-												<?php
-												}
-											?>
-									</div>
-							</td>
-					</tr>
-			</tbody>
-	</table>
-	<div class="clear"></div>
+	if ( $gateway_setting != "check" && $options['setting'] == 1 ) { ?>
+	<div id="pmpro_payment_method" class="pmpro_checkout">
+		<hr />
+		<h3>
+			<span class="pmpro_checkout-h3-name"><?php esc_html_e( 'Choose Your Payment Method', 'pmpro-pay-by-check'); ?></span>
+		</h3>
+		<div class="pmpro_checkout-fields">
+			<span class="gateway_<?php echo esc_attr($gateway_setting); ?>">
+					<input type="radio" name="gateway" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
+							<?php if($gateway_setting == "paypalexpress" || $gateway_setting == "paypalstandard") { ?>
+								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpro-pay-by-check');?></a> &nbsp;
+							<?php } elseif($gateway_setting == 'twocheckout') { ?>
+								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with 2Checkout', 'pmpro-pay-by-check');?></a> &nbsp;
+							<?php } elseif( $gateway_setting == 'payfast' ) { ?>
+								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayFast', 'pmpro-pay-by-check');?></a> &nbsp;
+							<?php } else { ?>
+								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpro-pay-by-check');?></a> &nbsp;
+							<?php } ?>
+			</span> <!-- end gateway_$gateway_setting -->
+			<span class="gateway_check">
+					<input type="radio" name="gateway" value="check" <?php if($gateway == "check") { ?>checked="checked"<?php } ?> />
+					<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Check', 'pmpro-pay-by-check');?></a> &nbsp;
+			</span> <!-- end gateway_check -->
+			<?php
+				//support the PayPal Website Payments Pro Gateway which has PayPal Express as a second option natively
+				if ( $gateway_setting == "paypal" ) { ?>
+					<span class="gateway_paypalexpress">
+						<input type="radio" name="gateway" value="paypalexpress" <?php if($gateway == "paypalexpress") { ?>checked="checked"<?php } ?> />
+						<a href="javascript:void(0);" class="pmpro_radio"><?php esc_html_e( 'Check Out with PayPal', 'pmpro-pay-by-check' ); ?></a>
+					</span>
+				<?php
+				}
+			?>
+		</div> <!-- end pmpro_checkout-fields -->
+	</div> <!-- end #pmpro_payment_method -->
 	<?php
 	}
 }
@@ -462,7 +455,7 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
 			$paid_order = new MemberOrder();
 			$paid_order->getLastMemberOrder($user_id, array('success', 'cancelled'), $order->membership_id);
 			
-			if(!empty($paid_order) && !empty($paid_order->id))
+			if(!empty($paid_order) && !empty($paid_order->id) && $paid_order->gateway === 'check')
 			{
 				//how long ago is too long?
 				$options = pmpropbc_getOptions($membership_level->id);
@@ -510,21 +503,41 @@ function pmprobpc_memberHasAccessWithAnyLevel($user_id){
 function pmprobpc_isMemberPending($user_id) { return pmpropbc_isMemberPending($user_id); }
 
 //if a user's last order is pending status, don't give them access
-function pmpropbc_pmpro_has_membership_access_filter($hasaccess, $mypost, $myuser, $post_membership_levels)
-{
+function pmpropbc_pmpro_has_membership_access_filter( $hasaccess, $mypost, $myuser, $post_membership_levels ) {
 	//if they don't have access, ignore this
-	if(!$hasaccess)
+	if ( ! $hasaccess ) {
 		return $hasaccess;
+	}
+
+	if ( empty( $post_membership_levels ) ) {
+		return $hasaccess;
+	}
 
 	//if this isn't locked by level, ignore this
-	if(empty($post_membership_levels))
-		return $hasaccess;
-
 	$hasaccess = pmprobpc_memberHasAccessWithAnyLevel($myuser->ID);
 
 	return $hasaccess;
 }
 add_filter("pmpro_has_membership_access_filter", "pmpropbc_pmpro_has_membership_access_filter", 10, 4);
+
+
+/**
+ * Filter membership shortcode restriction based on pending status.
+ * 
+ * @since 0.10
+ */
+function pmpropbc_pmpro_member_shortcode_access( $hasaccess, $content, $levels, $delay ) {
+	global $current_user;
+	// If they don't have a access already, just bail.
+	if ( ! $hasaccess ) {
+		return $hasaccess;
+	}
+	
+	$hasaccess = pmprobpc_memberHasAccessWithAnyLevel( $current_user->ID );
+
+	return $hasaccess;
+}
+add_filter( 'pmpro_member_shortcode_access', 'pmpropbc_pmpro_member_shortcode_access', 10, 4 );
 
 /*
 	Some notes RE pending status.
@@ -980,10 +993,13 @@ add_action('pmpropbc_cancel_overdue_orders', 'pmpropbc_cancel_overdue_orders');
  */
 function pmpropbc_check_pending_lock_text( $text ){
 	global $current_user;
+
 	//if a user does not have a membership level, return default text.
 	if( !pmpro_hasMembershipLevel() ){
 		return $text;
 	}
+
+	
 	
 	if(pmpropbc_isMemberPending($current_user->ID)==true && pmpropbc_wouldHaveMembershipAccessIfNotPending()==true){
 		$text = __("Your payment is currently pending. You will gain access to this page once it is approved.", "pmpro-pay-by-check");
