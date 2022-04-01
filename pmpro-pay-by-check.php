@@ -503,21 +503,41 @@ function pmprobpc_memberHasAccessWithAnyLevel($user_id){
 function pmprobpc_isMemberPending($user_id) { return pmpropbc_isMemberPending($user_id); }
 
 //if a user's last order is pending status, don't give them access
-function pmpropbc_pmpro_has_membership_access_filter($hasaccess, $mypost, $myuser, $post_membership_levels)
-{
+function pmpropbc_pmpro_has_membership_access_filter( $hasaccess, $mypost, $myuser, $post_membership_levels ) {
 	//if they don't have access, ignore this
-	if(!$hasaccess)
+	if ( ! $hasaccess ) {
 		return $hasaccess;
+	}
+
+	if ( empty( $post_membership_levels ) ) {
+		return $hasaccess;
+	}
 
 	//if this isn't locked by level, ignore this
-	if(empty($post_membership_levels))
-		return $hasaccess;
-
 	$hasaccess = pmprobpc_memberHasAccessWithAnyLevel($myuser->ID);
 
 	return $hasaccess;
 }
 add_filter("pmpro_has_membership_access_filter", "pmpropbc_pmpro_has_membership_access_filter", 10, 4);
+
+
+/**
+ * Filter membership shortcode restriction based on pending status.
+ * 
+ * @since 0.10
+ */
+function pmpropbc_pmpro_member_shortcode_access( $hasaccess, $content, $levels, $delay ) {
+	global $current_user;
+	// If they don't have a access already, just bail.
+	if ( ! $hasaccess ) {
+		return $hasaccess;
+	}
+	
+	$hasaccess = pmprobpc_memberHasAccessWithAnyLevel( $current_user->ID );
+
+	return $hasaccess;
+}
+add_filter( 'pmpro_member_shortcode_access', 'pmpropbc_pmpro_member_shortcode_access', 10, 4 );
 
 /*
 	Some notes RE pending status.
@@ -973,10 +993,13 @@ add_action('pmpropbc_cancel_overdue_orders', 'pmpropbc_cancel_overdue_orders');
  */
 function pmpropbc_check_pending_lock_text( $text ){
 	global $current_user;
+
 	//if a user does not have a membership level, return default text.
 	if( !pmpro_hasMembershipLevel() ){
 		return $text;
 	}
+
+	
 	
 	if(pmpropbc_isMemberPending($current_user->ID)==true && pmpropbc_wouldHaveMembershipAccessIfNotPending()==true){
 		$text = __("Your payment is currently pending. You will gain access to this page once it is approved.", "pmpro-pay-by-check");
