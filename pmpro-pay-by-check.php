@@ -700,7 +700,7 @@ function pmpropbc_recurring_orders()
 			{
 				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
-				if ($user !== false) {
+				if ( $user ) {
 					$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
 				}
 
@@ -816,7 +816,7 @@ function pmpropbc_reminder_emails()
 				//get some data
 				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
-				if ($user !== false) {
+				if ( $user ) {
 					$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
 				}
 
@@ -956,7 +956,7 @@ function pmpropbc_cancel_overdue_orders()
 				//get the order and user data
 				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
-				if ($user !== false) {
+				if ( $user ) {
 					$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
 				}
 
