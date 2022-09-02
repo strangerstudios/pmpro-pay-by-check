@@ -488,9 +488,9 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
 */
 function pmprobpc_memberHasAccessWithAnyLevel($user_id){
 	$levels = pmpro_getMembershipLevelsForUser($user_id);
-	if( !empty( $levels ) && is_array( $levels ) ) {
-		foreach($levels as $level){
-			if(!pmpropbc_isMemberPending($user_id, $level->id)){
+	if ( $levels && is_array( $levels ) ) {
+		foreach ( $levels as $level ) {
+			if ( ! pmpropbc_isMemberPending( $user_id, $level->id ) ) {
 				return true;
 			}
 		}
