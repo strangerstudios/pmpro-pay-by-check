@@ -705,7 +705,9 @@ function pmpropbc_recurring_orders()
 			{
 				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
-				$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
+				if ( $user ) {
+					$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
+				}
 
 				//check that user still has same level?
 				if(empty($user->membership_level) || $order->membership_id != $user->membership_level->id)
@@ -819,7 +821,9 @@ function pmpropbc_reminder_emails()
 				//get some data
 				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
-				$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
+				if ( $user ) {
+					$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
+				}
 
 				//if they are no longer a member, let's not send them an email
 				if(empty($user->membership_level) || empty($user->membership_level->ID) || $user->membership_level->id != $order->membership_id)
@@ -957,7 +961,9 @@ function pmpropbc_cancel_overdue_orders()
 				//get the order and user data
 				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
-				$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
+				if ( $user ) {
+					$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
+				}
 
 				//if they are no longer a member, let's not send them an email
 				if(empty($user->membership_level) || empty($user->membership_level->ID) || $user->membership_level->id != $order->membership_id)
