@@ -533,10 +533,8 @@ function pmpropbc_pmpro_member_shortcode_access( $hasaccess, $content, $levels, 
 		return $hasaccess;
 	}
 
-	// Let's check access for logged in users with active membership(s).
-	$levels = pmpro_getMembershipLevelsForUser( $current_user->ID );
-
-	if ( is_user_logged_in() && ! empty( $levels ) ) {
+	// We only need to run this check for logged-in user's as PMPro will handle logged-out users.
+	if ( is_user_logged_in() ) {
 		$hasaccess = pmprobpc_memberHasAccessWithAnyLevel( $current_user->ID );
 	}
 
