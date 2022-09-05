@@ -628,7 +628,7 @@ function pmpropbc_confirmation_message( $confirmation_message, $invoice ) {
 	$confirmation_message .= '<p>' . sprintf( __( 'Below are details about your membership account and a receipt for your initial membership invoice. A welcome email with a copy of your initial membership invoice has been sent to %s.', 'pmpro-pay-by-check' ), $user->user_email ) . '</p>';
 
 	// Put the check instructions into the message.
-	if ( ! empty( $invoice ) && $invoice->gateway == "check" && ! pmpro_isLevelFree( $invoice->membership_level ) ) {
+	if ( ! empty( $invoice ) && $invoice->gateway == 'check' && ! pmpro_isLevelFree( $invoice->membership_level ) ) {
 		$confirmation_message .= '<div class="pmpro_payment_instructions">' . wpautop( wp_unslash( pmpro_getOption( 'instructions' ) ) ) . '</div>';
 	}
 	
