@@ -713,7 +713,7 @@ function pmpropbc_recurring_orders()
 				if(empty($user->membership_level) || $order->membership_id != $user->membership_level->id)
 					continue;
 
-				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at ths level
+				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at this level
 				if( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0)
 				  continue;
 
@@ -835,7 +835,7 @@ function pmpropbc_reminder_emails()
 					continue;
 				}
 
-				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at ths level
+				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at this level
 				if ( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0 ) {
 					continue;
 				}
@@ -980,11 +980,11 @@ function pmpropbc_cancel_overdue_orders()
 					continue;
 				}
 
-				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at ths level
+				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at this level
 				if ( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0 ) {
 					continue;
 				}
-				
+
 				//cancel the order and subscription
 				do_action("pmpro_membership_pre_membership_expiry", $order->user_id, $order->membership_id );
 
