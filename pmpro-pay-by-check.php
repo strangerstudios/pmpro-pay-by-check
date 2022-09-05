@@ -835,6 +835,11 @@ function pmpropbc_reminder_emails()
 					continue;
 				}
 
+				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at ths level
+				if ( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0 ) {
+					continue;
+				}
+
 				//note when we send the reminder
 				$new_notes = $order->notes . "Reminder Sent:" . $today . "\n";
 				$wpdb->query("UPDATE $wpdb->pmpro_membership_orders SET notes = '" . esc_sql($new_notes) . "' WHERE id = '" . $order_id . "' LIMIT 1");
@@ -975,6 +980,11 @@ function pmpropbc_cancel_overdue_orders()
 					continue;
 				}
 
+				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at ths level
+				if ( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0 ) {
+					continue;
+				}
+				
 				//cancel the order and subscription
 				do_action("pmpro_membership_pre_membership_expiry", $order->user_id, $order->membership_id );
 
