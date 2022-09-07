@@ -415,6 +415,47 @@ function pmpropbc_pmpro_check_status_after_checkout($status)
 }
 add_filter("pmpro_check_status_after_checkout", "pmpropbc_pmpro_check_status_after_checkout");
 
+
+/**
+ * Cancels all previously pending check orders if a user purchases the same level via a different payment method.
+ * 
+ * @since TBD
+ */
+function pmpropbc_cancel_previous_pending_orders( $user_id, $order ) {
+	global $wpdb;
+
+	$membership_id = $order->membership_id;
+	//Check to make sure PBC is enabled for the level first.
+	$pbc_settings = pmpropbc_getOptions( $membership_id );
+
+	// Assume no PBC setting is enabled for this level, so probably no cancellation setting should run.
+	if ( $pbc_settings['setting'] == 0 ) {
+		return;
+	}
+	
+	// Not a renewal order for the same level just return.
+	if ( ! $order->is_renewal() ) {
+		return;
+	}
+
+	// Do not run code if the user is spamming checkout with check as the gateway selected.
+	if ( $order->gateway == 'check' ) {
+		return;
+	}
+
+	// Update any outstanding check payments for this level ID.
+	$SQLquery = "UPDATE $wpdb->pmpro_membership_orders
+					SET `status` = 'cancelled'
+					WHERE `user_id` = " . esc_sql( $user_id ) . "					 	
+						AND `gateway` = 'check'
+						AND `status` = 'pending'
+						AND `membership_id` = '" . esc_sql( $membership_id ) . "'
+						AND `timestamp` < '" . esc_sql( date( 'Y-m-d H:i:s', $order->timestamp ) ) . "'";
+
+	$results = $wpdb->query( $SQLquery );
+}
+add_action( 'pmpro_after_checkout', 'pmpropbc_cancel_previous_pending_orders', 10, 2 );
+
 /*
  * Check if a member's status is still pending, i.e. they haven't made their first check payment.
  *
