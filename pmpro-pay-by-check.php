@@ -754,7 +754,7 @@ function pmpropbc_recurring_orders()
 				if(empty($user->membership_level) || $order->membership_id != $user->membership_level->id)
 					continue;
 
-				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at ths level
+				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at this level
 				if( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0)
 				  continue;
 
@@ -873,6 +873,11 @@ function pmpropbc_reminder_emails()
 					$new_notes = $order->notes . "Reminder Skipped:" . $today . "\n";
 					$wpdb->query("UPDATE $wpdb->pmpro_membership_orders SET notes = '" . esc_sql($new_notes) . "' WHERE id = '" . $order_id . "' LIMIT 1");
 
+					continue;
+				}
+
+				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at this level
+				if ( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0 ) {
 					continue;
 				}
 
@@ -1013,6 +1018,11 @@ function pmpropbc_cancel_overdue_orders()
 					$new_notes = $order->notes . "Cancellation Skipped:" . $today . "\n";
 					$wpdb->query("UPDATE $wpdb->pmpro_membership_orders SET notes = '" . esc_sql($new_notes) . "' WHERE id = '" . $order_id . "' LIMIT 1");
 
+					continue;
+				}
+
+				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at this level
+				if ( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0 ) {
 					continue;
 				}
 
