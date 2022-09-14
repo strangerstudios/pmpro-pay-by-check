@@ -2,8 +2,8 @@
 Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 5.0
-Tested up to: 5.9
-Stable tag: 0.10
+Tested up to: 6.0
+Stable tag: 0.11
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,13 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
+= 0.11 - 2022-09-14 =
+* ENHANCEMENT: Tweaked the confirmation message on the confirmation page to clearly show that no access is available until payment is received.
+* ENHANCEMENT: Improved cases where orders would stay in pending if members checked out for the same level but change their payment method. Previous orders now are set with the "token" status if switching gateways and had a pending status with check payment.
+* BUG FIX: Improved compatibility for cases like Auto Renewal Checkbox where a level may have recurring and non-recurring options. This fixes an issue where non-recurring members would still be cancelled or receive renewal reminders.
+* BUG FIX: Various fixes to support and improve compatibility with PHP8+ (Thanks @ZebulanStanphill, @jarrydlong).
+* BUG FIX: Fixed an issue where [membership level="0"] would display incorrectly (Thanks @ipokkel)
+
 = 0.10 - 2022-04-01 =
 * ENHANCEMENT: Changed table layout to div instead for checkout payment method selection.
 * ENHANCEMENT: Added in support for [membership] shortcode logic. Pending members will no longer gain access until approved.

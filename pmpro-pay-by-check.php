@@ -3,10 +3,11 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: 0.10
+Version: 0.11
 Author: Stranger Studios
 Author URI: https://www.paidmembershipspro.com
 Text Domain: pmpro-pay-by-check
+Domain Path: /languages
 */
 /*
 	Sample use case: You have a paid level that you want to allow people to pay by check for.
@@ -23,8 +24,8 @@ Text Domain: pmpro-pay-by-check
 /*
 	Settings, Globals and Constants
 */
-define("PMPRO_PAY_BY_CHECK_DIR", dirname(__FILE__));
-define("PMPROPBC_VER", '0.10');
+define( 'PMPRO_PAY_BY_CHECK_DIR', dirname(__FILE__) );
+define( 'PMPROPBC_VER', '0.11' );
 
 /*
 	Load plugin textdomain.
@@ -419,7 +420,7 @@ add_filter("pmpro_check_status_after_checkout", "pmpropbc_pmpro_check_status_aft
 /**
  * Cancels all previously pending check orders if a user purchases the same level via a different payment method.
  * 
- * @since TBD
+ * @since 0.11
  */
 function pmpropbc_cancel_previous_pending_orders( $user_id, $order ) {
 	global $wpdb;
@@ -445,7 +446,7 @@ function pmpropbc_cancel_previous_pending_orders( $user_id, $order ) {
 
 	// Update any outstanding check payments for this level ID.
 	$SQLquery = "UPDATE $wpdb->pmpro_membership_orders
-					SET `status` = 'cancelled'
+					SET `status` = 'token'
 					WHERE `user_id` = " . esc_sql( $user_id ) . "					 	
 						AND `gateway` = 'check'
 						AND `status` = 'pending'
