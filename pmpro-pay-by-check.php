@@ -642,6 +642,43 @@ function pmpropbc_pmpro_account_bullets_bottom()
 add_action('pmpro_account_bullets_bottom', 'pmpropbc_pmpro_account_bullets_bottom');
 add_action('pmpro_invoice_bullets_bottom', 'pmpropbc_pmpro_account_bullets_bottom');
 
+
+/**
+ * Filter the confirmation message of Paid Memberships Pro when the gateway is check and the payment isn't successful.
+ *
+ * @param string $confirmation_message The confirmation message before it is altered.
+ * @param object $invoice The PMPro MemberOrder object.
+ * @return string $confirmation_message The level confirmation message.
+ */
+function pmpropbc_confirmation_message( $confirmation_message, $invoice ) {
+
+	// Only filter orders that are done by check.
+	if ( $invoice->gateway !== 'check' || ( $invoice->gateway == 'check' && $invoice->status == 'success' ) ) {
+		return $confirmation_message;
+	}
+
+	$user = get_user_by( 'ID', $invoice->user_id );
+	
+	$confirmation_message = '<p>' . sprintf( __( 'Thank you for your membership to %1$s. Your %2$s membership status is: <b>%3$s</b>.', 'pmpro-pay-by-check' ), get_bloginfo( 'name' ), $user->membership_level->name, $invoice->status ) . ' ' . __( 'Once payment is received and processed you will gain access to your membership content.', 'pmpro-pay-by-check' ) . '</p>';
+
+	// Put the level confirmation from level settings into the message.
+	if ( ! empty( $user->membership_level->confirmation ) ) {
+		$confirmation_message .= wpautop( wp_unslash( $user->membership_level->confirmation ) );
+	}
+
+	$confirmation_message .= '<p>' . sprintf( __( 'Below are details about your membership account and a receipt for your initial membership invoice. A welcome email with a copy of your initial membership invoice has been sent to %s.', 'pmpro-pay-by-check' ), $user->user_email ) . '</p>';
+
+	// Put the check instructions into the message.
+	if ( ! empty( $invoice ) && $invoice->gateway == 'check' && ! pmpro_isLevelFree( $invoice->membership_level ) ) {
+		$confirmation_message .= '<div class="pmpro_payment_instructions">' . wpautop( wp_unslash( pmpro_getOption( 'instructions' ) ) ) . '</div>';
+	}
+	
+	// Run it through wp_kses_post in case someone translates the strings to have weird code.
+	return wp_kses_post( $confirmation_message );
+
+}
+add_filter( 'pmpro_confirmation_message', 'pmpropbc_confirmation_message', 10, 2 );
+
 /*
 	TODO Add note to non-member text RE waiting for check to clear
 */
