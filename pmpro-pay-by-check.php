@@ -810,6 +810,15 @@ function pmpropbc_recurring_orders()
 				$morder->payment_type = "Check";
 				$morder->status = "pending";
 
+				// Copy billing addres from last order
+				$morder->billing = new stdClass();
+				$morder->billing->name = $order->billing->name;
+				$morder->billing->street = $order->billing->street;
+				$morder->billing->city = $order->billing->city;
+				$morder->billing->state = $order->billing->state;
+				$morder->billing->zip = $order->billing->zip;
+				$morder->billing->country = $order->billing->country;
+
 				//get timestamp for new order
 				$order_timestamp = strtotime("+" . $combo, $order->timestamp);
 
