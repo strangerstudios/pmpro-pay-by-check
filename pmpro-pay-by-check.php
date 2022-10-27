@@ -579,7 +579,7 @@ function pmpropbc_pmpro_member_shortcode_access( $hasaccess, $content, $levels, 
 
 	// If we are checking if the user is not a member, we don't want to hide this content if they are pending.
 	foreach ( $levels as $level ) {
-		if ( $level <= 0 ) {
+		if ( intval( $level ) <= 0 ) {
 			return $hasaccess;
 		}
 	}
