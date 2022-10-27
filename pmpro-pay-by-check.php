@@ -577,6 +577,13 @@ function pmpropbc_pmpro_member_shortcode_access( $hasaccess, $content, $levels, 
 		return $hasaccess;
 	}
 
+	// If we are checking if the user is not a member, we don't want to hide this content if they are pending.
+	foreach ( $levels as $level ) {
+		if ( $level <= 0 ) {
+			return $hasaccess;
+		}
+	}
+
 	// We only need to run this check for logged-in user's as PMPro will handle logged-out users.
 	if ( is_user_logged_in() ) {
 		$hasaccess = pmprobpc_memberHasAccessWithAnyLevel( $current_user->ID );
