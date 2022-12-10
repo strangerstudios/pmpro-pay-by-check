@@ -831,6 +831,55 @@ function pmpropbc_recurring_orders()
 				$email->template = "check_pending";
 				$email->email = $user->user_email;
 				$email->subject = sprintf(__("New Invoice for %s at %s", "pmpro-pay-by-check"), $user->membership_level->name, get_option("blogname"));
+
+				//get body from template
+				$email->body = file_get_contents(PMPRO_PAY_BY_CHECK_DIR . "/email/" . $email->template . ".html");
+
+				//setup more data
+				$email->data = array(
+					"name" => $user->display_name,
+					"user_login" => $user->user_login,
+					"sitename" => get_option("blogname"),
+					"siteemail" => pmpro_getOption("from_email"),
+					"membership_id" => $user->membership_level->id,
+					"membership_level_name" => $user->membership_level->name,
+					"membership_cost" => pmpro_getLevelCost($user->membership_level),
+					"login_link" => wp_login_url(pmpro_url("account")),
+					"display_name" => $user->display_name,
+					"user_email" => $user->user_email,
+				);
+
+				$email->data["instructions"] = wp_unslash(  pmpro_getOption('instructions') );
+				$email->data["invoice_id"] = $morder->code;
+				$email->data["invoice_total"] = pmpro_formatPrice($morder->total);
+				$email->data["invoice_date"] = date(get_option('date_format'), $morder->timestamp);
+				$email->data["billing_name"] = $morder->billing->name;
+				$email->data["billing_street"] = $morder->billing->street;
+				$email->data["billing_city"] = $morder->billing->city;
+				$email->data["billing_state"] = $morder->billing->state;
+				$email->data["billing_zip"] = $morder->billing->zip;
+				$email->data["billing_country"] = $morder->billing->country;
+				$email->data["billing_phone"] = $morder->billing->phone;
+				$email->data["cardtype"] = $morder->cardtype;
+				$email->data["accountnumber"] = hideCardNumber($morder->accountnumber);
+				$email->data["expirationmonth"] = $morder->expirationmonth;
+				$email->data["expirationyear"] = $morder->expirationyear;
+				$email->data["billing_address"] = pmpro_formatAddress($morder->billing->name,
+																	 $morder->billing->street,
+																	 "", //address 2
+																	 $morder->billing->city,
+																	 $morder->billing->state,
+																	 $morder->billing->zip,
+																	 $morder->billing->country,
+																	 $morder->billing->phone);
+
+				if($morder->getDiscountCode())
+					$email->data["discount_code"] = "<p>" . __("Discount Code", "pmpro") . ": " . $morder->discount_code->code . "</p>\n";
+				else
+					$email->data["discount_code"] = "";
+
+				//send the email
+				$email->sendEmail();
 			}
 		}
 	}
