@@ -279,16 +279,11 @@ add_filter("pmpro_valid_gateways", "pmpropbc_pmpro_valid_gateways");
 */
 function pmpropbc_pmpro_get_gateway($gateway)
 {
-	global $pmpro_level;
+	$level = pmpro_getLevelAtCheckout();
 
-	if(!empty($pmpro_level) || !empty($_REQUEST['level']))
+	if ( ! empty( $level->id ) )
 	{
-		if(!empty($pmpro_level))
-			$level_id = $pmpro_level->id;
-		else
-			$level_id = intval($_REQUEST['level']);
-
-		$options = pmpropbc_getOptions($level_id);
+		$options = pmpropbc_getOptions( $level->id );
 
     	if($options['setting'] == 2)
     		$gateway = "check";
@@ -310,10 +305,10 @@ function pmpropbc_init_include_billing_address_fields()
 		return;
 
 	//billing address and payment info fields
-	if(!empty($_REQUEST['level']))
+	$level = pmpro_getLevelAtCheckout();
+	if ( ! empty( $level->id ) )
 	{
-		$level_id = intval($_REQUEST['level']);
-		$options = pmpropbc_getOptions($level_id);
+		$options = pmpropbc_getOptions( $level->id );
     			
 		if($options['setting'] == 2)
 		{
