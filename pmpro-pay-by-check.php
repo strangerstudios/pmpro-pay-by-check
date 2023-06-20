@@ -661,7 +661,7 @@ function pmpropbc_confirmation_message( $confirmation_message, $invoice ) {
 	$user = get_user_by( 'ID', $invoice->user_id );
 	$user->membership_level = pmpro_getSpecificMembershipLevelForUser( $invoice->user_id, $invoice->membership_level->level_id );
 	
-	$confirmation_message = '<p>' . sprintf( __( 'Thank you for your membership to %1$s. Your %2$s membership status is: <b>%3$s</b>.', 'pmpro-pay-by-check' ), get_bloginfo( 'name' ), $user->membership_level->name, $invoice->status ) . ' ' . __( 'Once payment is received and processed you will gain access to your membership content.', 'pmpro-pay-by-check' ) . '</p>';
+	$confirmation_message = '<p>' . sprintf( __( 'Thank you for your membership to %1$s. Your %2$s membership status is: <b>%3$s</b>.', 'pmpro-pay-by-check' ), get_bloginfo( 'name' ), $user->membership_level->name, __( $invoice->status, 'pmpro-pay-by-check' ) . ' ' . __( 'Once payment is received and processed you will gain access to your membership content.', 'pmpro-pay-by-check' ) . '</p>';
 
 	// Put the level confirmation from level settings into the message.
 	if ( ! empty( $user->membership_level->confirmation ) ) {
