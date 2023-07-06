@@ -160,9 +160,9 @@ function pmpropbc_checkout_boxes()
 	if ( $gateway_setting != "check" && $options['setting'] == 1 ) { ?>
 	<div id="pmpro_payment_method" class="pmpro_checkout">
 		<hr />
-		<h3>
-			<span class="pmpro_checkout-h3-name"><?php esc_html_e( 'Choose Your Payment Method', 'pmpro-pay-by-check'); ?></span>
-		</h3>
+		<h2>
+			<span class="pmpro_checkout-h2-name"><?php esc_html_e( 'Choose Your Payment Method', 'pmpro-pay-by-check'); ?></span>
+		</h2>
 		<div class="pmpro_checkout-fields">
 			<span class="gateway_<?php echo esc_attr($gateway_setting); ?>">
 					<input type="radio" name="gateway" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
