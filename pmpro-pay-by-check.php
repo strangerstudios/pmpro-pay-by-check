@@ -550,15 +550,15 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
  *	@return bool If user has access to content or not.
  */
 function pmprobpc_memberHasAccessWithAnyLevel( $user_id, $content_levels = null ) {
+	$user_levels = wp_list_pluck( pmpro_getMembershipLevelsForUser( $user_id ) );
 	if ( empty( $content_levels ) ) {
 		// Check all user levels.
-		$user_levels = pmpro_getMembershipLevelsForUser( $user_id );
-		$content_levels = wp_list_pluck( $user_levels, 'id' );
+		$content_levels = $user_levels;
 	}
 
 	// Loop through all content levels.
 	foreach ( $content_levels as $content_level ) {
-		if ( ! pmpropbc_isMemberPending( $user_id, $content_level ) ) {
+		if ( in_array( $content_level, $user_levels ) && ! pmpropbc_isMemberPending( $user_id, $content_level ) ) {
 			return true;
 		}
 	}
