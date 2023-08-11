@@ -457,12 +457,15 @@ function pmpropbc_cancel_previous_pending_orders( $user_id, $order ) {
 }
 add_action( 'pmpro_after_checkout', 'pmpropbc_cancel_previous_pending_orders', 10, 2 );
 
-/*
+/**
  * Check if a member's status is still pending, i.e. they haven't made their first check payment.
  *
- * @return bool If status is pending or not.
- * @param user_id ID of the user to check.
  * @since .5
+ *
+ * @param int $user_id ID of the user to check.
+ * @param int $level_id ID of the level to check. If 0, will return if user is pending for any level.
+ *
+ * @return bool If status is pending or not.
  */
 function pmpropbc_isMemberPending($user_id, $level_id = 0)
 {
@@ -473,10 +476,6 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
 	   isset($pmpropbc_pending_member_cache[$user_id]) && 
 	   isset($pmpropbc_pending_member_cache[$user_id][$level_id]))
 		return $pmpropbc_pending_member_cache[$user_id][$level_id];
-
-	//check their last order
-	$order = new MemberOrder();
-	$order->getLastMemberOrder($user_id, false, $level_id);		//NULL here means any status
 	
 	//make room for this user's data in the cache
 	if(!is_array($pmpropbc_pending_member_cache)) {
@@ -486,12 +485,29 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
 	}	
 	$pmpropbc_pending_member_cache[$user_id][$level_id] = false;
 
+	// If level is 0, we should check if user is pending for any level.
+	if ( empty( $level_id ) ) {
+		$is_pending = false;
+		$levels = pmpro_getMembershipLevelsForUser( $user_id );
+		foreach ( $levels as $level ) {
+			if ( pmpropbc_isMemberPending( $user_id, $level->id ) ) {
+				$is_pending = true;
+			}
+		}
+		$pmpropbc_pending_member_cache[$user_id][$level_id] = $is_pending;
+		return $is_pending;
+	}
+
+	//check their last order
+	$order = new MemberOrder();
+	$order->getLastMemberOrder($user_id, false, $level_id);		//NULL here means any status
+
 	if(!empty($order->status))
 	{
 		if($order->status == "pending")
 		{
 			//for recurring levels, we should check if there is an older successful order
-			$membership_level = pmpro_getMembershipLevelForUser($user_id);
+			$membership_level = pmpro_getSpecificMembershipLevelForUser( $user_id, $level_id );
 						
 			//unless the previous order has status success and we are still within the grace period
 			$paid_order = new MemberOrder();
@@ -525,16 +541,25 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
 	return $pmpropbc_pending_member_cache[$user_id][$level_id];
 }
 
-/*
-	For use with multiple memberships per user
-*/
-function pmprobpc_memberHasAccessWithAnyLevel($user_id){
-	$levels = pmpro_getMembershipLevelsForUser($user_id);
-	if ( $levels && is_array( $levels ) ) {
-		foreach ( $levels as $level ) {
-			if ( ! pmpropbc_isMemberPending( $user_id, $level->id ) ) {
-				return true;
-			}
+/**
+ * Check if user has access to content based on their membership level.
+ *
+ * @param int $user_id ID of the user to check.
+ * @param array(int) $content_levels Array of level IDs to check. If empty, will check if user has access to any level.
+ *
+ *	@return bool If user has access to content or not.
+ */
+function pmprobpc_memberHasAccessWithAnyLevel( $user_id, $content_levels = null ) {
+	$user_levels = wp_list_pluck( pmpro_getMembershipLevelsForUser( $user_id ) );
+	if ( empty( $content_levels ) ) {
+		// Check all user levels.
+		$content_levels = $user_levels;
+	}
+
+	// Loop through all content levels.
+	foreach ( $content_levels as $content_level ) {
+		if ( in_array( $content_level, $user_levels ) && ! pmpropbc_isMemberPending( $user_id, $content_level ) ) {
+			return true;
 		}
 	}
 	return false;
@@ -542,9 +567,14 @@ function pmprobpc_memberHasAccessWithAnyLevel($user_id){
 
 
 /*
-	In case anyone was using the typo'd function name.
-*/
-function pmprobpc_isMemberPending($user_id) { return pmpropbc_isMemberPending($user_id); }
+ *	In case anyone was using the typo'd function name.
+ *
+ * @deprecated TBD Use pmpropbc_isMemberPending() instead.
+ */
+function pmprobpc_isMemberPending($user_id) {
+	_deprecated_function( __FUNCTION__, 'TBD', 'pmpropbc_isMemberPending()' );
+	return pmpropbc_isMemberPending($user_id);
+}
 
 //if a user's last order is pending status, don't give them access
 function pmpropbc_pmpro_has_membership_access_filter( $hasaccess, $mypost, $myuser, $post_membership_levels ) {
@@ -558,7 +588,7 @@ function pmpropbc_pmpro_has_membership_access_filter( $hasaccess, $mypost, $myus
 	}
 
 	//if this isn't locked by level, ignore this
-	$hasaccess = pmprobpc_memberHasAccessWithAnyLevel($myuser->ID);
+	$hasaccess = pmprobpc_memberHasAccessWithAnyLevel( $myuser->ID, wp_list_pluck( $post_membership_levels, 'id' ) );
 
 	return $hasaccess;
 }
@@ -579,69 +609,70 @@ function pmpropbc_pmpro_member_shortcode_access( $hasaccess, $content, $levels, 
 
 	// We only need to run this check for logged-in user's as PMPro will handle logged-out users.
 	if ( is_user_logged_in() ) {
-		$hasaccess = pmprobpc_memberHasAccessWithAnyLevel( $current_user->ID );
+		$hasaccess = pmprobpc_memberHasAccessWithAnyLevel( $current_user->ID, $levels );
 	}
 
 	return $hasaccess;
 }
 add_filter( 'pmpro_member_shortcode_access', 'pmpropbc_pmpro_member_shortcode_access', 10, 4 );
 
-/*
-	Some notes RE pending status.
-*/
-//add note to account page RE waiting for check to clear
-function pmpropbc_pmpro_account_bullets_bottom()
-{
-	//get invoice from DB
-	if(!empty($_REQUEST['invoice']))
-	{
-	    $invoice_code = $_REQUEST['invoice'];
+/**
+ * Show levels with pending payments on the account page.
+ */
+function pmpropbc_pmpro_account_bullets_bottom() {
+	$user_levels = pmpro_getMembershipLevelsForUser( get_current_user_id() );
+	foreach ( $user_levels as $level ) {
+		// Get the last order for this level.
+		$order = new MemberOrder();
+		$order->getLastMemberOrder( get_current_user_id(), array('success', 'pending', 'cancelled' ), $level->id );
 
-	    if (!empty($invoice_code))
-	    	$pmpro_invoice = new MemberOrder($invoice_code);
-	}
-
-	//no specific invoice, check current user's last order
-	if(empty($pmpro_invoice) || empty($pmpro_invoice->id))
-	{
-		$pmpro_invoice = new MemberOrder();
-		$pmpro_invoice->getLastMemberOrder(NULL, array('success', 'pending', 'cancelled', ''));
-	}
-
-	if(!empty($pmpro_invoice) && !empty($pmpro_invoice->id))
-	{
-		if($pmpro_invoice->status == "pending" && $pmpro_invoice->gateway == "check")
-		{
-			if(!empty($_REQUEST['invoice']))
-			{
-				?>
-				<li>
-					<?php
-						if(pmpropbc_isMemberPending($pmpro_invoice->user_id))
-							printf( __('%sMembership pending.%s We are still waiting for payment of this invoice.', 'pmpro-pay-by-check'), '<strong>', '</strong>' );
-						else
-							printf( __('%sImportant Notice:%s We are still waiting for payment of this invoice.', 'pmpro-pay-by-check'), '<strong>', '</strong>' );
-					?>
-				</li>
+		// If the order is pending and it was a check payment, show a message.
+		if ( $order->status == 'pending' && $order->gateway == 'check' ) {
+			?>
+			<li>
 				<?php
-			}
-			else
-			{
+				// Check if the user is pending for the level.
+				if ( pmpropbc_isMemberPending( $order->user_id, $order->membership_id ) ) {
+					printf( esc_html__('%sYour %s membership is pending.%s We are still waiting for payment for %syour latest invoice%s.', 'pmpro-pay-by-check'), '<strong>', esc_html( $level->name ), '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $order->code) ), '</a>' );
+				} else {
+					printf( esc_html__('%sImportant Notice:%s We are still waiting for payment on %sthe latest invoice%s for your %s membership.', 'pmpro-pay-by-check'), '<strong>', '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $order->code ) ), '</a>', esc_html( $level->name ) );
+				}
 				?>
-				<li><?php
-						if(pmpropbc_isMemberPending($pmpro_invoice->user_id))
-							printf(__('%sMembership pending.%s We are still waiting for payment for %syour latest invoice%s.', 'pmpro-pay-by-check'), '<strong>', '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code) ), '</a>' );
-						else
-							printf(__('%sImportant Notice:%s We are still waiting for payment for %syour latest invoice%s.', 'pmpro-pay-by-check'), '<strong>', '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $pmpro_invoice->code ) ), '</a>' );
-					?>
-				</li>
-				<?php
-			}
+			</li>
+			<?php
 		}
 	}
 }
 add_action('pmpro_account_bullets_bottom', 'pmpropbc_pmpro_account_bullets_bottom');
-add_action('pmpro_invoice_bullets_bottom', 'pmpropbc_pmpro_account_bullets_bottom');
+
+/**
+ * If an invoice is pending, show a message on the invoice page.
+ */
+function pmpropbc_pmpro_invoice_bullets_bottom() {
+	if ( empty( $_REQUEST['invoice'] ) ) {
+		return;
+	}
+
+	// Get the order.
+	$order = new MemberOrder( $_REQUEST['invoice'] );
+
+	// Check if it is pending and a check payment.
+	if ( $order->status == 'pending' && $order->gateway == 'check' ) {
+		?>
+		<li>
+			<?php
+			// Check if the user is pending for the level.
+			if ( pmpropbc_isMemberPending( $order->user_id, $order->membership_id ) ) {
+				printf( esc_html__('%sMembership pending.%s We are still waiting for payment of this invoice.', 'pmpro-pay-by-check'), '<strong>', '</strong>' );
+			} else {
+				printf( esc_html__('%sImportant Notice:%s We are still waiting for payment of this invoice.', 'pmpro-pay-by-check'), '<strong>', '</strong>' );
+			}
+			?>
+		</li>
+		<?php
+	}
+}
+add_action('pmpro_invoice_bullets_bottom', 'pmpropbc_pmpro_invoice_bullets_bottom');
 
 
 /**
@@ -660,16 +691,18 @@ function pmpropbc_confirmation_message( $confirmation_message, $invoice ) {
 
 	$user = get_user_by( 'ID', $invoice->user_id );
 	
-	$confirmation_message = '<p>' . sprintf( __( 'Thank you for your membership to %1$s. Your %2$s membership status is: <b>%3$s</b>.', 'pmpro-pay-by-check' ), get_bloginfo( 'name' ), $user->membership_level->name, $invoice->status ) . ' ' . __( 'Once payment is received and processed you will gain access to your membership content.', 'pmpro-pay-by-check' ) . '</p>';
+	$confirmation_message = '<p>' . sprintf( __( 'Thank you for your membership to %1$s. Your %2$s membership status is: <b>%3$s</b>.', 'pmpro-pay-by-check' ), get_bloginfo( 'name' ), $invoice->membership_level->name, $invoice->status ) . ' ' . __( 'Once payment is received and processed you will gain access to your membership content.', 'pmpro-pay-by-check' ) . '</p>';
 
 	// Put the level confirmation from level settings into the message.
-	if ( ! empty( $user->membership_level->confirmation ) ) {
-		$confirmation_message .= wpautop( wp_unslash( $user->membership_level->confirmation ) );
+	$level_obj = pmpro_getLevel( $invoice->membership_id );
+	if ( ! empty( $level_obj->confirmation ) ) {
+		$confirmation_message .= wpautop( wp_unslash( $level_obj->confirmation ) );
 	}
 
 	$confirmation_message .= '<p>' . sprintf( __( 'Below are details about your membership account and a receipt for your initial membership invoice. A welcome email with a copy of your initial membership invoice has been sent to %s.', 'pmpro-pay-by-check' ), $user->user_email ) . '</p>';
 
 	// Put the check instructions into the message.
+	$invoice->getMembershipLevel();
 	if ( ! empty( $invoice ) && $invoice->gateway == 'check' && ! pmpro_isLevelFree( $invoice->membership_level ) ) {
 		$confirmation_message .= '<div class="pmpro_payment_instructions">' . wpautop( wp_unslash( pmpro_getOption( 'instructions' ) ) ) . '</div>';
 	}
@@ -785,7 +818,7 @@ function pmpropbc_recurring_orders()
 				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
 				if ( $user ) {
-					$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
+					$user->membership_level = pmpro_getSpecificMembershipLevelForUser( $order->user_id, $level->id );
 				}
 
 				//check that user still has same level?
@@ -901,7 +934,7 @@ function pmpropbc_reminder_emails()
 				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
 				if ( $user ) {
-					$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
+					$user->membership_level = pmpro_getSpecificMembershipLevelForUser( $order->user_id, $level->id );
 				}
 
 				//if they are no longer a member, let's not send them an email
@@ -1046,7 +1079,7 @@ function pmpropbc_cancel_overdue_orders()
 				$order = new MemberOrder($order_id);
 				$user = get_userdata($order->user_id);
 				if ( $user ) {
-					$user->membership_level = pmpro_getMembershipLevelForUser($order->user_id);
+					$user->membership_level = pmpro_getSpecificMembershipLevelForUser( $order->user_id, $level->id );
 				}
 
 				//if they are no longer a member, let's not send them an email
