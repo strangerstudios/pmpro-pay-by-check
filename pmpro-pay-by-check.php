@@ -548,7 +548,7 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
  *	@return bool If user has access to content or not.
  */
 function pmprobpc_memberHasAccessWithAnyLevel( $user_id, $content_levels = null ) {
-	$user_levels = wp_list_pluck( pmpro_getMembershipLevelsForUser( $user_id ) );
+	$user_levels = wp_list_pluck( pmpro_getMembershipLevelsForUser( $user_id ), 'id' );
 	if ( empty( $content_levels ) ) {
 		// Check all user levels.
 		$content_levels = $user_levels;
