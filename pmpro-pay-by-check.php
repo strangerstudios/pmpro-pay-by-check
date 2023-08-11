@@ -729,14 +729,25 @@ add_filter( 'pmpro_confirmation_message', 'pmpropbc_confirmation_message', 10, 2
  */
 function pmpropbc_send_invoice_email( $morder ) {
 
-    // Only worry about this if the order status was changed to "success"
-    if ( 'check' === strtolower( $morder->payment_type ) && 'success' === $morder->status ) {
+    // Only worry about this if this is a check order that is now in "success" status.
+    if ( 'check' !== strtolower( $morder->payment_type ) || 'success' !== $morder->status ) {
+		return;
+	}
 
-        $recipient = get_user_by( 'ID', $morder->user_id );
+	// Check order meta to see if an invoice email has already been sent for this order.
+	if ( function_exists( 'get_pmpro_membership_order_meta' ) && get_pmpro_membership_order_meta( $morder->id, 'pmpropbc_invoice_email_sent', true ) ) {
+		return;
+	}
 
-        $invoice_email = new PMProEmail();
-        $invoice_email->sendInvoiceEmail( $recipient, $morder );
-    }
+	$recipient = get_user_by( 'ID', $morder->user_id );
+
+	$invoice_email = new PMProEmail();
+	$invoice_email->sendInvoiceEmail( $recipient, $morder );
+
+	// Update order meta to indicate that an invoice email has been sent.
+	if ( function_exists( 'update_pmpro_membership_order_meta' ) ) {
+		update_pmpro_membership_order_meta( $morder->id, 'pmpropbc_invoice_email_sent', true );
+	}
 }
 
 add_action( 'pmpro_updated_order', 'pmpropbc_send_invoice_email', 10, 1 );
