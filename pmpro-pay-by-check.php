@@ -152,7 +152,7 @@ function pmpropbc_getOptions($level_id)
 function pmpropbc_checkout_boxes()
 {
 	global $gateway, $pmpro_level, $pmpro_review;
-	$gateway_setting = pmpro_getOption("gateway");
+	$gateway_setting = get_option("pmpro_gateway");
 
 	$options = pmpropbc_getOptions($pmpro_level->id);
 
@@ -241,7 +241,7 @@ function pmpropbc_enqueue_scripts() {
 	$pmpro_msgt = $omsgt;
 	
 	wp_localize_script('pmpro-pay-by-check', 'pmpropbc', array(
-			'gateway' => pmpro_getOption('gateway'),
+			'gateway' => get_option('pmpro_gateway'),
 			'nocode_level' => $pmpro_nocode_level,
 			'code_level' => $pmpro_code_level,
 			'pmpro_review' => (bool)$pmpro_review,
@@ -320,7 +320,7 @@ function pmpropbc_init_include_billing_address_fields()
 			remove_action( "pmpro_checkout_boxes", "pmproappe_pmpro_checkout_boxes", 20 );
 		} else {
 			//keep paypal buttons, billing address fields/etc at checkout
-			$default_gateway = pmpro_getOption('gateway');
+			$default_gateway = get_option('pmpro_gateway');
 			if($default_gateway == 'paypalexpress') {
 				add_filter('pmpro_checkout_default_submit_button', array('PMProGateway_paypalexpress', 'pmpro_checkout_default_submit_button'));
 				if ( version_compare( PMPRO_VERSION, '2.1', '>=' ) ) {
@@ -381,7 +381,7 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 	$options = pmpropbc_getOptions($pmpro_level->id);
 
 	if( !empty($options) && $options['setting'] > 0 ) {
-		$instructions = pmpro_getOption("instructions");
+		$instructions = get_option("pmpro_instructions");
 		if($gateway != 'check')
 			$hidden = 'style="display:none;"';
 		else
@@ -709,7 +709,7 @@ function pmpropbc_confirmation_message( $confirmation_message, $invoice ) {
 	// Put the check instructions into the message.
 	$invoice->getMembershipLevel();
 	if ( ! empty( $invoice ) && $invoice->gateway == 'check' && ! pmpro_isLevelFree( $invoice->membership_level ) ) {
-		$confirmation_message .= '<div class="pmpro_payment_instructions">' . wpautop( wp_unslash( pmpro_getOption( 'instructions' ) ) ) . '</div>';
+		$confirmation_message .= '<div class="pmpro_payment_instructions">' . wpautop( wp_unslash( get_option( 'pmpro_instructions' ) ) ) . '</div>';
 	}
 	
 	// Run it through wp_kses_post in case someone translates the strings to have weird code.
@@ -1032,7 +1032,7 @@ function pmpropbc_reminder_emails()
 					"name" => $user->display_name,
 					"user_login" => $user->user_login,
 					"sitename" => get_option("blogname"),
-					"siteemail" => pmpro_getOption("from_email"),
+					"siteemail" => get_option("pmpro_from_email"),
 					"membership_id" => $user->membership_level->id,
 					"membership_level_name" => $user->membership_level->name,
 					"membership_cost" => pmpro_getLevelCost($user->membership_level),
@@ -1041,7 +1041,7 @@ function pmpropbc_reminder_emails()
 					"user_email" => $user->user_email,
 				);
 
-				$email->data["instructions"] = wp_unslash(  pmpro_getOption('instructions') );
+				$email->data["instructions"] = wp_unslash( get_option('pmpro_instructions') );
 				$email->data["invoice_id"] = $order->code;
 				$email->data["invoice_total"] = pmpro_formatPrice($order->total);
 				$email->data["invoice_date"] = date(get_option('date_format'), $order->timestamp);
