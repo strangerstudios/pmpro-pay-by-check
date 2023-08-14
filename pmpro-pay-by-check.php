@@ -739,6 +739,11 @@ function pmpropbc_send_invoice_email( $morder ) {
 		return;
 	}
 
+	// Make sure that the user still has the membership level for this order.
+	if ( ! pmpro_hasMembershipLevel( $morder->membership_id, $morder->user_id ) ) {
+		return;
+	}
+
 	$recipient = get_user_by( 'ID', $morder->user_id );
 
 	$invoice_email = new PMProEmail();
