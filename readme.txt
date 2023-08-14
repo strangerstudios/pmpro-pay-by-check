@@ -2,8 +2,8 @@
 Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 5.0
-Tested up to: 6.0
-Stable tag: 0.11
+Tested up to: 6.2
+Stable tag: 0.11.1
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,22 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
+= 0.11.1 - 2023-08-14 =
+* ENHANCEMENT: Updating `<h3>` tags to `<h2>` tags for better accessibility. #92 (@kimcoleman)
+* ENHANCEMENT: Now listing all levels with pending payments in the Membership Account page. #80 (@dparker1005)
+* ENHANCEMENT: Now copying billing address to new orders when a recurring check order is generated in pending status. #82 (@dparker1005)
+* ENHANCEMENT: Added French translation files. #91 (@michaelbeil)
+* BUG FIX/ENHANCEMENT: Improved compatibility with PMPro Multiple Memberships Per User Add On. #80, #96 (@dparker1005)
+* BUG FIX/ENHANCEMENT: Now passing post IDs to `pmprobpc_memberHasAccessWithAnyLevel()` when checking if a user has access to specific restricted content. #80 (@dparker1005)
+* BUG FIX/ENHANCMENET: Overdue orders will now be moved into "error" status. #95 (@dparker1005)
+* BUG FIX: Now sending an email after a recurring check order is generated in pending status. #84 (@becleung)
+* BUG FIX: Fixed issue where content set to be restricted to non-members would be hidden from logged-in non-members. #83 (@dparker1005)
+* BUG FIX: Fixed issue where an invoice email would be sent every time that a check order in "success" status was saved. #94 (@dparker1005)
+* BUG FIX: Fixed issue where the PMPro Add PayPal Express Add On would still give the option to pay with PayPal at checkout even when the level is set to only allow check payments. #87 (@JarrydLong)
+* REFACTOR: Now using the function `get_option()` instead of `pmpro_getOption()` when retrieving the "Pay by Check" settings. #90 (@JarrydLong)
+* REFACTOR: No longer pulling the checkout level ID directly from the `$_REQUEST` variable. #88 (@dparker1005)
+* REFACTOR: Deprecating misspelled function `pmprobpc_isMemberPending()` in favor of `pmpropbc_isMemberPending()`. #80 (@dparker1005)
+
 = 0.11 - 2022-09-14 =
 * ENHANCEMENT: Tweaked the confirmation message on the confirmation page to clearly show that no access is available until payment is received.
 * ENHANCEMENT: Improved cases where orders would stay in pending if members checked out for the same level but change their payment method. Previous orders now are set with the "token" status if switching gateways and had a pending status with check payment.
