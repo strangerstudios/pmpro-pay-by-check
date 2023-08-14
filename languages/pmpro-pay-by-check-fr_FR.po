@@ -1,128 +1,122 @@
-#
-# Hi there! Details on how to help out translating Paid Memberships Pro can be found at:
-# http://www.paidmembershipspro.com/documentation/languages/
-#
+# Copyright (C) 2023 Stranger Studios
+# This file is distributed under the same license as the Paid Memberships Pro - Pay by Check Add On plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: jason@strangerstudios.com\n"
-"POT-Creation-Date: 2016-03-17 22:50-0400\n"
-"PO-Revision-Date: 2023-06-29 18:29-0500\n"
-"Last-Translator: \n"
-"Language-Team: Stranger Studios <jason@strangerstudios.com>\n"
-"Language: fr_FR\n"
+"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 0.11.1\n"
+"Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
+"Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
+"Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"POT-Creation-Date: 2023-08-14T18:24:23+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.8.1\n"
+"X-Domain: pmpro-pay-by-check\n"
 
 #: pmpro-pay-by-check.php:45
+#: pmpro-pay-by-check.php:47
 msgid "Pay by Check Settings"
 msgstr "Paiement par chèque"
 
 #: pmpro-pay-by-check.php:46
-msgid ""
-"Change this setting to allow or disallow the pay by check option for this "
-"level."
-msgstr ""
-"Changez ce paramètre pour permettre ou non le paiement par chèque pour ce "
-"niveau."
+#: pmpro-pay-by-check.php:48
+msgid "Change this setting to allow or disallow the pay by check option for this level."
+msgstr "Changez ce paramètre pour permettre ou non le paiement par chèque pour ce niveau."
 
 #: pmpro-pay-by-check.php:50
+#: pmpro-pay-by-check.php:52
 msgid "Allow Pay by Check:"
 msgstr "Permettre le paiement par chèque:"
 
 #: pmpro-pay-by-check.php:53
+#: pmpro-pay-by-check.php:55
 msgid "No. Use the default gateway only."
 msgstr "Non. Utiliser seulement la passerelle par défaut."
 
 #: pmpro-pay-by-check.php:54
+#: pmpro-pay-by-check.php:56
 msgid "Yes. Users choose between default gateway and check."
-msgstr ""
-"Oui. Les usagers peuvent choisir entre la passerelle par défaut ou par "
-"chèque."
+msgstr "Oui. Les usagers peuvent choisir entre la passerelle par défaut ou par chèque."
 
 #: pmpro-pay-by-check.php:55
+#: pmpro-pay-by-check.php:57
 msgid "Yes. Users can only pay by check."
 msgstr "Oui. Les usagers peuvent seulement payer par chèque."
 
 #: pmpro-pay-by-check.php:60
+#: pmpro-pay-by-check.php:62
 msgid "Send Renewal Emails:"
 msgstr "Envoyer les courriels de renouvellement:"
 
 #: pmpro-pay-by-check.php:62
+#: pmpro-pay-by-check.php:64
 msgid "days before renewal."
 msgstr "jours avant le renouvellement."
 
 #: pmpro-pay-by-check.php:66
+#: pmpro-pay-by-check.php:68
 msgid "Send Reminder Emails:"
 msgstr "Envoyer les courriels de renouvellement:"
 
-#: pmpro-pay-by-check.php:68 pmpro-pay-by-check.php:74
+#: pmpro-pay-by-check.php:68
+#: pmpro-pay-by-check.php:74
+#: pmpro-pay-by-check.php:70
+#: pmpro-pay-by-check.php:76
 msgid "days after a missed payment."
 msgstr "jours après le paiement échoué."
 
 #: pmpro-pay-by-check.php:72
+#: pmpro-pay-by-check.php:74
 msgid "Cancel Membership:"
 msgstr "Annuler l'abonnement:"
 
 #: pmpro-pay-by-check.php:182
+#: pmpro-pay-by-check.php:164
 msgid "Choose Your Payment Method"
 msgstr "Veuillez choisir votre méthode de paiement"
 
 #: pmpro-pay-by-check.php:191
+#: pmpro-pay-by-check.php:170
 msgid "Pay with PayPal"
 msgstr "Payer avec PayPal"
 
 #: pmpro-pay-by-check.php:193
+#: pmpro-pay-by-check.php:176
 msgid "Pay by Credit Card"
 msgstr "Payer par carte de crédit"
 
 #: pmpro-pay-by-check.php:196
+#: pmpro-pay-by-check.php:181
 msgid "Pay by Check"
 msgstr "Payer par chèque"
 
 #: pmpro-pay-by-check.php:462
-msgid ""
-"<strong>Membership pending.</strong> We are still waiting for payment of "
-"this invoice."
-msgstr ""
-"<strong>Abonnement en suspens.</strong> Nous sommes toujours en attente du "
-"paiement de cette facture."
+msgid "<strong>Membership pending.</strong> We are still waiting for payment of this invoice."
+msgstr "<strong>Abonnement en suspens.</strong> Nous sommes toujours en attente du paiement de cette facture."
 
 #: pmpro-pay-by-check.php:464
-msgid ""
-"<strong>Important Notice:</strong> We are still waiting for payment of this "
-"invoice."
-msgstr ""
-"<strong>Avis important:</strong> Nous sommes toujours en attente du paiement "
-"de cette facture."
+msgid "<strong>Important Notice:</strong> We are still waiting for payment of this invoice."
+msgstr "<strong>Avis important:</strong> Nous sommes toujours en attente du paiement de cette facture."
 
 #: pmpro-pay-by-check.php:474
 #, php-format
-msgid ""
-"<strong>Membership pending.</strong> We are still waiting for payment for <a "
-"href=\"%s\">your latest invoice</a>."
-msgstr ""
-"<strong>Abonnement en suspens.</strong> Nous sommes toujours en attente du "
-"paiement de votre <a href=\"%s\">dernière facture</a>."
+msgid "<strong>Membership pending.</strong> We are still waiting for payment for <a href=\"%s\">your latest invoice</a>."
+msgstr "<strong>Abonnement en suspens.</strong> Nous sommes toujours en attente du paiement de votre <a href=\"%s\">dernière facture</a>."
 
 #: pmpro-pay-by-check.php:476
 #, php-format
-msgid ""
-"<strong>Important Notice:</strong> We are still waiting for payment for <a "
-"href=\"%s\">your latest invoice</a>."
-msgstr ""
-"<strong>Avis important:</strong> Nous sommes toujours en attente du paiement "
-"de votre <a href=\"%s\">dernière facture</a>."
+msgid "<strong>Important Notice:</strong> We are still waiting for payment for <a href=\"%s\">your latest invoice</a>."
+msgstr "<strong>Avis important:</strong> Nous sommes toujours en attente du paiement de votre <a href=\"%s\">dernière facture</a>."
 
 #: pmpro-pay-by-check.php:616
+#: pmpro-pay-by-check.php:896
 #, php-format
 msgid "New Invoice for %s at %s"
 msgstr "Nouvelle facture pour %s de %s"
 
 #: pmpro-pay-by-check.php:703
+#: pmpro-pay-by-check.php:1042
 #, php-format
 msgid "Reminder: New Invoice for %s at %s"
 msgstr "Rappel: nouvelle facture pour %s de %s"
@@ -151,3 +145,67 @@ msgstr "Soutien"
 #: pmpro-pay-by-check.php:886
 msgid "Visit Customer Support Forum"
 msgstr "Visiter le forum de soutien au client"
+
+#. Plugin Name of the plugin
+msgid "Paid Memberships Pro - Pay by Check Add On"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/"
+msgstr ""
+
+#. Description of the plugin
+msgid "A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels."
+msgstr ""
+
+#. Author of the plugin
+msgid "Stranger Studios"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.paidmembershipspro.com"
+msgstr ""
+
+#: pmpro-pay-by-check.php:172
+msgid "Pay with 2Checkout"
+msgstr ""
+
+#: pmpro-pay-by-check.php:174
+msgid "Pay with PayFast"
+msgstr ""
+
+#: pmpro-pay-by-check.php:188
+msgid "Check Out with PayPal"
+msgstr ""
+
+#: pmpro-pay-by-check.php:641
+msgid "%sYour %s membership is pending.%s We are still waiting for payment for %syour latest invoice%s."
+msgstr ""
+
+#: pmpro-pay-by-check.php:643
+msgid "%sImportant Notice:%s We are still waiting for payment on %sthe latest invoice%s for your %s membership."
+msgstr ""
+
+#: pmpro-pay-by-check.php:671
+msgid "%sMembership pending.%s We are still waiting for payment of this invoice."
+msgstr ""
+
+#: pmpro-pay-by-check.php:673
+msgid "%sImportant Notice:%s We are still waiting for payment of this invoice."
+msgstr ""
+
+#: pmpro-pay-by-check.php:699
+msgid "Thank you for your membership to %1$s. Your %2$s membership status is: <b>%3$s</b>."
+msgstr ""
+
+#: pmpro-pay-by-check.php:699
+msgid "Once payment is received and processed you will gain access to your membership content."
+msgstr ""
+
+#: pmpro-pay-by-check.php:707
+msgid "Below are details about your membership account and a receipt for your initial membership invoice. A welcome email with a copy of your initial membership invoice has been sent to %s."
+msgstr ""
+
+#: pmpro-pay-by-check.php:1223
+msgid "Your payment is currently pending. You will gain access to this page once it is approved."
+msgstr ""

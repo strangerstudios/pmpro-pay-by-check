@@ -1,17 +1,17 @@
-# Copyright (C) 2022 Stranger Studios
+# Copyright (C) 2023 Stranger Studios
 # This file is distributed under the same license as the Paid Memberships Pro - Pay by Check Add On plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 0.11\n"
+"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 0.11.1\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-09-14T10:01:35+00:00\n"
+"POT-Creation-Date: 2023-08-14T18:24:23+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.6.0\n"
+"X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: pmpro-pay-by-check\n"
 
 #. Plugin Name of the plugin
@@ -107,42 +107,42 @@ msgstr ""
 msgid "Check Out with PayPal"
 msgstr ""
 
-#: pmpro-pay-by-check.php:621
+#: pmpro-pay-by-check.php:641
+msgid "%sYour %s membership is pending.%s We are still waiting for payment for %syour latest invoice%s."
+msgstr ""
+
+#: pmpro-pay-by-check.php:643
+msgid "%sImportant Notice:%s We are still waiting for payment on %sthe latest invoice%s for your %s membership."
+msgstr ""
+
+#: pmpro-pay-by-check.php:671
 msgid "%sMembership pending.%s We are still waiting for payment of this invoice."
 msgstr ""
 
-#: pmpro-pay-by-check.php:623
+#: pmpro-pay-by-check.php:673
 msgid "%sImportant Notice:%s We are still waiting for payment of this invoice."
 msgstr ""
 
-#: pmpro-pay-by-check.php:633
-msgid "%sMembership pending.%s We are still waiting for payment for %syour latest invoice%s."
-msgstr ""
-
-#: pmpro-pay-by-check.php:635
-msgid "%sImportant Notice:%s We are still waiting for payment for %syour latest invoice%s."
-msgstr ""
-
-#: pmpro-pay-by-check.php:663
+#: pmpro-pay-by-check.php:699
 msgid "Thank you for your membership to %1$s. Your %2$s membership status is: <b>%3$s</b>."
 msgstr ""
 
-#: pmpro-pay-by-check.php:663
+#: pmpro-pay-by-check.php:699
 msgid "Once payment is received and processed you will gain access to your membership content."
 msgstr ""
 
-#: pmpro-pay-by-check.php:670
+#: pmpro-pay-by-check.php:707
 msgid "Below are details about your membership account and a receipt for your initial membership invoice. A welcome email with a copy of your initial membership invoice has been sent to %s."
 msgstr ""
 
-#: pmpro-pay-by-check.php:833
+#: pmpro-pay-by-check.php:896
 msgid "New Invoice for %s at %s"
 msgstr ""
 
-#: pmpro-pay-by-check.php:930
+#: pmpro-pay-by-check.php:1042
 msgid "Reminder: New Invoice for %s at %s"
 msgstr ""
 
-#: pmpro-pay-by-check.php:1105
+#: pmpro-pay-by-check.php:1223
 msgid "Your payment is currently pending. You will gain access to this page once it is approved."
 msgstr ""
