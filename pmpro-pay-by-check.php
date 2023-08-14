@@ -1180,7 +1180,7 @@ function pmpropbc_cancel_overdue_orders()
 				do_action("pmpro_membership_pre_membership_expiry", $order->user_id, $order->membership_id );
 
 				//remove their membership
-				pmpro_changeMembershipLevel(false, $order->user_id, 'expired');
+				pmpro_cancelMembershipLevel( $order->membership_id, $order->user_id, 'expired' );
 
 				// Update the order.
 				$order->status = 'error';
