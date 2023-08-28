@@ -316,6 +316,9 @@ function pmpropbc_init_include_billing_address_fields()
 			add_filter('pmpro_include_billing_address_fields', '__return_false', 20);
 			add_filter('pmpro_include_payment_information_fields', '__return_false', 20);
 
+			//Make sure the billing address fields aren't still required when using the Address for Free Levels Add On
+			remove_action("pmpro_required_billing_fields", "pmproaffl_pmpro_required_billing_fields", 30);
+
 			//Hide the toggle section if the PayPal Express Add On is active
 			remove_action( "pmpro_checkout_boxes", "pmproappe_pmpro_checkout_boxes", 20 );
 		} else {
