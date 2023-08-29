@@ -294,6 +294,8 @@ add_filter("pmpro_valid_gateways", "pmpropbc_pmpro_valid_gateways");
  */
 function pmpropbc_pmpro_get_gateway($gateway)
 {
+	_deprecated_function( __FUNCTION__, 'TBD' );
+
 	$level = pmpro_getLevelAtCheckout();
 
 	if ( ! empty( $level->id ) )
