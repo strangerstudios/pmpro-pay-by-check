@@ -193,6 +193,9 @@ function pmpropbc_checkout_boxes()
 		</div> <!-- end pmpro_checkout-fields -->
 	</div> <!-- end #pmpro_payment_method -->
 	<?php
+	} elseif ( $gateway_setting != "check" && $options['setting'] == 2 ) { ?>
+		<input type="hidden" name="gateway" value="check" />
+	<?php
 	}
 }
 add_action("pmpro_checkout_boxes", "pmpropbc_checkout_boxes", 20);
@@ -235,6 +238,15 @@ function pmpropbc_enqueue_scripts() {
 	//get original checkout level and another with discount code applied	
 	$pmpro_nocode_level = pmpro_getLevelAtCheckout(false, '^*NOTAREALCODE*^');
 	$pmpro_code_level = pmpro_getLevelAtCheckout();			//NOTE: could be same as $pmpro_nocode_level if no code was used
+
+	// Determine whether this level is a "check only" level.
+	$check_only = 0;
+	if ( ! empty( $pmpro_code_level->id ) ) {
+		$options = pmpropbc_getOptions( $pmpro_code_level->id );
+		if ( $options['setting'] == 2 ) {
+			$check_only = 1;
+		}
+	}
 	
 	//restore these values
 	$pmpro_msg = $omsg;
@@ -247,6 +259,7 @@ function pmpropbc_enqueue_scripts() {
 			'pmpro_review' => (bool)$pmpro_review,
 			'is_admin'  =>  is_admin(),
             'hide_billing_address_fields' => apply_filters('pmpro_hide_billing_address_fields', false ),
+			'check_only' => $check_only,
 		)
 	);
 
@@ -274,9 +287,11 @@ function pmpropbc_pmpro_valid_gateways($gateways)
 }
 add_filter("pmpro_valid_gateways", "pmpropbc_pmpro_valid_gateways");
 
-/*
-	Force check gateway if pbc_setting is 2
-*/
+/**
+ * Force check gateway if pbc_setting is 2.
+ *
+ * @deprecated TBD Now handled similarly to pbc_setting 1.
+ */
 function pmpropbc_pmpro_get_gateway($gateway)
 {
 	$level = pmpro_getLevelAtCheckout();
@@ -291,8 +306,6 @@ function pmpropbc_pmpro_get_gateway($gateway)
 
 	return $gateway;
 }
-add_filter('pmpro_get_gateway', 'pmpropbc_pmpro_get_gateway');
-add_filter('option_pmpro_gateway', 'pmpropbc_pmpro_get_gateway');
 
 /*
 	Need to remove some filters added by the check gateway.
