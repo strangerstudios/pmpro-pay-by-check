@@ -487,9 +487,11 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
 	if ( empty( $level_id ) ) {
 		$is_pending = false;
 		$levels = pmpro_getMembershipLevelsForUser( $user_id );
-		foreach ( $levels as $level ) {
-			if ( pmpropbc_isMemberPending( $user_id, $level->id ) ) {
-				$is_pending = true;
+		if ( ! empty( $levels) ) {
+			foreach ( $levels as $level ) {
+				if ( pmpropbc_isMemberPending( $user_id, $level->id ) ) {
+					$is_pending = true;
+				}
 			}
 		}
 		$pmpropbc_pending_member_cache[$user_id][$level_id] = $is_pending;
@@ -548,15 +550,20 @@ function pmpropbc_isMemberPending($user_id, $level_id = 0)
  *	@return bool If user has access to content or not.
  */
 function pmprobpc_memberHasAccessWithAnyLevel( $user_id, $content_levels = null ) {
-	$user_levels = wp_list_pluck( pmpro_getMembershipLevelsForUser( $user_id ), 'id' );
+	$user_levels = pmpro_getMembershipLevelsForUser( $user_id );
+	if ( empty( $user_levels ) ) {
+		return false;
+	}
+
+	$user_level_ids = wp_list_pluck( $user_levels, 'id' );
 	if ( empty( $content_levels ) ) {
 		// Check all user levels.
-		$content_levels = $user_levels;
+		$content_levels = $user_level_ids;
 	}
 
 	// Loop through all content levels.
 	foreach ( $content_levels as $content_level ) {
-		if ( in_array( $content_level, $user_levels ) && ! pmpropbc_isMemberPending( $user_id, $content_level ) ) {
+		if ( in_array( $content_level, $user_level_ids ) && ! pmpropbc_isMemberPending( $user_id, $content_level ) ) {
 			return true;
 		}
 	}
@@ -626,6 +633,10 @@ add_filter( 'pmpro_member_shortcode_access', 'pmpropbc_pmpro_member_shortcode_ac
  */
 function pmpropbc_pmpro_account_bullets_bottom() {
 	$user_levels = pmpro_getMembershipLevelsForUser( get_current_user_id() );
+	if ( empty( $user_levels ) ) {
+		return;
+	}
+
 	foreach ( $user_levels as $level ) {
 		// Get the last order for this level.
 		$order = new MemberOrder();
