@@ -331,6 +331,9 @@ function pmpropbc_init_include_billing_address_fields()
 			add_filter('pmpro_include_billing_address_fields', '__return_false', 20);
 			add_filter('pmpro_include_payment_information_fields', '__return_false', 20);
 
+			// Need to also specifically remove them for Stripe.
+			remove_filter( 'pmpro_include_payment_information_fields', array( 'PMProGateway_stripe', 'pmpro_include_payment_information_fields' ) );
+
 			//Hide the toggle section if the PayPal Express Add On is active
 			remove_action( "pmpro_checkout_boxes", "pmproappe_pmpro_checkout_boxes", 20 );
 		} else {
