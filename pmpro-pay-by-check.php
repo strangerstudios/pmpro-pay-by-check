@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: 0.11.1
+Version: 0.11.2
 Author: Stranger Studios
 Author URI: https://www.paidmembershipspro.com
 Text Domain: pmpro-pay-by-check
@@ -25,7 +25,7 @@ Domain Path: /languages
 	Settings, Globals and Constants
 */
 define( 'PMPRO_PAY_BY_CHECK_DIR', dirname(__FILE__) );
-define( 'PMPROPBC_VER', '0.11.1' );
+define( 'PMPROPBC_VER', '0.11.2' );
 
 /*
 	Load plugin textdomain.

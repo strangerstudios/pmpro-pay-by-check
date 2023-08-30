@@ -2,8 +2,8 @@
 Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 5.0
-Tested up to: 6.2
-Stable tag: 0.11.1
+Tested up to: 6.3
+Stable tag: 0.11.2
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,11 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
+= 0.11.2 - 2023-08-30 =
+* BUG FIX/ENHANCMENET: Improved performance when loading the checkout page for a "check only" level to avoid issue where some sites could run out of PHP memory. #99 (@dparker1005)
+* BUG FIX: Fixed PHP warnings that could occur when the user is logged out. #98 (@dparker1005)
+* REFACTOR: Deprecating the function `pmpropbc_pmpro_get_gateway()` as a part of the performance improvements. #99 (@dparker1005)
+
 = 0.11.1 - 2023-08-14 =
 * ENHANCEMENT: Updating `<h3>` tags to `<h2>` tags for better accessibility. #92 (@kimcoleman)
 * ENHANCEMENT: Now listing all levels with pending payments in the Membership Account page. #80 (@dparker1005)
