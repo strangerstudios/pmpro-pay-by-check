@@ -32,7 +32,7 @@ https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
 = 0.11.2 - 2023-08-30 =
-* BUG FIX/ENHANCMENET: Improved performance when loading the checkout page for a "check only" level to avoid issue where some sites could run out of PHP memory. #99 (@dparker1005)
+* BUG FIX/ENHANCEMENT: Improved performance when loading the checkout page for a "check only" level to avoid issue where some sites could run out of PHP memory. #99 (@dparker1005)
 * BUG FIX: Fixed PHP warnings that could occur when the user is logged out. #98 (@dparker1005)
 * REFACTOR: Deprecating the function `pmpropbc_pmpro_get_gateway()` as a part of the performance improvements. #99 (@dparker1005)
 
