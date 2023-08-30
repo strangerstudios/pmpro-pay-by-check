@@ -40,7 +40,7 @@ function pmpropbc_isLevelFree() {
 }
 
 function pmpropbc_isCheckGatewayChosen() {
-	if(jQuery('input[name=gateway]:checked').val() === 'check') {
+	if(jQuery('input[name=gateway]:checked').val() === 'check' || pmpropbc.check_only === '1') {
 		return true;
 	} else {
 		return false;
