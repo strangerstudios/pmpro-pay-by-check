@@ -906,7 +906,8 @@ function pmpropbc_recurring_orders()
 				$order_timestamp = strtotime("+" . $combo, $order->timestamp);
 
 				//let's skip if there is already an order for this user/level/timestamp
-				$dupe = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . $order->user_id . "' AND membership_id = '" . $order->membership_id . "' AND timestamp >= '" . date('Y-m-d H:i:s', $order_timestamp) . "' LIMIT 1");
+				// Giving 1 day of wiggle room to avoid duplicate orders being created after updating to this new logic.
+				$dupe = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . $order->user_id . "' AND membership_id = '" . $order->membership_id . "' AND timestamp >= '" . date( 'Y-m-d H:i:s', $order_timestamp - 60 * 60 * 24 ) . "' LIMIT 1");
 				if(!empty($dupe))
 					continue;
 
