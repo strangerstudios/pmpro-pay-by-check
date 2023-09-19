@@ -906,17 +906,14 @@ function pmpropbc_recurring_orders()
 				$order_timestamp = strtotime("+" . $combo, $order->timestamp);
 
 				//let's skip if there is already an order for this user/level/timestamp
-				$sqlQuery = "SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . $order->user_id . "' AND membership_id = '" . $order->membership_id . "' AND timestamp = '" . date('d', $order_timestamp) . "' LIMIT 1";
-				$dupe = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . $order->user_id . "' AND membership_id = '" . $order->membership_id . "' AND timestamp = '" . $order_timestamp . "' LIMIT 1");
+				$dupe = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . $order->user_id . "' AND membership_id = '" . $order->membership_id . "' AND timestamp >= '" . date('Y-m-d H:i:s', $order_timestamp) . "' LIMIT 1");
 				if(!empty($dupe))
 					continue;
 
 				//save it
 				$morder->process();
+				$morder->timestamp = $order_timestamp;
 				$morder->saveOrder();
-
-				//update the timestamp
-				$morder->updateTimestamp(date("Y", $order_timestamp), date("m", $order_timestamp), date("d", $order_timestamp));
 
 				//send emails
 				$email = new PMProEmail();
