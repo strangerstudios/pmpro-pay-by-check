@@ -882,6 +882,11 @@ function pmpropbc_recurring_orders()
 				if( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0)
 				  continue;
 
+				// Make sure that the user's billing structure is the same as the billing structure that we are checking for ($combo).
+				if ( $user->membership_level->cycle_number . ' ' . $user->membership_level->cycle_period != $combo ) {
+					continue;
+				}
+
 				//create new pending order
 				$morder = new MemberOrder();
 				$morder->user_id = $order->user_id;
@@ -1061,6 +1066,11 @@ function pmpropbc_reminder_emails()
 					continue;
 				}
 
+				// Make sure that the user's billing structure is the same as the billing structure that we are checking for ($combo).
+				if ( $user->membership_level->cycle_number . ' ' . $user->membership_level->cycle_period != $combo ) {
+					continue;
+				}
+
 				//note when we send the reminder
 				$new_notes = $order->notes . "Reminder Sent:" . $today . "\n";
 				$wpdb->query("UPDATE $wpdb->pmpro_membership_orders SET notes = '" . esc_sql($new_notes) . "' WHERE id = '" . $order_id . "' LIMIT 1");
@@ -1203,6 +1213,11 @@ function pmpropbc_cancel_overdue_orders()
 
 				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at this level
 				if ( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0 ) {
+					continue;
+				}
+
+				// Make sure that the user's billing structure is the same as the billing structure that we are checking for ($combo).
+				if ( $user->membership_level->cycle_number . ' ' . $user->membership_level->cycle_period != $combo ) {
 					continue;
 				}
 
