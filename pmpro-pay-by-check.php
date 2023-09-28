@@ -920,7 +920,7 @@ function pmpropbc_recurring_orders()
 
 				//let's skip if there is already an order for this user/level/timestamp
 				// make sure there's no order for the current order_timesamp (ignore hours/seconds and focus on the day value itself).
-				$dupe = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . $order->user_id . "' AND membership_id = '" . $order->membership_id . "' AND timestamp LIKE '" . date( 'Y-m-d', $order_timestamp ) . "%' LIMIT 1" );
+				$dupe = $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . esc_sql( $order->user_id ) . "' AND membership_id = '" . esc_sql( $order->membership_id ) . "' AND timestamp LIKE '" . esc_sql( date( 'Y-m-d', $order_timestamp ) ) . "%' LIMIT 1" );
 
 				if(!empty($dupe))
 					continue;
