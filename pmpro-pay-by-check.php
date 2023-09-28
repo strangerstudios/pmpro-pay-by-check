@@ -633,6 +633,11 @@ function pmpropbc_pmpro_member_shortcode_access( $hasaccess, $content, $levels, 
 		return $hasaccess;
 	}
 
+	//If no levels attribute is added to the shortcode, assume access for any level
+	if( ! is_array( $levels ) ) {
+		return pmprobpc_memberHasAccessWithAnyLevel( $current_user->ID, $levels );
+	}
+
 	// If we are checking if the user is not a member, we don't want to hide this content if they are pending.
 	foreach ( $levels as $level ) {
 		if ( intval( $level ) <= 0 ) {
