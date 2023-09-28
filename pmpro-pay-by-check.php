@@ -327,9 +327,12 @@ function pmpropbc_init_include_billing_address_fields()
     			
 		if($options['setting'] == 2)
 		{
-			//hide billing address and payment info fields
-			add_filter('pmpro_include_billing_address_fields', '__return_false', 20);
-			add_filter('pmpro_include_payment_information_fields', '__return_false', 20);
+			//Only hide the address if we're not using the Address for Free Levels Add On
+			if ( ! function_exists( 'pmproaffl_pmpro_required_billing_fields' ) ) {				
+				//hide billing address and payment info fields
+				add_filter('pmpro_include_billing_address_fields', '__return_false', 20);
+				add_filter('pmpro_include_payment_information_fields', '__return_false', 20);
+			}
 
 			// Need to also specifically remove them for Stripe.
 			remove_filter( 'pmpro_include_payment_information_fields', array( 'PMProGateway_stripe', 'pmpro_include_payment_information_fields' ) );
