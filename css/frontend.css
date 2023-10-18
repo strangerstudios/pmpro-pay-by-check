@@ -1,0 +1,9 @@
+.pmpro_checkout-fields.payments {
+    display: flex;
+    gap: 20px;
+}
+
+.pmpro_checkout-fields .gateway-radio-wrapper {
+    display: flex;
+    gap: 5px;
+}
