@@ -43,18 +43,21 @@ function pmpropbc_pmpro_membership_level_after_other_settings()
 {
 	$level_id = intval($_REQUEST['edit']);
 	$options = pmpropbc_getOptions($level_id);
+	$check_gateway_name = !empty(get_option( 'pmpro_check_gateway_name' ) ) ? get_option( 'pmpro_check_gateway_name' ) :  __( 'Check', 'pmpro-pay-by-check' ); // Default to 'Check' if no option is set for
+
+
 ?>
-<h3 class="topborder"><?php _e('Pay by Check Settings', 'pmpro-pay-by-check');?></h3>
-<p><?php _e('Change this setting to allow or disallow the pay by check option for this level.', 'pmpro-pay-by-check');?></p>
+<h3 class="topborder"><?php  _e( str_replace( "Pay by Check", $check_gateway_name,'Pay by Check Settings' ), 'pmpro-pay-by-check');?></h3>
+<p><?php   _e( str_replace("pay by check", $check_gateway_name,'Change this setting to allow or disallow the pay by check option for this level.'), 'pmpro-pay-by-check');?></p>
 <table>
 <tbody class="form-table">
 	<tr>
-		<th scope="row" valign="top"><label for="pbc_setting"><?php _e('Allow Pay by Check:', 'pmpro-pay-by-check');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_setting"><?php  _e( str_ireplace( "Check", $check_gateway_name,'Allow Pay by Check:' ), 'pmpro-pay-by-check' );?></label></th>
 		<td>
 			<select id="pbc_setting" name="pbc_setting">
 				<option value="0" <?php selected($options['setting'], 0);?>><?php _e('No. Use the default gateway only.', 'pmpro-pay-by-check');?></option>
-				<option value="1" <?php selected($options['setting'], 1);?>><?php _e('Yes. Users choose between default gateway and check.', 'pmpro-pay-by-check');?></option>
-				<option value="2" <?php selected($options['setting'], 2);?>><?php _e('Yes. Users can only pay by check.', 'pmpro-pay-by-check');?></option>
+				<option value="1" <?php selected($options['setting'], 1);?>><?php _e( str_replace( "check", $check_gateway_name, 'Yes. Users choose between default gateway and check.'), 'pmpro-pay-by-check' );?></option>
+				<option value="2" <?php selected($options['setting'], 2);?>><?php _e( str_replace( "check", $check_gateway_name, 'Yes. Users can only pay by check.' ), 'pmpro-pay-by-check' );?></option>
 			</select>
 		</td>
 	</tr>
@@ -156,6 +159,8 @@ function pmpropbc_checkout_boxes()
 
 	$options = pmpropbc_getOptions($pmpro_level->id);
 
+	$check_gateway_name = get_option( 'pmpro_check_gateway_name' );
+
 	//only show if the main gateway is not check and setting value == 1 (value == 2 means only do check payments)
 	if ( $gateway_setting != "check" && $options['setting'] == 1 ) { ?>
 	<div id="pmpro_payment_method" class="pmpro_checkout">
@@ -178,7 +183,7 @@ function pmpropbc_checkout_boxes()
 			</span> <!-- end gateway_$gateway_setting -->
 			<span class="gateway_check">
 					<input type="radio" name="gateway" value="check" <?php if($gateway == "check") { ?>checked="checked"<?php } ?> />
-					<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Check', 'pmpro-pay-by-check');?></a> &nbsp;
+					<a href="javascript:void(0);" class="pmpro_radio"><?php if( !empty( $check_gateway_name ) ) { _e('Pay by ', 'pmpro-pay-by-check'); echo esc_attr( $check_gateway_name ); } else { _e('Pay by Check', 'pmpro-pay-by-check'); }?></a> &nbsp;
 			</span> <!-- end gateway_check -->
 			<?php
 				//support the PayPal Website Payments Pro Gateway which has PayPal Express as a second option natively
