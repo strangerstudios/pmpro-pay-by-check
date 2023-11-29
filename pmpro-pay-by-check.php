@@ -771,6 +771,14 @@ function pmpropbc_send_invoice_email( $morder ) {
 		return;
 	}
 
+	// If using PMPro v3.0+, update the subscription data.
+	if ( method_exists( $morder, 'get_subscription' ) ) {
+		$subscription = $morder->get_subscription();
+		if ( ! empty( $subscription ) ) {
+			$subscription->update();
+		}
+	}
+
 	// Check order meta to see if an invoice email has already been sent for this order.
 	if ( function_exists( 'get_pmpro_membership_order_meta' ) && get_pmpro_membership_order_meta( $morder->id, 'pmpropbc_invoice_email_sent', true ) ) {
 		return;
@@ -874,6 +882,15 @@ function pmpropbc_recurring_orders()
 			foreach($orders as $order_id)
 			{
 				$order = new MemberOrder($order_id);
+
+				// If using PMPro v3.0+, only create a pending order if the subscription is still active.
+				if ( method_exists( $order, 'get_subscription' ) ) {
+					$subscription = $order->get_subscription();
+					if ( ! empty( $subscription ) && 'active' !== $subscription->get_status() ) {
+						continue;
+					}
+				}
+
 				$user = get_userdata($order->user_id);
 				if ( $user ) {
 					$user->membership_level = pmpro_getSpecificMembershipLevelForUser( $order->user_id, $level->id );
@@ -1052,6 +1069,15 @@ function pmpropbc_reminder_emails()
 			{
 				//get some data
 				$order = new MemberOrder($order_id);
+
+				// If using PMPro v3.0+, only send reminders if the subscription is still active.
+				if ( method_exists( $order, 'get_subscription' ) ) {
+					$subscription = $order->get_subscription();
+					if ( ! empty( $subscription ) && 'active' !== $subscription->get_status() ) {
+						continue;
+					}
+				}
+
 				$user = get_userdata($order->user_id);
 				if ( $user ) {
 					$user->membership_level = pmpro_getSpecificMembershipLevelForUser( $order->user_id, $level->id );
@@ -1202,6 +1228,15 @@ function pmpropbc_cancel_overdue_orders()
 			{
 				//get the order and user data
 				$order = new MemberOrder($order_id);
+
+				// If using PMPro v3.0+, only process overdue orders if the subscription is still active.
+				if ( method_exists( $order, 'get_subscription' ) ) {
+					$subscription = $order->get_subscription();
+					if ( ! empty( $subscription ) && 'active' !== $subscription->get_status() ) {
+						continue;
+					}
+				}
+
 				$user = get_userdata($order->user_id);
 				if ( $user ) {
 					$user->membership_level = pmpro_getSpecificMembershipLevelForUser( $order->user_id, $level->id );
