@@ -1327,3 +1327,27 @@ function pmpropbc_plugin_row_meta($links, $file) {
 	return $links;
 }
 add_filter('plugin_row_meta', 'pmpropbc_plugin_row_meta', 10, 2);
+
+/**
+ * Add the Pay by Check email templates to the Core PMPro Email Templates.
+ * 
+ * @param array $template - The existing PMPro Email Templates.
+ * @return array $template - The updated PMPro Email Templates.
+ * @since TBD.
+ */
+function pmpropbc_email_template_to_pmproet_add_on( $template ) {
+
+	$template['check_pending'] = array(
+		'subject'     => 'New Invoice for !!display_name!! at !!sitename!!',
+		'description' => 'Pay By Check - Check Pending',
+		'body'        => file_get_contents( PMPRO_PAY_BY_CHECK_DIR . '/email/check_pending.html' ), 
+	);
+	$template['check_pending_reminder'] = array(
+		'subject'     => 'Reminder: New Invoice for !!display_name!! at !!sitename!!',
+		'description' => 'Pay By Check - Check Pending Reminder',
+		'body'        => file_get_contents( PMPRO_PAY_BY_CHECK_DIR . '/email/check_pending_reminder.html' ), 
+	);
+
+	return $template;
+}
+add_filter( 'pmproet_templates', 'pmpropbc_email_template_to_pmproet_add_on' );
