@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: 0.11.3
+Version: 0.12
 Author: Stranger Studios
 Author URI: https://www.paidmembershipspro.com
 Text Domain: pmpro-pay-by-check
@@ -25,7 +25,7 @@ Domain Path: /languages
 	Settings, Globals and Constants
 */
 define( 'PMPRO_PAY_BY_CHECK_DIR', dirname(__FILE__) );
-define( 'PMPROPBC_VER', '0.11.3' );
+define( 'PMPROPBC_VER', '0.12' );
 
 /*
 	Load plugin textdomain.
@@ -768,7 +768,6 @@ add_filter( 'pmpro_confirmation_message', 'pmpropbc_confirmation_message', 10, 2
  * @param MemberOrder $morder - Updated order as it's being saved
  */
 function pmpropbc_send_invoice_email( $morder ) {
-
     // Only worry about this if this is a check order that is now in "success" status.
     if ( 'check' !== strtolower( $morder->payment_type ) || 'success' !== $morder->status ) {
 		return;

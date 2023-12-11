@@ -2,8 +2,8 @@
 Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 5.0
-Tested up to: 6.3
-Stable tag: 0.11.3
+Tested up to: 6.4
+Stable tag: 0.12
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -31,6 +31,11 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
+= 0.12 - 2023-12-11 =
+* FEATURE: Email templates for this Add On can now be edited from the "Memberships" > "Settings" > "Email Templates" settings page. #106 (@MaximilianoRicoTabo)
+* ENHANCEMENT: Now respecting the "Gateway Name Label" setting in core PMPro v3.0+ for updating "Check" wording. #108 (@MaximilianoRicoTabo)
+* ENHANCEMENT: Adding compatibility with the PMPro v3.0+ Subscriptions Table by updating the subscription object when a recurring invoice is generated and no longer processing recurring orders for cancelled subscriptions. #110 (@dparker1005)
+
 = 0.11.3 - 2023-10-04 =
 * SECURITY: General improvements and sanitization of the codebase. (@andrewlimaza)
 * BUG FIX: Fixed an issue where more than one order would be created mistakenly when there were different payment plans for a level. (@andrewlimaza, @dparker1005)
