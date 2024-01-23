@@ -35,6 +35,14 @@ function pmpropbc_load_textdomain() {
 }
 add_action( 'plugins_loaded', 'pmpropbc_load_textdomain' );
 
+
+function pmpropbc_init() {
+	if(! is_admin()) {
+		$csspath = plugins_url("css/frontend.css", __FILE__);
+		wp_enqueue_style( 'pmpropbc_frontend', $csspath, array(), PMPROPBC_VER, "screen");
+	}
+}
+add_action( 'init', "pmpropbc_init");
 /*
 	Add settings to the edit levels page
 */
@@ -166,30 +174,22 @@ function pmpropbc_checkout_boxes()
 		<h2>
 			<span class="pmpro_checkout-h2-name"><?php esc_html_e( 'Choose Your Payment Method', 'pmpro-pay-by-check'); ?></span>
 		</h2>
-		<div class="pmpro_checkout-fields">
-			<span class="gateway_<?php echo esc_attr($gateway_setting); ?>">
-					<input type="radio" name="gateway" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
-							<?php if($gateway_setting == "paypalexpress" || $gateway_setting == "paypalstandard") { ?>
-								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpro-pay-by-check');?></a> &nbsp;
-							<?php } elseif($gateway_setting == 'twocheckout') { ?>
-								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with 2Checkout', 'pmpro-pay-by-check');?></a> &nbsp;
-							<?php } elseif( $gateway_setting == 'payfast' ) { ?>
-								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayFast', 'pmpro-pay-by-check');?></a> &nbsp;
-							<?php } else { ?>
-								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpro-pay-by-check');?></a> &nbsp;
-							<?php } ?>
-			</span> <!-- end gateway_$gateway_setting -->
-			<span class="gateway_check">
-					<input type="radio" name="gateway" value="check" <?php if($gateway == "check") { ?>checked="checked"<?php } ?> />
-					<a href="javascript:void(0);" class="pmpro_radio"><?php echo esc_html( sprintf( __( 'Pay by %s', 'pmpro-pay-by-check' ), $check_gateway_label ) ); ?></a> &nbsp;
-			</span> <!-- end gateway_check -->
+		<div class="pmpro_checkout-fields pmpropbc">
+			<div class="gateway <?php echo esc_attr( $gateway_setting ); ?>">
+				<input type="radio" name="gateway" id ="<?php echo esc_attr( $gateway_setting ) ?>" value="<?php echo esc_attr( $gateway_setting );?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
+				<?php echo pmpropbc_gateway_label( $gateway_setting ) ?>
+			</div> <!-- end gateway_$gateway_setting -->
+			<div class="gateway check">
+					<input type="radio" name="gateway" id="check" value="check" <?php if($gateway == "check") { ?>checked="checked"<?php } ?> />
+					<?php echo pmpropbc_gateway_label( 'check' ) ?>
+			</div> <!-- end gateway_check -->
 			<?php
 				//support the PayPal Website Payments Pro Gateway which has PayPal Express as a second option natively
 				if ( $gateway_setting == "paypal" ) { ?>
-					<span class="gateway_paypalexpress">
+					<div class="gateway paypalexpress">
 						<input type="radio" name="gateway" value="paypalexpress" <?php if($gateway == "paypalexpress") { ?>checked="checked"<?php } ?> />
-						<a href="javascript:void(0);" class="pmpro_radio"><?php esc_html_e( 'Check Out with PayPal', 'pmpro-pay-by-check' ); ?></a>
-					</span>
+						<?php echo pmpropbc_gateway_label( 'paypal' ) ?>
+				</div>
 				<?php
 				}
 			?>
@@ -1388,3 +1388,39 @@ function pmpropbc_email_template_to_pmproet_add_on( $template ) {
 	return $template;
 }
 add_filter( 'pmproet_templates', 'pmpropbc_email_template_to_pmproet_add_on' );
+
+function pmpropbc_gateway_label_text( $gateway_setting ) {
+
+	switch ( $gateway_setting ) {
+		case 'check':
+			if ( ! isset( $check_gateway_label) ) {
+				$gateway_label = __( 'Pay by Check', 'pmpro-pay-by-check' );
+			} else {
+				$gateway_label = __( 'Pay by ', 'pmpro-pay-by-check' ) . $check_gateway_label;
+			}
+			break;
+		case 'paypalexpress':
+		case 'paypalstandard':
+			$gateway_label = __( 'Pay with PayPal', 'pmpro-pay-by-check' );
+			break;
+		case 'twocheckout':
+			$gateway_label = __( 'Pay with 2Checkout', 'pmpro-pay-by-check' );
+			break;
+		case 'payfast':
+			$gateway_label = __( 'Pay with PayFast', 'pmpro-pay-by-check' );
+			break;
+		case 'stripe':
+		default:
+			$gateway_label = __( 'Pay by Credit Card', 'pmpro-pay-by-check' );
+			break;
+	}
+	return $gateway_label;
+}
+
+function pmpropbc_gateway_label( $gateway_setting ) {
+
+	$gateway_label_text = esc_html( pmpropbc_gateway_label_text( $gateway_setting ) );
+
+	$gateway_label =  '<label for="' . esc_attr( $gateway_setting ) . '">' . $gateway_label_text . '</label>';
+	return  $gateway_label = apply_filters( 'pmpropbc_gateway_label_filter', $gateway_label, $gateway_setting );
+}
