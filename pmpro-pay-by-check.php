@@ -790,6 +790,28 @@ function pmpropbc_send_invoice_email( $morder ) {
 add_action( 'pmpro_order_status_success', 'pmpropbc_send_invoice_email', 10, 1 );
 
 /**
+ * Whenever a check order is saved in pending status, we need to update the subscription data.
+ *
+ * @param MemberOrder $morder - Updated order as it's being saved
+ */
+function pmpropbc_update_subscription_data_for_pending_orders( $morder ) {
+	// Only worry about this if this is a check order.
+	if ( 'check' !== strtolower( $morder->payment_type ) || 'pending' !== strtolower( $morder->status ) ) {
+		return;
+	}
+
+	// If using PMPro v3.0+, update the subscription data.
+	if ( method_exists( $morder, 'get_subscription' ) ) {
+		$subscription = $morder->get_subscription();
+		if ( ! empty( $subscription ) ) {
+			$subscription->update();
+		}
+	}
+}
+add_action( 'pmpro_added_order', 'pmpropbc_update_subscription_data_for_pending_orders', 10, 1 );
+add_action( 'pmpro_updated_order', 'pmpropbc_update_subscription_data_for_pending_orders', 10, 1 );
+
+/**
  *	Process recurring orders.
  */
 function pmpropbc_recurring_orders() {
