@@ -1,0 +1,10 @@
+.pmpro_checkout-fields.pmpropbc {
+	display: flex;
+    gap: 20px;
+}
+
+.pmpro_checkout-fields.pmpropbc .gateway {
+	display: flex;
+	gap: 5px;
+}
+
