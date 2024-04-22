@@ -57,7 +57,6 @@ function pmpropbc_recurring_orders_legacy() {
 					(SELECT mo1.id, mo1.user_id, mo1.timestamp
 				    FROM {$wpdb->pmpro_membership_orders} AS mo1
 				    WHERE mo1.membership_id = $level->id
-				        AND mo1.gateway = 'check'
 				        AND mo1.status IN('pending', 'success')
 				    ) as o2
 
