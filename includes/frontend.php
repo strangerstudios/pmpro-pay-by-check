@@ -4,31 +4,30 @@
  * Show levels with pending payments on the account page.
  */
 function pmpropbc_pmpro_account_bullets_bottom() {
-	$user_levels = pmpro_getMembershipLevelsForUser( get_current_user_id() );
-	if ( empty( $user_levels ) ) {
-		return;
-	}
+	// Get all pending check orders for this user.
+	$order_query_args = array(
+		'user_id' => get_current_user_id(),
+		'status' => 'pending',
+		'gateway' => 'check'
+	);
+	$orders = MemberOrder::get_orders( $order_query_args );
 
-	foreach ( $user_levels as $level ) {
-		// Get the last order for this level.
-		$order = new MemberOrder();
-		$order->getLastMemberOrder( get_current_user_id(), array('success', 'pending', 'cancelled' ), $level->id );
-
-		// If the order is pending and it was a check payment, show a message.
-		if ( $order->status == 'pending' && $order->gateway == 'check' ) {
-			?>
-			<li>
-				<?php
-				// Check if the user is pending for the level.
-				if ( pmpropbc_isMemberPending( $order->user_id, $order->membership_id ) ) {
-					printf( esc_html__('%sYour %s membership is pending.%s We are still waiting for payment for %syour latest invoice%s.', 'pmpro-pay-by-check'), '<strong>', esc_html( $level->name ), '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $order->code) ), '</a>' );
-				} else {
-					printf( esc_html__('%sImportant Notice:%s We are still waiting for payment on %sthe latest invoice%s for your %s membership.', 'pmpro-pay-by-check'), '<strong>', '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $order->code ) ), '</a>', esc_html( $level->name ) );
-				}
-				?>
-			</li>
+	foreach ( $orders as $order ) {
+		?>
+		<li>
 			<?php
-		}
+			// Get the level.
+			$level = pmpro_getLevel( $order->membership_id );
+
+			// Check if the user is pending for the level.
+			if ( ! pmpro_hasMembershipLevel( $order->membership_id, $order->user_id ) ) {
+				printf( esc_html__('%sYour %s membership is pending.%s We are still waiting for payment for %syour latest invoice%s.', 'pmpro-pay-by-check'), '<strong>', esc_html( $level->name ), '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $order->code) ), '</a>' );
+			} else {
+				printf( esc_html__('%sImportant Notice:%s We are still waiting for payment on %sthe latest invoice%s for your %s membership.', 'pmpro-pay-by-check'), '<strong>', '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $order->code ) ), '</a>', esc_html( $level->name ) );
+			}
+			?>
+		</li>
+		<?php
 	}
 }
 add_action('pmpro_account_bullets_bottom', 'pmpropbc_pmpro_account_bullets_bottom');
@@ -50,7 +49,7 @@ function pmpropbc_pmpro_invoice_bullets_bottom() {
 		<li>
 			<?php
 			// Check if the user is pending for the level.
-			if ( pmpropbc_isMemberPending( $order->user_id, $order->membership_id ) ) {
+			if ( ! pmpro_hasMembershipLevel( $order->membership_id, $order->user_id ) ) {
 				printf( esc_html__('%sMembership pending.%s We are still waiting for payment of this invoice.', 'pmpro-pay-by-check'), '<strong>', '</strong>' );
 			} else {
 				printf( esc_html__('%sImportant Notice:%s We are still waiting for payment of this invoice.', 'pmpro-pay-by-check'), '<strong>', '</strong>' );

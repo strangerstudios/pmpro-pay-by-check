@@ -214,14 +214,6 @@ function pmpropbc_init_include_billing_address_fields()
 }
 add_action('init', 'pmpropbc_init_include_billing_address_fields', 20);
 
-//set check orders to pending until they are paid
-function pmpropbc_pmpro_check_status_after_checkout($status)
-{
-	return "pending";
-}
-add_filter("pmpro_check_status_after_checkout", "pmpropbc_pmpro_check_status_after_checkout");
-
-
 /**
  * Cancels all previously pending check orders if a user purchases the same level via a different payment method.
  * 
@@ -281,3 +273,92 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 		<?php
 	}
 }
+
+/**
+ * When getting the gateway object for a "check" order/subscription, swap it
+ * for our custom "check" gateway.
+ *
+ * Will only run for PMPro v3.0.3+.
+ *
+ * @since TBD
+ *
+ * @param PMProGateway
+ * @return PMProGateway
+ */
+function pmpropbc_use_custom_gateway_class( $gateway ) {
+	// If the passed gateway is not the check gateway, bail.
+	if ( ! is_a( $gateway, 'PMProGateway_check' ) ) {
+		return $gateway;
+	}
+
+	// Swap the gateway object for our custom gateway object.
+	require_once PMPRO_PAY_BY_CHECK_DIR . '/classes/class.pmprogateway_pbc.php';
+	return new PMProGateway_pbc();
+}
+add_filter( 'pmpro_order_gateway_object', 'pmpropbc_use_custom_gateway_class' );
+add_filter( 'pmpro_subscription_gateway_object', 'pmpropbc_use_custom_gateway_class' );
+
+/**
+ * set check orders to pending until they are paid
+ * This filter is only run for PMPro versions earlier than 3.0.3 since we are overwriting the core gateway in 3.0.3+.
+ */
+function pmpropbc_pmpro_check_status_after_checkout($status) {
+	return 'pending';
+}
+add_filter( 'pmpro_check_status_after_checkout', 'pmpropbc_pmpro_check_status_after_checkout' );
+
+/**
+ * Whenever a check order is saved, we need to update the subscription data.
+ *
+ * @param MemberOrder $morder - Updated order as it's being saved
+ */
+function pmpropbc_update_subscription_data_for_order( $morder ) {
+	// Only worry about this if this is a check order.
+	if ( 'check' !== strtolower( $morder->payment_type ) ) {
+		return;
+	}
+
+	// If using PMPro v3.0+, update the subscription data.
+	if ( method_exists( $morder, 'get_subscription' ) ) {
+		$subscription = $morder->get_subscription();
+		if ( ! empty( $subscription ) ) {
+			$subscription->update();
+		}
+	}
+}
+add_action( 'pmpro_added_order', 'pmpropbc_update_subscription_data_for_order', 10, 1 );
+add_action( 'pmpro_updated_order', 'pmpropbc_update_subscription_data_for_order', 10, 1 );
+
+/**
+ * Send Invoice to user if/when changing order status to "success" for Check based payment.
+ * Also processes checkout if the order was a delayed checkout order.
+ *
+ * @param MemberOrder $morder - Updated order as it's being saved
+ */
+function pmpropbc_order_status_success( $morder ) {
+    // Only worry about this if this is a check order.
+    if ( 'check' !== strtolower( $morder->gateway ) ) {
+		return;
+	}
+
+	// Check if the order was a chekout order.
+	$checkout_request_vars = get_pmpro_membership_order_meta( $morder->id, 'checkout_request_vars', true );
+	if ( ! empty( $checkout_request_vars ) ) {
+		// Process the checkout and avoid infinite loops. This should send the checkout email.
+		$original_request_vars = $_REQUEST;
+		pmpro_pull_checkout_data_from_order( $morder );
+		remove_action( 'pmpro_order_status_success', 'pmpropbc_order_status_success', 10, 1 );
+		pmpro_complete_async_checkout( $morder );
+		add_action( 'pmpro_order_status_success', 'pmpropbc_order_status_success', 10, 1 );
+		$_REQUEST = $original_request_vars;
+	} else {
+		// Send an invoice email for the order.
+		$recipient = get_user_by( 'ID', $morder->user_id );
+		$invoice_email = new PMProEmail();
+		$invoice_email->sendInvoiceEmail( $recipient, $morder );
+
+		// Update the subscription for this order if needed.
+		pmpropbc_update_subscription_data_for_order( $morder );
+	}
+}
+add_action( 'pmpro_order_status_success', 'pmpropbc_order_status_success', 10, 1 );

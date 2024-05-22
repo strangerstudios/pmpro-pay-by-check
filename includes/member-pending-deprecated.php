@@ -1,6 +1,30 @@
 <?php
 
 /**
+ * Hook in the "member pending" code for sites running PMPro versions lower than 3.0.3.
+ *
+ * This is because in 3.0.3, we have the ability to overwrite the core Check gateway class. With that overwritten class,
+ * we have implemented a checkout process that delays the chekcout completion and level chnage until after the first check is recieved.
+ *
+ * When a site upgrades from a previous version to 3.0.3+, any previously "pending" members may gain access to restricted content before
+ * their initial check is recieved. There is not an easy way to avoid this and should be handled on a per-case basis. This breaking change is why this
+ * is being implemented in the 1.0 release of PBC.
+ *
+ * @since TBD
+ */
+function pmpropbc_add_member_pending_actions() {
+	// If running PMPro v3.0.3+, return.
+	if ( ! defined( 'PMPRO_VERSION') || version_compare( PMPRO_VERSION, '3.0.3', '>=' ) ) {
+		return;
+	}
+
+	add_filter( "pmpro_has_membership_access_filter", "pmpropbc_pmpro_has_membership_access_filter", 10, 4 );
+	add_filter( 'pmpro_member_shortcode_access', 'pmpropbc_pmpro_member_shortcode_access', 10, 4 );
+	add_filter( 'pmpro_non_member_text_filter', 'pmpropbc_check_pending_lock_text' );
+}
+add_action( 'init', 'pmpropbc_add_member_pending_actions' );
+
+/**
  * Check if a member's status is still pending, i.e. they haven't made their first check payment.
  *
  * @since .5
@@ -142,7 +166,6 @@ function pmpropbc_pmpro_has_membership_access_filter( $hasaccess, $mypost, $myus
 
 	return $hasaccess;
 }
-add_filter("pmpro_has_membership_access_filter", "pmpropbc_pmpro_has_membership_access_filter", 10, 4);
 
 
 /**
@@ -176,7 +199,6 @@ function pmpropbc_pmpro_member_shortcode_access( $hasaccess, $content, $levels, 
 
 	return $hasaccess;
 }
-add_filter( 'pmpro_member_shortcode_access', 'pmpropbc_pmpro_member_shortcode_access', 10, 4 );
 
 /**
  *  Show a different message for users whose checks are pending
@@ -196,7 +218,6 @@ function pmpropbc_check_pending_lock_text( $text ){
 	}
 	return $text;
 }
-add_filter( 'pmpro_non_member_text_filter', 'pmpropbc_check_pending_lock_text' );
 
 function pmpropbc_wouldHaveMembershipAccessIfNotPending($user_id = NULL){
 	global $current_user;

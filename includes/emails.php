@@ -1,48 +1,6 @@
 <?php
 
 /**
- * Send Invoice to user if/when changing order status to "success" for Check based payment.
- *
- * @param MemberOrder $morder - Updated order as it's being saved
- */
-function pmpropbc_send_invoice_email( $morder ) {
-    // Only worry about this if this is a check order that is now in "success" status.
-    if ( 'check' !== strtolower( $morder->payment_type ) || 'success' !== $morder->status ) {
-		return;
-	}
-
-	// If using PMPro v3.0+, update the subscription data.
-	if ( method_exists( $morder, 'get_subscription' ) ) {
-		$subscription = $morder->get_subscription();
-		if ( ! empty( $subscription ) ) {
-			$subscription->update();
-		}
-	}
-
-	// Check order meta to see if an invoice email has already been sent for this order.
-	if ( function_exists( 'get_pmpro_membership_order_meta' ) && get_pmpro_membership_order_meta( $morder->id, 'pmpropbc_invoice_email_sent', true ) ) {
-		return;
-	}
-
-	// Make sure that the user still has the membership level for this order.
-	if ( ! pmpro_hasMembershipLevel( $morder->membership_id, $morder->user_id ) ) {
-		return;
-	}
-
-	$recipient = get_user_by( 'ID', $morder->user_id );
-
-	$invoice_email = new PMProEmail();
-	$invoice_email->sendInvoiceEmail( $recipient, $morder );
-
-	// Update order meta to indicate that an invoice email has been sent.
-	if ( function_exists( 'update_pmpro_membership_order_meta' ) ) {
-		update_pmpro_membership_order_meta( $morder->id, 'pmpropbc_invoice_email_sent', true );
-	}
-}
-
-add_action( 'pmpro_updated_order', 'pmpropbc_send_invoice_email', 10, 1 );
-
-/**
  * Add the Pay by Check email templates to the Core PMPro Email Templates.
  * 
  * @param array $template - The existing PMPro Email Templates.
@@ -65,3 +23,145 @@ function pmpropbc_email_template_to_pmproet_add_on( $template ) {
 	return $template;
 }
 add_filter( 'pmproet_templates', 'pmpropbc_email_template_to_pmproet_add_on' );
+
+/**
+ * Send the check_pending email.
+ *
+ * @param MemberOrder $order - The order object.
+ * @return bool - True if the email was sent, false otherwise.
+ */
+function pmpropbc_send_check_pending_email( $order ) {
+	// Get the user.
+	$user = get_userdata( $order->user_id );
+	if ( empty( $user ) ) {
+		return false;
+	}
+
+	// Get the membership level.
+	$level = $order->getMembershipLevel();
+	if ( empty( $level ) ) {
+		return false;
+	}
+
+	$email = new PMProEmail();
+	$email->template = "check_pending";
+	$email->email = $user->user_email;
+	$email->subject = sprintf(__("New Invoice for %s at %s", "pmpro-pay-by-check"), $level->name, get_option("blogname"));
+
+	//setup more data
+	$email->data = array(
+		"name" => $user->display_name,
+		"user_login" => $user->user_login,
+		"sitename" => get_option("blogname"),
+		"siteemail" => pmpro_getOption("from_email"),
+		"membership_id" => $level->id,
+		"membership_level_name" => $level->name,
+		"membership_cost" => pmpro_getLevelCost( $level ),
+		"login_link" => wp_login_url(pmpro_url("account")),
+		"display_name" => $user->display_name,
+		"user_email" => $user->user_email,
+	);
+
+	$email->data["instructions"] = wp_unslash(  pmpro_getOption('instructions') );
+	$email->data["invoice_id"] = $order->code;
+	$email->data["invoice_total"] = pmpro_formatPrice($order->total);
+	$email->data["invoice_date"] = date(get_option('date_format'), $order->timestamp);
+	$email->data["billing_name"] = $order->billing->name;
+	$email->data["billing_street"] = $order->billing->street;
+	$email->data["billing_city"] = $order->billing->city;
+	$email->data["billing_state"] = $order->billing->state;
+	$email->data["billing_zip"] = $order->billing->zip;
+	$email->data["billing_country"] = $order->billing->country;
+	$email->data["billing_phone"] = $order->billing->phone;
+	$email->data["cardtype"] = $order->cardtype;
+	$email->data["accountnumber"] = hideCardNumber($order->accountnumber);
+	$email->data["expirationmonth"] = $order->expirationmonth;
+	$email->data["expirationyear"] = $order->expirationyear;
+	$email->data["billing_address"] = pmpro_formatAddress($order->billing->name,
+															$order->billing->street,
+															"", //address 2
+															$order->billing->city,
+															$order->billing->state,
+															$order->billing->zip,
+															$order->billing->country,
+															$order->billing->phone);
+
+	if($order->getDiscountCode())
+		$email->data["discount_code"] = "<p>" . __("Discount Code", "pmpro") . ": " . $order->discount_code->code . "</p>\n";
+	else
+		$email->data["discount_code"] = "";
+
+	//send the email
+	return $email->sendEmail();
+}
+
+/**
+ * Send the check_pending_reminder email.
+ *
+ * @param MemberOrder $order - The order object.
+ * @return bool - True if the email was sent, false otherwise.
+ */
+function pmpropbc_send_check_pending_reminder_email( $order ) {
+	// Get the user.
+	$user = get_userdata( $order->user_id );
+	if ( empty( $user ) ) {
+		return false;
+	}
+
+	// Get the membership level.
+	$level = $order->getMembershipLevel();
+	if ( empty( $level ) ) {
+		return false;
+	}
+
+	$email = new PMProEmail();
+	$email->template = "check_pending_reminder";
+	$email->email = $user->user_email;
+	$email->subject = sprintf(__("Reminder: New Invoice for %s at %s", "pmpro-pay-by-check"), $level->name, get_option("blogname"));
+
+	//setup more data
+	$email->data = array(
+		"name" => $user->display_name,
+		"user_login" => $user->user_login,
+		"sitename" => get_option("blogname"),
+		"siteemail" => pmpro_getOption("from_email"),
+		"membership_id" => $level->id,
+		"membership_level_name" => $level->name,
+		"membership_cost" => pmpro_getLevelCost( $level ),
+		"login_link" => wp_login_url(pmpro_url("account")),
+		"display_name" => $user->display_name,
+		"user_email" => $user->user_email,
+	);
+
+	$email->data["instructions"] = wp_unslash(  pmpro_getOption('instructions') );
+	$email->data["invoice_id"] = $order->code;
+	$email->data["invoice_total"] = pmpro_formatPrice($order->total);
+	$email->data["invoice_date"] = date(get_option('date_format'), $order->timestamp);
+	$email->data["billing_name"] = $order->billing->name;
+	$email->data["billing_street"] = $order->billing->street;
+	$email->data["billing_city"] = $order->billing->city;
+	$email->data["billing_state"] = $order->billing->state;
+	$email->data["billing_zip"] = $order->billing->zip;
+	$email->data["billing_country"] = $order->billing->country;
+	$email->data["billing_phone"] = $order->billing->phone;
+	$email->data["cardtype"] = $order->cardtype;
+	$email->data["accountnumber"] = hideCardNumber($order->accountnumber);
+	$email->data["expirationmonth"] = $order->expirationmonth;
+	$email->data["expirationyear"] = $order->expirationyear;
+	$email->data["billing_address"] = pmpro_formatAddress($order->billing->name,
+															$order->billing->street,
+															"", //address 2
+															$order->billing->city,
+															$order->billing->state,
+															$order->billing->zip,
+															$order->billing->country,
+															$order->billing->phone);
+
+	if($order->getDiscountCode())
+		$email->data["discount_code"] = "<p>" . __("Discount Code", "pmpro") . ": " . $order->discount_code->code . "</p>\n";
+	else
+		$email->data["discount_code"] = "";
+
+	//send the email
+	$email->sendEmail();
+}
