@@ -314,7 +314,7 @@ add_filter( 'pmpro_check_status_after_checkout', 'pmpropbc_pmpro_check_status_af
  */
 function pmpropbc_update_subscription_data_for_order( $morder ) {
 	// Only worry about this if this is a check order.
-	if ( 'check' !== strtolower( $morder->payment_type ) ) {
+	if ( 'check' !== $morder->gateway ) {
 		return;
 	}
 
