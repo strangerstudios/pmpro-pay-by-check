@@ -1,11 +1,9 @@
 <?php
 
-/*
-	Activation/Deactivation
-*/
-function pmpropbc_activation()
-{
-	//schedule crons
+/**
+ * Set up crons on plugin activation.
+ */
+function pmpropbc_activation() {
 	wp_schedule_event(current_time('timestamp'), 'daily', 'pmpropbc_cancel_overdue_orders');
 	wp_schedule_event(current_time('timestamp')+1, 'daily', 'pmpropbc_recurring_orders');
 	wp_schedule_event(current_time('timestamp')+2, 'daily', 'pmpropbc_reminder_emails');
@@ -14,9 +12,10 @@ function pmpropbc_activation()
 }
 register_activation_hook(__FILE__, 'pmpropbc_activation');
 
-function pmpropbc_deactivation()
-{
-	//remove crons
+/**
+ * Clear crons on plugin deactivation.
+ */
+function pmpropbc_deactivation() {
 	wp_clear_scheduled_hook('pmpropbc_cancel_overdue_orders');
 	wp_clear_scheduled_hook('pmpropbc_recurring_orders');
 	wp_clear_scheduled_hook('pmpropbc_reminder_emails');
@@ -25,11 +24,194 @@ function pmpropbc_deactivation()
 }
 register_deactivation_hook(__FILE__, 'pmpropbc_deactivation');
 
+/**
+ * Create pending orders for subscriptions.
+ */
+function pmpropbc_recurring_orders() {
+	global $wpdb;
+
+	// If the PMPro_Subscriptions class doesn't exist, use the legacy logic.
+	if ( ! class_exists( 'PMPro_Subscription' ) ) {
+		pmpropbc_recurring_orders_legacy();
+		return;
+	}
+
+	// Run for each level.
+	$levels = pmpro_getAllLevels(true, true);
+	if ( empty( $levels ) || ! is_array( $levels ) ) {
+		return;
+	}
+	foreach ( $levels as $level ) {
+		// Get the cutoff day for sending reminder emails. All orders before this date should have reminder emails sent.
+		$options = pmpropbc_getOptions($level->id);
+		$date = date( "Y-m-d", strtotime( "+ " . $options['renewal_days'] . " days", current_time('timestamp') ) );
+
+		// Get all subscriptions with a next payment date before the cutoff that do not already have a pending order created.
+		$subscriptions = $wpdb->get_col(
+			$wpdb->prepare(
+				"
+				SELECT s.id FROM $wpdb->pmpro_subscriptions s
+				LEFT JOIN $wpdb->pmpro_membership_orders o ON s.subscription_transaction_id = o.subscription_transaction_id AND o.status = 'pending'
+				WHERE s.status = 'active'
+				AND s.membership_level_id = %d
+				AND s.next_payment_date <= %s
+				AND s.gateway = 'check'
+				AND o.id IS NULL
+				ORDER BY s.next_payment_date ASC;
+				",
+				$level->id,
+				$date
+			)
+		);
+		if ( empty( $subscriptions ) || ! is_array( $subscriptions ) ) {
+			continue;
+		}
+
+		// Process subscriptions.
+		foreach ( $subscriptions as $subscription_id ) {
+			// Get the PMPro_Subscription object.
+			$subscription = new PMPro_Subscription( $subscription_id );			
+
+			// Create a new order.
+			$pending_order = new MemberOrder();
+			$pending_order->user_id = $subscription->get_user_id();
+			$pending_order->membership_id = $subscription->get_membership_level_id();
+			$pending_order->InitialPayment = $subscription->get_billing_amount();
+			$pending_order->PaymentAmount = $subscription->get_billing_amount();
+			$pending_order->BillingPeriod = $subscription->get_cycle_period();
+			$pending_order->BillingFrequency = $subscription->get_cycle_number();
+			$pending_order->subscription_transaction_id = $subscription->get_subscription_transaction_id();
+			$pending_order->gateway = 'check';
+			$pending_order->payment_type = 'Check';
+			$pending_order->status = 'pending';
+			$pending_order->timestamp = $subscription->get_next_payment_date();
+			$pending_order->find_billing_address();
+
+			// Save the order.
+			$pending_order->saveOrder();
+
+			// Send a check_pending email.
+			pmpropbc_send_check_pending_email( $pending_order );
+		}
+	}
+}
+add_action('pmpropbc_recurring_orders', 'pmpropbc_recurring_orders');
+
 /*
-	Create pending orders for recurring levels.
+	Send reminder emails for pending invoices.
 */
-function pmpropbc_recurring_orders()
-{
+function pmpropbc_reminder_emails() {
+	global $wpdb;
+
+	// Run for each level.
+	$levels = pmpro_getAllLevels(true, true);
+	if ( empty( $levels ) || ! is_array( $levels ) ) {
+		return;
+	}
+	foreach ( $levels as $level ) {
+		// Get the cutoff day for sending reminder emails. All orders before this date should have reminder emails sent.
+		$options = pmpropbc_getOptions($level->id);
+		$date = date( "Y-m-d", strtotime( "- " . $options['reminder_days'] . " days", current_time('timestamp') ) );
+
+		// Get all check orders still pending after X days
+		$sqlQuery = "
+			SELECT id 
+			FROM $wpdb->pmpro_membership_orders 
+			WHERE membership_id = $level->id 
+				AND gateway = 'check' 
+				AND status = 'pending' 
+				AND timestamp <= '" . $date . "'
+				AND notes NOT LIKE '%Reminder Sent:%' AND notes NOT LIKE '%Reminder Skipped:%'
+			ORDER BY id
+		";
+		if ( defined( 'PMPRO_CRON_LIMIT' ) ) {
+			$sqlQuery .= " LIMIT " . PMPRO_CRON_LIMIT;
+		}
+		$orders = $wpdb->get_col($sqlQuery);
+		if ( empty( $orders ) || ! is_array( $orders ) ) {
+			continue;
+		}
+
+		// Process the orders.
+		foreach ( $orders as $order_id ) {
+			// Get the order object.
+			$order = new MemberOrder($order_id);
+
+			// Note when we send the reminder.
+			$new_notes = $order->notes . "Reminder Sent:" . date( 'Y-m-d' ) . "\n";
+			$wpdb->query( "UPDATE $wpdb->pmpro_membership_orders SET notes = '" . esc_sql( $new_notes ) . "' WHERE id = '" . $order_id . "' LIMIT 1" );
+
+			// Send email.
+			pmpropbc_send_check_pending_reminder_email( $order );
+		}
+	}
+}
+add_action('pmpropbc_reminder_emails', 'pmpropbc_reminder_emails');
+
+/**
+ * Cancel overdue members.
+ */
+function pmpropbc_cancel_overdue_orders() {
+	global $wpdb;
+
+	// Run for each level.
+	$levels = pmpro_getAllLevels(true, true);
+	if ( empty( $levels ) || ! is_array( $levels ) ) {
+		return;
+	}
+	foreach( $levels as $level ) {
+		// Get the cutoff day for cancelling old pending orders. All orders before this date should be cancelled.
+		$options = pmpropbc_getOptions($level->id);
+		$date = date( "Y-m-d", strtotime( "- " . $options['cancel_days'] . " days", current_time('timestamp') ) );
+
+		//get all check orders still pending after X days
+		$sqlQuery = "
+			SELECT id 
+			FROM $wpdb->pmpro_membership_orders 
+			WHERE membership_id = $level->id 
+				AND gateway = 'check' 
+				AND status = 'pending' 
+				AND timestamp <= '" . $date . "'
+			ORDER BY id
+		";
+		if ( defined( 'PMPRO_CRON_LIMIT' ) ) {
+			$sqlQuery .= " LIMIT " . PMPRO_CRON_LIMIT;
+		}
+		$orders = $wpdb->get_col($sqlQuery);
+		if ( empty( $orders ) || ! is_array( $orders ) ) {
+			continue;
+		}
+
+		// Process the orders.
+		foreach ( $orders as $order_id ) {
+			// Get the order object.
+			$order = new MemberOrder($order_id);
+
+			//remove their membership
+			pmpro_cancelMembershipLevel( $order->membership_id, $order->user_id, 'cancelled' );
+
+			// Update the order.
+			$order->status = 'error';
+			$order->notes .= "Check Payment Cancelled:" . date( 'Y-m-d' ) . "\n";
+			$order->saveOrder();
+
+			// Send an email to the member.
+			$user = get_userdata( $order->user_id );
+			if ( ! empty( $user ) ) {
+				$email = new PMProEmail();
+				$email->sendCancelEmail( $user, $order->membership_id );
+			}
+
+		}
+	}
+}
+add_action('pmpropbc_cancel_overdue_orders', 'pmpropbc_cancel_overdue_orders');
+
+/**
+ * Legacy logic for creating pending orders for recurring subscriptions.
+ * This function should be deprecated once PMPro v3.0 is widespread.
+ */
+function pmpropbc_recurring_orders_legacy() {
 	global $wpdb;
 
 	//make sure we only run once a day
@@ -176,289 +358,3 @@ function pmpropbc_recurring_orders()
 		}
 	}
 }
-add_action('pmpropbc_recurring_orders', 'pmpropbc_recurring_orders');
-
-/*
-	Send reminder emails for pending invoices.
-*/
-function pmpropbc_reminder_emails()
-{
-	global $wpdb;
-
-	//make sure we only run once a day
-	$now = current_time('timestamp');
-	$today = date("Y-m-d", $now);
-
-	//have to run for each level, so get levels
-	$levels = pmpro_getAllLevels(true, true);
-
-	if(empty($levels))
-		return;
-
-	foreach($levels as $level)
-	{
-		//get options
-		$options = pmpropbc_getOptions($level->id);
-		// subtract reminder_days from current date as we are looking for invoices from or before that date
-		// this is relative to the date the reminder was sent out not when it was due I think
-		if(!empty($options['reminder_days']))
-			$date = date("Y-m-d", strtotime("- " . $options['reminder_days'] . " days", $now));
-		else
-			$date = $today;
-
-		//need to get all combos of pay cycle and period
-		$sqlQuery = "SELECT DISTINCT(CONCAT(cycle_number, ' ', cycle_period)) FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $level->id . "' AND cycle_number > 0 AND status = 'active'";
-		$combos = $wpdb->get_col($sqlQuery);
-
-		if(empty($combos))
-			continue;
-
-		foreach($combos as $combo)
-		{
-			//get all check orders still pending after X days
-		  // don't add the INTERVAL here!
-			$sqlQuery = "
-				SELECT id 
-				FROM $wpdb->pmpro_membership_orders 
-				WHERE membership_id = $level->id 
-					AND gateway = 'check' 
-					AND status = 'pending' 
-					AND timestamp <= '" . $date . "'
-					AND notes NOT LIKE '%Reminder Sent:%' AND notes NOT LIKE '%Reminder Skipped:%'
-				ORDER BY id
-			";
-
-			if(defined('PMPRO_CRON_LIMIT'))
-				$sqlQuery .= " LIMIT " . PMPRO_CRON_LIMIT;
-
-			$orders = $wpdb->get_col($sqlQuery);
-
-			if(empty($orders))
-				continue;
-
-			foreach($orders as $order_id)
-			{
-				//get some data
-				$order = new MemberOrder($order_id);
-
-				// If using PMPro v3.0+, only send reminders if the subscription is still active.
-				if ( method_exists( $order, 'get_subscription' ) ) {
-					$subscription = $order->get_subscription();
-					if ( ! empty( $subscription ) && 'active' !== $subscription->get_status() ) {
-						continue;
-					}
-				}
-
-				$user = get_userdata($order->user_id);
-				if ( $user ) {
-					$user->membership_level = pmpro_getSpecificMembershipLevelForUser( $order->user_id, $level->id );
-				}
-
-				//if they are no longer a member, let's not send them an email
-				if(empty($user->membership_level) || empty($user->membership_level->ID) || $user->membership_level->id != $order->membership_id)
-				{
-					//note when we send the reminder
-					$new_notes = $order->notes . "Reminder Skipped:" . $today . "\n";
-					$wpdb->query("UPDATE $wpdb->pmpro_membership_orders SET notes = '" . esc_sql($new_notes) . "' WHERE id = '" . $order_id . "' LIMIT 1");
-
-					continue;
-				}
-
-				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at this level
-				if ( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0 ) {
-					continue;
-				}
-
-				// Make sure that the user's billing structure is the same as the billing structure that we are checking for ($combo).
-				if ( $user->membership_level->cycle_number . ' ' . $user->membership_level->cycle_period != $combo ) {
-					continue;
-				}
-
-				//note when we send the reminder
-				$new_notes = $order->notes . "Reminder Sent:" . $today . "\n";
-				$wpdb->query("UPDATE $wpdb->pmpro_membership_orders SET notes = '" . esc_sql($new_notes) . "' WHERE id = '" . $order_id . "' LIMIT 1");
-
-				//setup email to send
-				$email = new PMProEmail();
-				$email->template = "check_pending_reminder";
-				$email->email = $user->user_email;
-				$email->subject = sprintf(__("Reminder: New Invoice for %s at %s", "pmpro-pay-by-check"), $user->membership_level->name, get_option("blogname"));
-				//get body from template
-				$email->body = file_get_contents(PMPRO_PAY_BY_CHECK_DIR . "/email/" . $email->template . ".html");
-
-				//setup more data
-				$email->data = array(
-					"name" => $user->display_name,
-					"user_login" => $user->user_login,
-					"sitename" => get_option("blogname"),
-					"siteemail" => get_option("pmpro_from_email"),
-					"membership_id" => $user->membership_level->id,
-					"membership_level_name" => $user->membership_level->name,
-					"membership_cost" => pmpro_getLevelCost($user->membership_level),
-					"login_link" => wp_login_url(pmpro_url("account")),
-					"display_name" => $user->display_name,
-					"user_email" => $user->user_email,
-				);
-
-				$email->data["instructions"] = wp_unslash( get_option('pmpro_instructions') );
-				$email->data["invoice_id"] = $order->code;
-				$email->data["invoice_total"] = pmpro_formatPrice($order->total);
-				$email->data["invoice_date"] = date(get_option('date_format'), $order->timestamp);
-				$email->data["billing_name"] = $order->billing->name;
-				$email->data["billing_street"] = $order->billing->street;
-				$email->data["billing_city"] = $order->billing->city;
-				$email->data["billing_state"] = $order->billing->state;
-				$email->data["billing_zip"] = $order->billing->zip;
-				$email->data["billing_country"] = $order->billing->country;
-				$email->data["billing_phone"] = $order->billing->phone;
-				$email->data["cardtype"] = $order->cardtype;
-				$email->data["accountnumber"] = hideCardNumber($order->accountnumber);
-				$email->data["expirationmonth"] = $order->expirationmonth;
-				$email->data["expirationyear"] = $order->expirationyear;
-				$email->data["billing_address"] = pmpro_formatAddress($order->billing->name,
-																	 $order->billing->street,
-																	 "", //address 2
-																	 $order->billing->city,
-																	 $order->billing->state,
-																	 $order->billing->zip,
-																	 $order->billing->country,
-																	 $order->billing->phone);
-
-				if($order->getDiscountCode())
-					$email->data["discount_code"] = "<p>" . __("Discount Code", "pmpro") . ": " . $order->discount_code->code . "</p>\n";
-				else
-					$email->data["discount_code"] = "";
-
-				//send the email
-				$email->sendEmail();
-			}
-		}
-	}
-}
-add_action('pmpropbc_reminder_emails', 'pmpropbc_reminder_emails');
-
-/*
-	Cancel overdue members.
-*/
-function pmpropbc_cancel_overdue_orders()
-{
-	global $wpdb;
-
-	//make sure we only run once a day
-	$now = current_time('timestamp');
-	$today = date("Y-m-d", $now);
-
-	//have to run for each level, so get levels
-	$levels = pmpro_getAllLevels(true, true);
-
-	if(empty($levels))
-		return;
-
-	foreach($levels as $level)
-	{
-		//get options
-		$options = pmpropbc_getOptions($level->id);
-		
-		// subtract cancel_days not add, we want the older orders not paid
-		// this is relative to the date the reminder was sent out not when it was due
-		if(!empty($options['cancel_days']))
-			$date = date("Y-m-d", strtotime("- " . $options['cancel_days'] . " days", $now));
-		else
-			$date = $today;
-
-		//need to get all combos of pay cycle and period
-		$sqlQuery = "SELECT DISTINCT(CONCAT(cycle_number, ' ', cycle_period)) FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $level->id . "' AND cycle_number > 0 AND status = 'active'";
-		$combos = $wpdb->get_col($sqlQuery);
-
-		if(empty($combos))
-			continue;
-
-		foreach($combos as $combo)
-		{
-			//get all check orders still pending after X days
-			$sqlQuery = "
-				SELECT id 
-				FROM $wpdb->pmpro_membership_orders 
-				WHERE membership_id = $level->id 
-					AND gateway = 'check' 
-					AND status = 'pending' 
-					AND timestamp <= '" . $date . "'
-					AND notes NOT LIKE '%Cancelled:%' AND notes NOT LIKE '%Cancellation Skipped:%'
-				ORDER BY id
-			";
-
-			if(defined('PMPRO_CRON_LIMIT'))
-				$sqlQuery .= " LIMIT " . PMPRO_CRON_LIMIT;
-
-			$orders = $wpdb->get_col($sqlQuery);
-
-			if(empty($orders))
-				continue;
-
-			foreach($orders as $order_id)
-			{
-				//get the order and user data
-				$order = new MemberOrder($order_id);
-
-				// If using PMPro v3.0+, only process overdue orders if the subscription is still active.
-				if ( method_exists( $order, 'get_subscription' ) ) {
-					$subscription = $order->get_subscription();
-					if ( ! empty( $subscription ) && 'active' !== $subscription->get_status() ) {
-						continue;
-					}
-				}
-
-				$user = get_userdata($order->user_id);
-				if ( $user ) {
-					$user->membership_level = pmpro_getSpecificMembershipLevelForUser( $order->user_id, $level->id );
-				}
-
-				//if they are no longer a member, let's not send them an email
-				if(empty($user->membership_level) || empty($user->membership_level->ID) || $user->membership_level->id != $order->membership_id)
-				{
-					//note when we send the reminder
-					$new_notes = $order->notes . "Cancellation Skipped:" . $today . "\n";
-					$wpdb->query("UPDATE $wpdb->pmpro_membership_orders SET notes = '" . esc_sql($new_notes) . "' WHERE id = '" . $order_id . "' LIMIT 1");
-
-					continue;
-				}
-
-				// If Paid Memberships Pro - Auto-Renewal Checkbox is active there may be mixed recurring and non-recurring users at this level
-				if ( $user->membership_level->cycle_number == 0 || $user->membership_level->billing_amount == 0 ) {
-					continue;
-				}
-
-				// Make sure that the user's billing structure is the same as the billing structure that we are checking for ($combo).
-				if ( $user->membership_level->cycle_number . ' ' . $user->membership_level->cycle_period != $combo ) {
-					continue;
-				}
-
-				//cancel the order and subscription
-				do_action("pmpro_membership_pre_membership_expiry", $order->user_id, $order->membership_id );
-
-				//remove their membership
-				pmpro_cancelMembershipLevel( $order->membership_id, $order->user_id, 'expired' );
-
-				// Update the order.
-				$order->status = 'error';
-				$order->notes .= "Cancelled:" . $today . "\n";
-				$order->saveOrder();
-
-				do_action("pmpro_membership_post_membership_expiry", $order->user_id, $order->membership_id );
-				$send_email = apply_filters("pmpro_send_expiration_email", true, $order->user_id);
-				if($send_email)
-				{
-					//send an email
-					$pmproemail = new PMProEmail();
-					$euser = get_userdata($order->user_id);
-					$pmproemail->sendMembershipExpiredEmail($euser);
-					if(current_user_can('manage_options'))
-						printf(__("Membership expired email sent to %s. ", "pmpro"), $euser->user_email);
-					else
-						echo ". ";
-				}
-			}
-		}
-	}
-}
-add_action('pmpropbc_cancel_overdue_orders', 'pmpropbc_cancel_overdue_orders');
