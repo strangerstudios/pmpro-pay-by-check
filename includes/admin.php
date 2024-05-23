@@ -24,19 +24,19 @@ function pmpropbc_pmpro_membership_level_after_other_settings()
 			</select>
 		</td>
 	</tr>
-	<tr class="pbc_recurring_field">
+	<tr class="pbc_level_settings_field">
 		<th scope="row" valign="top"><label for="pbc_renewal_days"><?php _e('Send Renewal Emails:', 'pmpro-pay-by-check');?></label></th>
 		<td>
 			<input type="text" id="pbc_renewal_days" name="pbc_renewal_days" size="5" value="<?php echo esc_attr($options['renewal_days']);?>" /> <?php _e('days before renewal.', 'pmpro-pay-by-check');?>
 		</td>
 	</tr>
-	<tr class="pbc_recurring_field">
+	<tr class="pbc_level_settings_field">
 		<th scope="row" valign="top"><label for="pbc_reminder_days"><?php _e('Send Reminder Emails:', 'pmpro-pay-by-check');?></label></th>
 		<td>
 			<input type="text" id="pbc_reminder_days" name="pbc_reminder_days" size="5" value="<?php echo esc_attr($options['reminder_days']);?>" /> <?php _e('days after a missed payment.', 'pmpro-pay-by-check');?>
 		</td>
 	</tr>
-	<tr class="pbc_recurring_field">
+	<tr class="pbc_level_settings_field">
 		<th scope="row" valign="top"><label for="pbc_cancel_days"><?php _e('Cancel Membership:', 'pmpro-pay-by-check');?></label></th>
 		<td>
 			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> <?php _e('days after a missed payment.', 'pmpro-pay-by-check');?>

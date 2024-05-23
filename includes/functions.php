@@ -1,35 +1,28 @@
 <?php
 
-/*
-	Helper function to get options.
-*/
-function pmpropbc_getOptions($level_id)
-{
-	if($level_id > 0)
-	{
-		//option for level, check the DB
-		$options = get_option('pmpro_pay_by_check_options_' . $level_id, false);
-		if(empty($options))
-		{
-			//check for old format to convert (_setting_ without an s)
-			$options = get_option('pmpro_pay_by_check_setting_' . $level_id, false);
-			if(!empty($options))
-			{
-				delete_option('pmpro_pay_by_check_setting_' . $level_id);
-				$options = array('setting'=>$options, 'renewal_days'=>'', 'reminder_days'=>'', 'cancel_days'=>'');
-				add_option('pmpro_pay_by_check_options_' . $level_id, $options, NULL, 'no');
-			}
-			else
-			{
-				//default
-				$options = array('setting'=>0, 'renewal_days'=>'', 'reminder_days'=>'', 'cancel_days'=>'');
-			}
+/**
+ * Helper function to get options.
+ *
+ * @param int $level_id - The ID of the level or 0 if this is for a new level.
+ * @return array $options - The options for the level.
+ */
+function pmpropbc_getOptions( int $level_id ) {
+	// Set the default options.
+	$options = array(
+		'setting' => 0, // Not allowing users to pay by check.
+		'renewal_days' => 7, // Creating a pending invoice and notifying the user 7 days before the next payment is due.
+		'reminder_days' => 3, // Sending a reminder email 3 days after a missed payment.
+		'cancel_days' => 7, // Canceling the membership 7 days after a missed payment.
+	);
+
+	// Get the settings for the passed level.
+	if ( $level_id > 0 ) {
+		// Check the db to see if the options exist.
+		$db_options = get_option( 'pmpro_pay_by_check_options_' . $level_id, false );
+		if ( ! empty( $options ) && is_array( $db_options) ) {
+			// Merge the db options with the default options.
+			$options = array_merge( $options, $db_options );
 		}
-	}
-	else
-	{
-		//default for new level
-		$options = array('setting'=>0, 'renewal_days'=>'', 'reminder_days'=>'', 'cancel_days'=>'');
 	}
 
 	return $options;
