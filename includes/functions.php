@@ -20,8 +20,11 @@ function pmpropbc_getOptions( int $level_id ) {
 		// Check the db to see if the options exist.
 		$db_options = get_option( 'pmpro_pay_by_check_options_' . $level_id, false );
 		if ( ! empty( $options ) && is_array( $db_options) ) {
-			// Merge the db options with the default options.
-			$options = array_merge( $options, $db_options );
+			// Make sure that the old default settings are not being used.
+			if ( ! empty( $db_options['renewal_days'] ) || ! empty( $db_options['reminder_days'] ) || ! empty( $db_options['cancel_days'] ) ) {
+				// Merge the db options with the default options.
+				$options = array_merge( $options, $db_options );
+			}
 		}
 	}
 
