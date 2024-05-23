@@ -12,12 +12,40 @@ function pmpropbc_email_template_to_pmproet_add_on( $template ) {
 	$template['check_pending'] = array(
 		'subject'     => 'New Invoice for !!display_name!! at !!sitename!!',
 		'description' => 'Pay By Check - Check Pending',
-		'body'        => file_get_contents( PMPRO_PAY_BY_CHECK_DIR . '/email/check_pending.html' ), 
+		__( '<p>You have a new invoice for !!sitename!!.</p>
+
+		!!instructions!!
+		
+		<p>Below are details about your membership account and a receipt for your membership invoice.</p>
+		
+		<p>Account: !!display_name!! (!!user_email!!)</p>
+		<p>Membership Level: !!membership_level_name!!</p>
+		
+		<p>
+			Invoice #!!invoice_id!! on !!invoice_date!!<br />
+			Total Billed: !!invoice_total!!
+		</p>
+		
+		<p>Log in to your membership account here: !!login_link!!</p>', 'pmpro_pay_by_check' ),
 	);
 	$template['check_pending_reminder'] = array(
 		'subject'     => 'Reminder: New Invoice for !!display_name!! at !!sitename!!',
 		'description' => 'Pay By Check - Check Pending Reminder',
-		'body'        => file_get_contents( PMPRO_PAY_BY_CHECK_DIR . '/email/check_pending_reminder.html' ), 
+		__( '<p>This is a reminder. You have a new invoice for !!sitename!!.</p>
+
+		!!instructions!!
+		
+		<p>Below are details about your membership account and a receipt for your membership invoice.</p>
+		
+		<p>Account: !!display_name!! (!!user_email!!)</p>
+		<p>Membership Level: !!membership_level_name!!</p>
+		
+		<p>
+			Invoice #!!invoice_id!! on !!invoice_date!!<br />
+			Total Billed: !!invoice_total!!
+		</p>
+		
+		<p>Log in to your membership account here: !!login_link!!</p>', 'pmpro_pay_by_check' ),
 	);
 
 	return $template;
