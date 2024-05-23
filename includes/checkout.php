@@ -222,35 +222,19 @@ add_action('init', 'pmpropbc_init_include_billing_address_fields', 20);
 function pmpropbc_cancel_previous_pending_orders( $user_id, $order ) {
 	global $wpdb;
 
-	$membership_id = $order->membership_id;
-	//Check to make sure PBC is enabled for the level first.
-	$pbc_settings = pmpropbc_getOptions( $membership_id );
-
-	// Assume no PBC setting is enabled for this level, so probably no cancellation setting should run.
-	if ( $pbc_settings['setting'] == 0 ) {
-		return;
-	}
-	
-	// Not a renewal order for the same level just return.
-	if ( ! $order->is_renewal() ) {
-		return;
-	}
-
-	// Do not run code if the user is spamming checkout with check as the gateway selected.
-	if ( $order->gateway == 'check' ) {
-		return;
-	}
-
 	// Update any outstanding check payments for this level ID.
-	$SQLquery = "UPDATE $wpdb->pmpro_membership_orders
-					SET `status` = 'token'
-					WHERE `user_id` = " . esc_sql( $user_id ) . "					 	
-						AND `gateway` = 'check'
-						AND `status` = 'pending'
-						AND `membership_id` = '" . esc_sql( $membership_id ) . "'
-						AND `timestamp` < '" . esc_sql( date( 'Y-m-d H:i:s', $order->timestamp ) ) . "'";
-
-	$results = $wpdb->query( $SQLquery );
+	$wpdb->query(
+		$wpdb->prepare(
+			"UPDATE $wpdb->pmpro_membership_orders
+			SET `status` = 'error'
+			WHERE `user_id` = %d
+			AND `gateway` = 'check'
+			AND `status` = 'pending
+			AND `membership_id` = %d",
+			$user_id,
+			$order->membership_id
+		)
+	);
 }
 add_action( 'pmpro_after_checkout', 'pmpropbc_cancel_previous_pending_orders', 10, 2 );
 
