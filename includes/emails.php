@@ -12,7 +12,7 @@ function pmpropbc_email_template_to_pmproet_add_on( $template ) {
 	$template['check_pending'] = array(
 		'subject'     => 'New Invoice for !!display_name!! at !!sitename!!',
 		'description' => 'Pay By Check - Check Pending',
-		__( '<p>You have a new invoice for !!sitename!!.</p>
+		'body'        => __( '<p>You have a new invoice for !!sitename!!.</p>
 
 		!!instructions!!
 		
@@ -31,7 +31,7 @@ function pmpropbc_email_template_to_pmproet_add_on( $template ) {
 	$template['check_pending_reminder'] = array(
 		'subject'     => 'Reminder: New Invoice for !!display_name!! at !!sitename!!',
 		'description' => 'Pay By Check - Check Pending Reminder',
-		__( '<p>This is a reminder. You have a new invoice for !!sitename!!.</p>
+		'body'        => __( '<p>This is a reminder. You have a new invoice for !!sitename!!.</p>
 
 		!!instructions!!
 		
