@@ -1,5 +1,9 @@
 <?php
 class PMProGateway_pbc extends PMProGateway {
+	function __construct() {
+		$this->gateway = 'check';
+	}
+
 	/**
 	 * Check whether or not a gateway supports a specific feature.
 	 * 
