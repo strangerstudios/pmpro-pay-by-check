@@ -264,7 +264,7 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
  *
  * Will only run for PMPro v3.0.3+.
  *
- * @since TBD
+ * @since 1.0
  *
  * @param PMProGateway
  * @return PMProGateway

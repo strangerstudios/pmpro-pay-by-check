@@ -5,7 +5,7 @@
  * 
  * @param array $template - The existing PMPro Email Templates.
  * @return array $template - The updated PMPro Email Templates.
- * @since TBD.
+ * @since 1.0.
  */
 function pmpropbc_email_template_to_pmproet_add_on( $template ) {
 

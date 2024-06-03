@@ -10,7 +10,7 @@
  * their initial check is recieved. There is not an easy way to avoid this and should be handled on a per-case basis. This breaking change is why this
  * is being implemented in the 1.0 release of PBC.
  *
- * @since TBD
+ * @since 1.0
  */
 function pmpropbc_add_member_pending_actions() {
 	// If running PMPro v3.0.3+, return.
@@ -143,10 +143,10 @@ function pmprobpc_memberHasAccessWithAnyLevel( $user_id, $content_levels = null 
 /*
  *	In case anyone was using the typo'd function name.
  *
- * @deprecated TBD Use pmpropbc_isMemberPending() instead.
+ * @deprecated 1.0 Use pmpropbc_isMemberPending() instead.
  */
 function pmprobpc_isMemberPending($user_id) {
-	_deprecated_function( __FUNCTION__, 'TBD', 'pmpropbc_isMemberPending()' );
+	_deprecated_function( __FUNCTION__, '1.0', 'pmpropbc_isMemberPending()' );
 	return pmpropbc_isMemberPending($user_id);
 }
 

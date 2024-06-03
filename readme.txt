@@ -3,7 +3,7 @@ Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 0.12.1
+Stable tag: 1.0
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -13,11 +13,9 @@ Adds a radio option to checkout to pay by credit card or PayPal now or pay by ch
 
 Users who choose to pay by check will have their order to "pending" status.
 
-Users with a pending order will not have access based on their level.
+Users with a pending order will not receive a membership level immediately.
 
-After you receive and cash the check, you can edit the order to change the status to "success", which will give the user access.
-
-An email is sent to the user RE the status change.
+After you receive and cash the check, you can edit the order to change the status to "success", which will complete the membership puchase.
 
 == Installation ==
 
@@ -31,6 +29,15 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
+= 1.0 - 2024-05-29 =
+* ENHANCEMENT: When using PMPro v3.0+, recurring orders are now generated based on information in the PMPro Subscriptions table.
+* ENHANCEMENT: When using PMPro v3.0.3+, checkouts using the Check gateway are now processed once the payment is received instead of assigning the membership immediately.
+* ENHANCEMENT: Initial payments now respect the "Send Reminder Emails" and "Cancel Membership" after x days level settings.
+* ENHANCEMENT: Improved default values for the "Send Renewal Emails", "Send Reminder Emails", and "Cancel Membership" after x days level settings.
+* BUG FIX/ENHANCEMENT: When using PMPro v3.0.3+, Check subscriptions now respect profile start dates set at checkout.
+* REFACTOR: Organized code into separate files.
+* DEPRECATED: Removed HTML email templates. Emails should now be customized from the PMPro Email Templates settings page.
+
 = 0.12.1 - 2024-03-28 =
 * BUG FIX: Fixed an issue for sites running PMPro v3.0+ where recurring check orders could be created in pending status when the most recent order for a user wasn't a check order. #115 (@dparker1005)
 
