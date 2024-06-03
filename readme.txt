@@ -29,7 +29,7 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
-= 1.0 - 2024-05-29 =
+= 1.0 - 2024-06-03 =
 * ENHANCEMENT: When using PMPro v3.0+, recurring orders are now generated based on information in the PMPro Subscriptions table.
 * ENHANCEMENT: When using PMPro v3.0.3+, checkouts using the Check gateway are now processed once the payment is received instead of assigning the membership immediately.
 * ENHANCEMENT: Initial payments now respect the "Send Reminder Emails" and "Cancel Membership" after x days level settings.
