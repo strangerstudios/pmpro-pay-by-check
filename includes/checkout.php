@@ -229,7 +229,7 @@ function pmpropbc_cancel_previous_pending_orders( $user_id, $order ) {
 			SET `status` = 'error'
 			WHERE `user_id` = %d
 			AND `gateway` = 'check'
-			AND `status` = 'pending
+			AND `status` = 'pending'
 			AND `membership_id` = %d",
 			$user_id,
 			$order->membership_id
