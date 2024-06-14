@@ -188,7 +188,7 @@ function pmpropbc_cancel_overdue_orders() {
 			$order = new MemberOrder($order_id);
 
 			//remove their membership
-			pmpro_cancelMembershipLevel( $order->membership_id, $order->user_id, 'cancelled' );
+			$level_removed = pmpro_cancelMembershipLevel( $order->membership_id, $order->user_id, 'cancelled' );
 
 			// Update the order.
 			$order->status = 'error';
@@ -197,7 +197,7 @@ function pmpropbc_cancel_overdue_orders() {
 
 			// Send an email to the member.
 			$user = get_userdata( $order->user_id );
-			if ( ! empty( $user ) ) {
+			if ( ! empty( $user ) && $level_removed ) {
 				$email = new PMProEmail();
 				$email->sendCancelEmail( $user, $order->membership_id );
 			}
