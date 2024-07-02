@@ -23,40 +23,43 @@ function pmpropbc_checkout_boxes()
 
 	//only show if the main gateway is not check and setting value == 1 (value == 2 means only do check payments)
 	if ( $gateway_setting != "check" && $options['setting'] == 1 ) { ?>
-	<div id="pmpro_payment_method" class="pmpro_checkout">
-		<hr />
-		<h2>
-			<span class="pmpro_checkout-h2-name"><?php esc_html_e( 'Choose Your Payment Method', 'pmpro-pay-by-check'); ?></span>
-		</h2>
-		<div class="pmpro_checkout-fields">
-			<span class="gateway_<?php echo esc_attr($gateway_setting); ?>">
-					<input type="radio" name="gateway" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
-							<?php if($gateway_setting == "paypalexpress" || $gateway_setting == "paypalstandard") { ?>
-								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpro-pay-by-check');?></a> &nbsp;
-							<?php } elseif($gateway_setting == 'twocheckout') { ?>
-								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with 2Checkout', 'pmpro-pay-by-check');?></a> &nbsp;
-							<?php } elseif( $gateway_setting == 'payfast' ) { ?>
-								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayFast', 'pmpro-pay-by-check');?></a> &nbsp;
-							<?php } else { ?>
-								<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpro-pay-by-check');?></a> &nbsp;
-							<?php } ?>
-			</span> <!-- end gateway_$gateway_setting -->
-			<span class="gateway_check">
-					<input type="radio" name="gateway" value="check" <?php if($gateway == "check") { ?>checked="checked"<?php } ?> />
-					<a href="javascript:void(0);" class="pmpro_radio"><?php echo esc_html( sprintf( __( 'Pay by %s', 'pmpro-pay-by-check' ), $check_gateway_label ) ); ?></a> &nbsp;
-			</span> <!-- end gateway_check -->
-			<?php
-				//support the PayPal Website Payments Pro Gateway which has PayPal Express as a second option natively
-				if ( $gateway_setting == "paypal" ) { ?>
-					<span class="gateway_paypalexpress">
-						<input type="radio" name="gateway" value="paypalexpress" <?php if($gateway == "paypalexpress") { ?>checked="checked"<?php } ?> />
-						<a href="javascript:void(0);" class="pmpro_radio"><?php esc_html_e( 'Check Out with PayPal', 'pmpro-pay-by-check' ); ?></a>
-					</span>
-				<?php
-				}
-			?>
-		</div> <!-- end pmpro_checkout-fields -->
-	</div> <!-- end #pmpro_payment_method -->
+		<div class="pmpro_card pmpropbc-payment_method-card">
+			<div class="pmpro_card_content">
+				<div class="pmpro_form_legend">
+					<h2 class="pmpro_form_heading pmpro_font-large">
+						<?php esc_html_e( 'Choose Your Payment Method', 'pmpro-pay-by-check'); ?>
+					</h2>
+				</div>
+				<div class="pmpropbc_checkout-fields">
+					<span class="gateway_<?php echo esc_attr($gateway_setting); ?>">
+							<input type="radio" name="gateway" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
+									<?php if($gateway_setting == "paypalexpress" || $gateway_setting == "paypalstandard") { ?>
+										<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayPal', 'pmpro-pay-by-check');?></a> &nbsp;
+									<?php } elseif($gateway_setting == 'twocheckout') { ?>
+										<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with 2Checkout', 'pmpro-pay-by-check');?></a> &nbsp;
+									<?php } elseif( $gateway_setting == 'payfast' ) { ?>
+										<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay with PayFast', 'pmpro-pay-by-check');?></a> &nbsp;
+									<?php } else { ?>
+										<a href="javascript:void(0);" class="pmpro_radio"><?php _e('Pay by Credit Card', 'pmpro-pay-by-check');?></a> &nbsp;
+									<?php } ?>
+					</span> <!-- end gateway_$gateway_setting -->
+					<span class="gateway_check">
+							<input type="radio" name="gateway" value="check" <?php if($gateway == "check") { ?>checked="checked"<?php } ?> />
+							<a href="javascript:void(0);" class="pmpro_radio"><?php echo esc_html( sprintf( __( 'Pay by %s', 'pmpro-pay-by-check' ), $check_gateway_label ) ); ?></a> &nbsp;
+					</span> <!-- end gateway_check -->
+					<?php
+						//support the PayPal Website Payments Pro Gateway which has PayPal Express as a second option natively
+						if ( $gateway_setting == "paypal" ) { ?>
+							<span class="gateway_paypalexpress">
+								<input type="radio" name="gateway" value="paypalexpress" <?php if($gateway == "paypalexpress") { ?>checked="checked"<?php } ?> />
+								<a href="javascript:void(0);" class="pmpro_radio"><?php esc_html_e( 'Check Out with PayPal', 'pmpro-pay-by-check' ); ?></a>
+							</span>
+						<?php
+						}
+					?>
+				</div> <!-- end pmpro_checkout-fields -->
+			</div> <!-- end pmpro_card_content -->
+		</div> <!-- end pmpro_card -->
 	<?php
 	} elseif ( $gateway_setting != "check" && $options['setting'] == 2 ) { ?>
 		<input type="hidden" name="gateway" value="check" />

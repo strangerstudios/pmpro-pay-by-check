@@ -151,24 +151,23 @@ function pmpropbc_toggleCheckoutFields() {
 }
 
 function pmpropbc_togglePaymentMethodBox()  {
-    "use strict";
-    	
+	"use strict";
+
 	//check if level is paid or free
 	if(pmpropbc_isLevelFree()) {
 		//free
-		jQuery('#pmpro_payment_method').hide();
+		jQuery( '.pmpropbc-payment_method-card' ).hide();
 	} else {
 		//not free
-		jQuery('#pmpro_payment_method').show();
+		jQuery( '.pmpropbc-payment_method-card' ).show();
 	}
-		
+
 	//update checkout fields as well
-    pmpropbc_toggleCheckoutFields();
+	pmpropbc_toggleCheckoutFields();
 }
 
 jQuery(document).ready(function () {
-    "use strict";	
-	
+	"use strict";
 	//choosing payment method
 	jQuery('input[name=gateway]').bind('click change keyup', function () {
 		pmpropbc_toggleCheckoutFields();
