@@ -156,10 +156,10 @@ function pmpropbc_togglePaymentMethodBox()  {
 	//check if level is paid or free
 	if(pmpropbc_isLevelFree()) {
 		//free
-		jQuery( '.pmpropbc-payment_method-card' ).hide();
+		jQuery( '#pmpro_payment_method' ).hide();
 	} else {
 		//not free
-		jQuery( '.pmpropbc-payment_method-card' ).show();
+		jQuery( '#pmpro_payment_method' ).show();
 	}
 
 	//update checkout fields as well
