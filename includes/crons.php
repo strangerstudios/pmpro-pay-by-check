@@ -10,7 +10,7 @@ function pmpropbc_activation() {
 
 	do_action('pmpropbc_activation');
 }
-register_activation_hook(__FILE__, 'pmpropbc_activation');
+register_activation_hook( PMPRO_PAY_BY_CHECK_BASE_FILE, 'pmpropbc_activation' );
 
 /**
  * Clear crons on plugin deactivation.
@@ -22,7 +22,7 @@ function pmpropbc_deactivation() {
 
 	do_action('pmpropbc_deactivation');
 }
-register_deactivation_hook(__FILE__, 'pmpropbc_deactivation');
+register_deactivation_hook( PMPRO_PAY_BY_CHECK_BASE_FILE, 'pmpropbc_deactivation' );
 
 /**
  * Create pending orders for subscriptions.
