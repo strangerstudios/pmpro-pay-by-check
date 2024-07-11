@@ -28,7 +28,7 @@ function pmpropbc_checkout_boxes()
 				<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_content' ) ); ?>">
 					<legend class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_legend' ) ); ?>">
 						<h2 class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_heading pmpro_font-large' ) ); ?>">
-							<?php esc_html_e( 'Choose Your Payment Method', 'pmpro-shipping' ); ?>
+							<?php esc_html_e( 'Choose Your Payment Method', 'pmpro-pay-by-check' ); ?>
 						</h2>
 					</legend>
 					<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_fields' ) ); ?>">
