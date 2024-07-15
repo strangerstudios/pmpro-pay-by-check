@@ -1,15 +1,15 @@
-# Copyright (C) 2024 Stranger Studios
+# Copyright (C) 2024 Paid Memberships Pro
 # This file is distributed under the same license as the Paid Memberships Pro - Pay by Check Add On plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.0.1.1\n"
+"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-06-10T14:51:21+00:00\n"
+"POT-Creation-Date: 2024-07-15T17:04:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: pmpro-pay-by-check\n"
@@ -103,6 +103,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:164
 #: pmpro-pay-by-check.php:167
 #: includes/checkout.php:29
+#: includes/checkout.php:31
 msgid "Choose Your Payment Method"
 msgstr ""
 
@@ -112,6 +113,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:170
 #: pmpro-pay-by-check.php:173
 #: includes/checkout.php:35
+#: includes/checkout.php:41
 msgid "Pay with PayPal"
 msgstr ""
 
@@ -120,6 +122,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:172
 #: pmpro-pay-by-check.php:175
 #: includes/checkout.php:37
+#: includes/checkout.php:43
 msgid "Pay with 2Checkout"
 msgstr ""
 
@@ -129,6 +132,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:176
 #: pmpro-pay-by-check.php:179
 #: includes/checkout.php:41
+#: includes/checkout.php:47
 msgid "Pay by Credit Card"
 msgstr ""
 
@@ -251,6 +255,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:885
 #: pmpro-pay-by-check.php:978
 #: pmpro-pay-by-check.php:983
+#: pmpro-pay-by-check.php:54
 msgid "Docs"
 msgstr ""
 
@@ -258,6 +263,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:885
 #: pmpro-pay-by-check.php:978
 #: pmpro-pay-by-check.php:983
+#: pmpro-pay-by-check.php:54
 msgid "View Documentation"
 msgstr ""
 
@@ -265,6 +271,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:886
 #: pmpro-pay-by-check.php:979
 #: pmpro-pay-by-check.php:984
+#: pmpro-pay-by-check.php:55
 msgid "Support"
 msgstr ""
 
@@ -272,6 +279,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:886
 #: pmpro-pay-by-check.php:979
 #: pmpro-pay-by-check.php:984
+#: pmpro-pay-by-check.php:55
 msgid "Visit Customer Support Forum"
 msgstr ""
 
@@ -309,6 +317,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:174
 #: pmpro-pay-by-check.php:177
 #: includes/checkout.php:39
+#: includes/checkout.php:45
 msgid "Pay with PayFast"
 msgstr ""
 
@@ -316,6 +325,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:188
 #: pmpro-pay-by-check.php:191
 #: includes/checkout.php:53
+#: includes/checkout.php:63
 msgid "Check Out with PayPal"
 msgstr ""
 
@@ -396,5 +406,12 @@ msgstr ""
 
 #: pmpro-pay-by-check.php:184
 #: includes/checkout.php:46
+#: includes/checkout.php:54
+#: includes/checkout.php:269
 msgid "Pay by %s"
+msgstr ""
+
+#. Author of the plugin
+#: pmpro-pay-by-check.php
+msgid "Paid Memberships Pro"
 msgstr ""
