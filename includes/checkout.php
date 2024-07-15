@@ -263,12 +263,14 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 
 	if( !empty($options) && $options['setting'] > 0 ) {
 		$instructions = get_option("pmpro_instructions");
-		if($gateway != 'check')
-			$hidden = 'style="display:none;"';
-		else
-			$hidden = '';
+		$check_gateway_label = get_option( 'pmpro_check_gateway_label' );
 		?>
-		<div class="pmpro_check_instructions" <?php echo $hidden; ?>><?php echo wp_kses_post( $instructions ); ?></div>
+		<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card pmpro_check_instructions', 'pmpro_check_instructions' ) ); ?>" <?php echo $gateway != 'check' ? 'style="display:none;"' : ''; ?>>
+			<h2 class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_title pmpro_font-large' ) ); ?>"><?php echo esc_html( sprintf( __( 'Pay by %s', 'pmpro-pay-by-check' ), $check_gateway_label ) ); ?></h2>
+			<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_content' ) ); ?>">
+				<?php echo wp_kses_post( $instructions ); ?>
+			</div> <!-- end pmpro_card_content -->
+		</div> <!-- end pmpro_check_instructions -->
 		<?php
 	}
 }
