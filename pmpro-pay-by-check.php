@@ -3,8 +3,8 @@
 Plugin Name: Paid Memberships Pro - Pay by Check Add On
 Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/
 Description: A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
-Version: 1.0.1.1
-Author: Stranger Studios
+Version: 1.1
+Author: Paid Memberships Pro
 Author URI: https://www.paidmembershipspro.com
 Text Domain: pmpro-pay-by-check
 Domain Path: /languages
@@ -26,7 +26,7 @@ Domain Path: /languages
 */
 define( 'PMPRO_PAY_BY_CHECK_DIR', dirname(__FILE__) );
 define( 'PMPRO_PAY_BY_CHECK_BASE_FILE', __FILE__ );
-define( 'PMPROPBC_VER', '1.0.1.1' );
+define( 'PMPROPBC_VER', '1.1' );
 
 require_once PMPRO_PAY_BY_CHECK_DIR . '/includes/admin.php';
 require_once PMPRO_PAY_BY_CHECK_DIR . '/includes/checkout.php';
@@ -51,8 +51,8 @@ function pmpropbc_plugin_row_meta($links, $file) {
 	if(strpos($file, 'pmpro-pay-by-check.php') !== false)
 	{
 		$new_links = array(
-			'<a href="' . esc_url('https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/')  . '" title="' . esc_attr( __( 'View Documentation', 'paid-memberships-pro' ) ) . '">' . __( 'Docs', 'paid-memberships-pro' ) . '</a>',
-			'<a href="' . esc_url('http://paidmembershipspro.com/support/') . '" title="' . esc_attr( __( 'Visit Customer Support Forum', 'paid-memberships-pro' ) ) . '">' . __( 'Support', 'paid-memberships-pro' ) . '</a>',
+			'<a href="' . esc_url('https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/')  . '" title="' . esc_attr( __( 'View Documentation', 'pmpro-pay-by-check' ) ) . '">' . __( 'Docs', 'pmpro-pay-by-check' ) . '</a>',
+			'<a href="' . esc_url('httsp://www.paidmembershipspro.com/support/') . '" title="' . esc_attr( __( 'Visit Customer Support Forum', 'pmpro-pay-by-check' ) ) . '">' . __( 'Support', 'pmpro-pay-by-check' ) . '</a>',
 		);
 		$links = array_merge($links, $new_links);
 	}
