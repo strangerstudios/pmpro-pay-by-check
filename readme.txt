@@ -29,7 +29,7 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
-= 1.1 - TBD =
+= 1.1 - 2024-07-17 =
 * ENHANCEMENT: Added support for v3.1+ Paid Memberships Pro frontend changes. #120 (@MaximilianoRicoTabo, @kimcoleman)
 * BUG FIX: Now only sending the cancellation email if a level was removed. #118 (@dparker1005)
 * BUG FIX: Fixed issue where crons were not being set up or disabled. #121 (@dparker1005)
