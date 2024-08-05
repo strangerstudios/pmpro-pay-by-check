@@ -342,15 +342,20 @@ function pmpropbc_order_status_success( $morder ) {
 		return;
 	}
 
+	// Check if we are switching to success status.
+	if ( 'success' !== $morder->status || 'success' === $morder->original_status) {
+		return;
+	}
+
 	// Check if the order was a chekout order.
 	$checkout_request_vars = get_pmpro_membership_order_meta( $morder->id, 'checkout_request_vars', true );
 	if ( ! empty( $checkout_request_vars ) ) {
 		// Process the checkout and avoid infinite loops. This should send the checkout email.
 		$original_request_vars = $_REQUEST;
 		pmpro_pull_checkout_data_from_order( $morder );
-		remove_action( 'pmpro_order_status_success', 'pmpropbc_order_status_success', 10, 1 );
+		remove_action( 'pmpro_update_order', 'pmpropbc_order_status_success', 10, 1 );
 		pmpro_complete_async_checkout( $morder );
-		add_action( 'pmpro_order_status_success', 'pmpropbc_order_status_success', 10, 1 );
+		add_action( 'pmpro_update_order', 'pmpropbc_order_status_success', 10, 1 );
 		$_REQUEST = $original_request_vars;
 	} else {
 		// Send an invoice email for the order.
@@ -362,4 +367,4 @@ function pmpropbc_order_status_success( $morder ) {
 		pmpropbc_update_subscription_data_for_order( $morder );
 	}
 }
-add_action( 'pmpro_order_status_success', 'pmpropbc_order_status_success', 10, 1 );
+add_action( 'pmpro_update_order', 'pmpropbc_order_status_success', 10, 1 );
