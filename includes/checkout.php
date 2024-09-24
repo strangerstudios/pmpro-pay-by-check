@@ -152,14 +152,16 @@ add_action("wp_enqueue_scripts", 'pmpropbc_enqueue_scripts');
 	Need to remove some filters added by the check gateway.
 	The default gateway will have it's own idea RE this.
 */
-function pmpropbc_init_include_billing_address_fields()
-{
+function pmpropbc_init_include_billing_address_fields( $level = null) {
 	//make sure PMPro is active
 	if(!function_exists('pmpro_getGateway'))
 		return;
 
 	//billing address and payment info fields
-	$level = pmpro_getLevelAtCheckout();
+	if ( empty( $level ) ) {
+		$level = pmpro_getLevelAtCheckout();
+	}
+
 	if ( ! empty( $level->id ) )
 	{
 		$options = pmpropbc_getOptions( $level->id );
@@ -227,7 +229,7 @@ function pmpropbc_init_include_billing_address_fields()
 	remove_filter('pmpro_checkout_after_payment_information_fields', array('PMProGateway_check', 'pmpro_checkout_after_payment_information_fields'));
 	add_filter('pmpro_checkout_after_payment_information_fields', 'pmpropbc_pmpro_checkout_after_payment_information_fields');		
 }
-add_action('init', 'pmpropbc_init_include_billing_address_fields', 20);
+add_action( 'pmpro_checkout_preheader_after_get_level_at_checkout', 'pmpropbc_init_include_billing_address_fields', 20, 1 );
 
 /**
  * Cancels all previously pending check orders if a user purchases the same level via a different payment method.
