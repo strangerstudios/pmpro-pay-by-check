@@ -2,16 +2,16 @@
 # This file is distributed under the same license as the Paid Memberships Pro - Pay by Check Add On plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1\n"
+"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1.1\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-15T17:04:16+00:00\n"
+"POT-Creation-Date: 2024-09-25T15:09:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: pmpro-pay-by-check\n"
 
 #. Plugin Name of the plugin
@@ -110,7 +110,7 @@ msgid "Pay by Credit Card"
 msgstr ""
 
 #: includes/checkout.php:54
-#: includes/checkout.php:269
+#: includes/checkout.php:271
 msgid "Pay by %s"
 msgstr ""
 
@@ -118,11 +118,20 @@ msgstr ""
 msgid "Check Out with PayPal"
 msgstr ""
 
-#: includes/emails.php:77
+#: includes/emails.php:90
 msgid "New Invoice for %s at %s"
 msgstr ""
 
-#: includes/emails.php:148
+#: includes/emails.php:131
+#: includes/emails.php:204
+msgid "Discount Code"
+msgstr ""
+
+#: includes/emails.php:163
+msgid "Pending checkout for !!display_name!! at !!sitename!!"
+msgstr ""
+
+#: includes/emails.php:234
 msgid "Reminder: New Invoice for %s at %s"
 msgstr ""
 

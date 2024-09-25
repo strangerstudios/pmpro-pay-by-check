@@ -2,16 +2,16 @@
 # This file is distributed under the same license as the Paid Memberships Pro - Pay by Check Add On plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1\n"
+"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1.1\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-15T17:04:16+00:00\n"
+"POT-Creation-Date: 2024-09-25T15:09:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: pmpro-pay-by-check\n"
 
 #: pmpro-pay-by-check.php:46
@@ -202,6 +202,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:956
 #: pmpro-pay-by-check.php:955
 #: includes/emails.php:77
+#: includes/emails.php:90
 #, php-format
 msgid "New Invoice for %s at %s"
 msgstr ""
@@ -218,6 +219,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:1116
 #: pmpro-pay-by-check.php:1115
 #: includes/emails.php:148
+#: includes/emails.php:234
 #, php-format
 msgid "Reminder: New Invoice for %s at %s"
 msgstr ""
@@ -226,6 +228,8 @@ msgstr ""
 #: pmpro-pay-by-check.php:746
 #: pmpro-pay-by-check.php:811
 #: pmpro-pay-by-check.php:816
+#: includes/emails.php:131
+#: includes/emails.php:204
 msgid "Discount Code"
 msgstr ""
 
@@ -408,10 +412,15 @@ msgstr ""
 #: includes/checkout.php:46
 #: includes/checkout.php:54
 #: includes/checkout.php:269
+#: includes/checkout.php:271
 msgid "Pay by %s"
 msgstr ""
 
 #. Author of the plugin
 #: pmpro-pay-by-check.php
 msgid "Paid Memberships Pro"
+msgstr ""
+
+#: includes/emails.php:163
+msgid "Pending checkout for !!display_name!! at !!sitename!!"
 msgstr ""
