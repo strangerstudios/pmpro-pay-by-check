@@ -60,8 +60,9 @@ class PMProGateway_pbc extends PMProGateway {
 		// Save the checkout data into the order.
 		pmpro_save_checkout_data_to_order( $order );
 
-		// Send the check_pending email.
+		// Send the check_pending emails.
 		pmpropbc_send_check_pending_email( $order );
+		pmpropbc_send_check_pending_admin_email( $order );
 
 		// Redirect to the confirmation page and await checkout completion.
 		$confirmation_url = apply_filters( 'pmpro_confirmation_url', add_query_arg( 'pmpro_level', $order->membership_level->id, pmpro_url("confirmation" ) ), $order->user_id, $order->membership_level );
