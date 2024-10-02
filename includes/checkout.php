@@ -14,8 +14,10 @@ add_filter("pmpro_valid_gateways", "pmpropbc_pmpro_valid_gateways");
 //add option to checkout along with JS
 function pmpropbc_checkout_boxes()
 {
-	global $gateway, $pmpro_level, $pmpro_review;
+	global $gateway, $pmpro_review;
 	$gateway_setting = get_option("pmpro_gateway");
+	$pmpro_level = pmpro_getLevelAtCheckout();
+
 
 	$options = pmpropbc_getOptions($pmpro_level->id);
 
@@ -98,7 +100,8 @@ function pmpropbc_enqueue_scripts() {
 	if(!function_exists('pmpro_getLevelAtCheckout'))
 		return;
 	
-	global $gateway, $pmpro_level, $pmpro_review, $pmpro_pages, $post, $pmpro_msg, $pmpro_msgt;
+	global $gateway, $pmpro_review, $pmpro_pages, $post, $pmpro_msg, $pmpro_msgt;
+	$pmpro_level = pmpro_getLevelAtCheckout();
 
 	// If post not set, bail.
 	if( ! isset( $post ) ) {
@@ -259,7 +262,8 @@ add_action( 'pmpro_after_checkout', 'pmpropbc_cancel_previous_pending_orders', 1
 	Show instructions on the checkout page.
 */
 function pmpropbc_pmpro_checkout_after_payment_information_fields() {
-	global $gateway, $pmpro_level;
+	global $gateway;
+	$pmpro_level = pmpro_getLevelAtCheckout();
 
 	$options = pmpropbc_getOptions($pmpro_level->id);
 
