@@ -101,7 +101,6 @@ function pmpropbc_enqueue_scripts() {
 		return;
 	
 	global $gateway, $pmpro_review, $pmpro_pages, $post, $pmpro_msg, $pmpro_msgt;
-	$pmpro_level = pmpro_getLevelAtCheckout();
 
 	// If post not set, bail.
 	if( ! isset( $post ) ) {
