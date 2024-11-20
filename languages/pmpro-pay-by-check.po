@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Paid Memberships Pro - Pay by Check Add On plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1.1\n"
+"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1.2\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-09-25T15:09:46+00:00\n"
+"POT-Creation-Date: 2024-11-20T14:23:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: pmpro-pay-by-check\n"
@@ -104,6 +104,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:167
 #: includes/checkout.php:29
 #: includes/checkout.php:31
+#: includes/checkout.php:33
 msgid "Choose Your Payment Method"
 msgstr ""
 
@@ -114,6 +115,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:173
 #: includes/checkout.php:35
 #: includes/checkout.php:41
+#: includes/checkout.php:43
 msgid "Pay with PayPal"
 msgstr ""
 
@@ -123,6 +125,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:175
 #: includes/checkout.php:37
 #: includes/checkout.php:43
+#: includes/checkout.php:45
 msgid "Pay with 2Checkout"
 msgstr ""
 
@@ -133,6 +136,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:179
 #: includes/checkout.php:41
 #: includes/checkout.php:47
+#: includes/checkout.php:49
 msgid "Pay by Credit Card"
 msgstr ""
 
@@ -322,6 +326,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:177
 #: includes/checkout.php:39
 #: includes/checkout.php:45
+#: includes/checkout.php:47
 msgid "Pay with PayFast"
 msgstr ""
 
@@ -330,6 +335,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:191
 #: includes/checkout.php:53
 #: includes/checkout.php:63
+#: includes/checkout.php:65
 msgid "Check Out with PayPal"
 msgstr ""
 
@@ -380,6 +386,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:160
 #: includes/admin.php:11
 #: includes/checkout.php:22
+#: includes/checkout.php:24
 msgid "Check"
 msgstr ""
 
@@ -413,6 +420,8 @@ msgstr ""
 #: includes/checkout.php:54
 #: includes/checkout.php:269
 #: includes/checkout.php:271
+#: includes/checkout.php:56
+#: includes/checkout.php:274
 msgid "Pay by %s"
 msgstr ""
 
