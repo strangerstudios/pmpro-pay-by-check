@@ -139,7 +139,7 @@ function pmpropbc_send_check_pending_email( $order ) {
 /**
  * Send the check_pending_admin email.
  *
- * @since TBD
+ * @since 1.1
  *
  * @param MemberOrder $order - The order object.
  * @return bool - True if the email was sent, false otherwise.

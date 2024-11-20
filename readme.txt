@@ -3,7 +3,7 @@ Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 5.0
 Tested up to: 6.6
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -29,6 +29,10 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
+= 1.1.2 - 2024-11-20 =
+* BUG FIX: Fixed an issue where recurring orders would be created with a $0 total when using PMPro v3.2+. #131 (@dparker1005)
+* BUG FIX: Fixed an issue where block editor pages would not save successfully when the checkout block was used. #130 (@MaximilianoRicoTabo)
+
 = 1.1.1 - 2024-09-25 =
 * ENHANCEMENT: Now notifying the site admin when a pending check order is created at checkout. #129 (@dparker1005)
 * BUG FIX: Fixed an issue where payment subscriptions were immediately cancelled when a user purchased a level that they already had. #125 (@dparker1005)
