@@ -24,6 +24,30 @@ function pmpropbc_deactivation() {
 }
 register_deactivation_hook( PMPRO_PAY_BY_CHECK_BASE_FILE, 'pmpropbc_deactivation' );
 
+
+
+/**
+ * Add PBC crons to the PMPro crons list to pull the site health report.
+ *
+ * @param array $schedules The list of registered crons for Paid Memberships Pro.
+ * @return array The list of registered crons for Paid Memberships Pro.
+ * @since TBD
+ */
+function pmpropbc_add_cron_schedule( $schedules ) {
+	$schedules['pmpropbc_cancel_overdue_orders'] = array(
+		'interval' => 'daily',
+	);
+	$schedules['pmpropbc_recurring_orders'] = array(
+		'interval' => 'daily',
+	);
+	$schedules['pmpropbc_reminder_emails'] = array(
+		'interval' => 'daily',
+	);
+	return $schedules;
+}
+
+add_filter( 'pmpro_registered_crons', 'pmpropbc_add_cron_schedule' );
+
 /**
  * Create pending orders for subscriptions.
  */
