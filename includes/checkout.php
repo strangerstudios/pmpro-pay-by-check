@@ -284,7 +284,7 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
  * Make sure that orders have the "check" gateway if
  * the level is set to "check only".
  *
- * @since TBD
+ * @since 1.1.3
  *
  * @param MemberOrder $order The checkout order object.
  * @return MemberOrder

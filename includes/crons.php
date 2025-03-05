@@ -31,7 +31,7 @@ register_deactivation_hook( PMPRO_PAY_BY_CHECK_BASE_FILE, 'pmpropbc_deactivation
  *
  * @param array $schedules The list of registered crons for Paid Memberships Pro.
  * @return array The list of registered crons for Paid Memberships Pro.
- * @since TBD
+ * @since 1.1.3
  */
 function pmpropbc_add_cron_schedule( $schedules ) {
 	$schedules['pmpropbc_cancel_overdue_orders'] = array(
