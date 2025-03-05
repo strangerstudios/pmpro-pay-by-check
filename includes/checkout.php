@@ -281,6 +281,27 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 }
 
 /**
+ * Make sure that orders have the "check" gateway if
+ * the level is set to "check only".
+ *
+ * @since TBD
+ *
+ * @param MemberOrder $order The checkout order object.
+ * @return MemberOrder
+ */
+function pmpropbc_checkout_order( $order ) {
+	// Check if this level is check only.
+	$options = pmpropbc_getOptions( $order->membership_id );
+	if ( $options['setting'] == 2 ) {
+		// This is a check only level. Make sure that the order is set to the check gateway.
+		$order->setGateway( 'check' );
+	}
+
+	return $order;
+}
+add_filter( 'pmpro_checkout_order', 'pmpropbc_checkout_order' );
+
+/**
  * When getting the gateway object for a "check" order/subscription, swap it
  * for our custom "check" gateway.
  *
