@@ -273,7 +273,7 @@ function pmpropbc_pmpro_checkout_after_payment_information_fields() {
 		<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card pmpro_check_instructions', 'pmpro_check_instructions' ) ); ?>" <?php echo $gateway != 'check' ? 'style="display:none;"' : ''; ?>>
 			<h2 class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_title pmpro_font-large' ) ); ?>"><?php echo esc_html( sprintf( __( 'Pay by %s', 'pmpro-pay-by-check' ), $check_gateway_label ) ); ?></h2>
 			<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_content' ) ); ?>">
-				<?php echo wp_kses_post( $instructions ); ?>
+				<?php echo wp_kses_post( wpautop( wp_unslash( $instructions ) ) ); ?>
 			</div> <!-- end pmpro_card_content -->
 		</div> <!-- end pmpro_check_instructions -->
 		<?php
