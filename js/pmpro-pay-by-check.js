@@ -4,8 +4,8 @@
 
 //set some vars
 if ( typeof pmpro_require_billing === 'undefined' ) {
-    var pmpro_require_billing;
-    var pmpro_pbc_interval_handle;
+	var pmpro_require_billing;
+	var pmpro_pbc_interval_handle;
 }
 
 if ( typeof code_level === 'undefined' ) {	
@@ -35,8 +35,8 @@ function pmpropbc_isLevelFree() {
 	} else if ( true === has_donation && ( parseFloat( jQuery('#donation').val() ) > 0 || ( parseFloat(check_level.billing_amount) > 0 || parseFloat(check_level.initial_payment) > 0 ) ) ) {
 		return false;
 	} else {
-	    return true;
-    }
+		return true;
+	}
 }
 
 function pmpropbc_isCheckGatewayChosen() {
@@ -64,7 +64,7 @@ function pmpropbc_isPayFast() {
 }
 
 function pmpropbc_toggleCheckoutFields() {
-    "use strict";
+	"use strict";
 			
 	//check for free/paid
 	if(pmpropbc_isLevelFree()) {
@@ -84,7 +84,7 @@ function pmpropbc_toggleCheckoutFields() {
 		//paid, now check if using check gateway
 		if(pmpropbc_isCheckGatewayChosen()) {
 			//paid and check
-			jQuery('#pmpro_billing_address_fields').show();
+			jQuery('#pmpro_billing_address_fields').hide();
 			jQuery('#pmpro_payment_information_fields').hide();			
 			jQuery('.pmpro_check_instructions').show();
 			pmpro_require_billing = false;
