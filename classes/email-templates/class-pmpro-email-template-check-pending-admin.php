@@ -23,7 +23,7 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	/**
 	 * Constructor.
 	 *
-	 * @since 3.4
+	 * @since 1.1.4
 	 *
 	 * @param WP_User $user The user object of the user to send the email to.
 	 * @param MemberOrder $order The order object that is associated to the member.
@@ -36,7 +36,7 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 		/**
 	 * Get the email template slug.
 	 *
-	 * @since 3.4
+	 * @since 1.1.4
 	 *
 	 * @return string The email template slug.
 	 */
@@ -47,7 +47,7 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	/**
 	 * Get the "nice name" of the email template.
 	 *
-	 * @since 3.4
+	 * @since 1.1.4
 	 *
 	 * @return string The "nice name" of the email template.
 	 */
@@ -58,7 +58,7 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	/**
 	 * Get "help text" to display to the admin when editing the email template.
 	 *
-	 * @since 3.4
+	 * @since 1.1.4
 	 *
 	 * @return string The help text.
 	 */
@@ -69,7 +69,7 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	/**
 	 * Get the email subject.
 	 *
-	 * @since 3.4
+	 * @since 1.1.4
 	 *
 	 * @return string The email subject.
 	 */
@@ -80,7 +80,7 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	/**
 	 * Get the email body.
 	 *
-	 * @since 3.4
+	 * @since 1.1.4
 	 *
 	 * @return string The email body.
 	 */
@@ -99,7 +99,7 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	/**
 	 * Get the email address to send the email to.
 	 *
-	 * @since 3.4
+	 * @since 1.1.4
 	 *
 	 * @return string The email address to send the email to.
 	 */
@@ -108,9 +108,9 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	}
 
 	/**
-	 * Get the name of the email recipient.
+	 * Get the name of the email recipient. In this case, the admin.
 	 *
-	 * @since 3.4
+	 * @since 1.1.4
 	 *
 	 * @return string The name of the email recipient.
 	 */
@@ -123,7 +123,7 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	/**
 	 * Get the email template variables for the email.
 	 *
-	 * @since 3.4
+	 * @since 1.1.4
 	 *
 	 * @return array The email template variables for the email (key => value pairs).
 	 */
@@ -142,29 +142,29 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 
 		$email_template_variables = array(
 			'subject' => $this->get_default_subject(),
-			'name' => $this->get_recipient_name(),
-			'display_name' => $this->get_recipient_name(),
+			'name' => $user->display_name,
+			'display_name' => $user->display_name,
 			'user_login' => $user->user_login,
 			'user_email' => $user->user_email,
 			'membership_id' => $membership_level->id,
 			'membership_level_name' => $membership_level->name,
 			'membership_cost' => pmpro_getLevelCost($membership_level),
-            'instructions' => wp_unslash( pmpro_getOption( 'instructions' ) ),
+			'instructions' => wp_unslash( pmpro_getOption( 'instructions' ) ),
 			'order_id' => $order->code,
-            'invoice_id' => $order->code, // For compatibility with older templates.
+			'invoice_id' => $order->code, // For compatibility with older templates.
 			'order_date' => date_i18n( get_option( 'date_format' ), $order->getTimestamp() ),
-            'invoice_date' => date_i18n( get_option( 'date_format' ), $order->getTimestamp() ), // For compatibility with older templates.
+			'invoice_date' => date_i18n( get_option( 'date_format' ), $order->getTimestamp() ), // For compatibility with older templates.
 			'order_total' => $order->get_formatted_total(),
-            'invoice_total' => $order->get_formatted_total(), // For compatibility with older templates.
+			'invoice_total' => $order->get_formatted_total(), // For compatibility with older templates.
 			'discount_code' => $discount_code,
 			'billing_address' => pmpro_formatAddress( $order->billing->name,
-														 $order->billing->street,
-														 $order->billing->street2,
-														 $order->billing->city,
-														 $order->billing->state,
-														 $order->billing->zip,
-														 $order->billing->country,
-														 $order->billing->phone ),
+														$order->billing->street,
+														$order->billing->street2,
+														$order->billing->city,
+														$order->billing->state,
+														$order->billing->zip,
+														$order->billing->country,
+														$order->billing->phone ),
 			'billing_name' => $order->billing->name,
 			'billing_street' => $order->billing->street,
 			'billing_street2' => $order->billing->street2,
@@ -185,7 +185,7 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	/**
 	* Get the email template variables for the email paired with a description of the variable.
 	*
-	* @since 3.4
+	* @since 1.1.4
 	*
 	* @return array The email template variables for the email (key => value pairs).
 	*/
@@ -234,7 +234,7 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 /**
  * Register the email template.
  *
- * @since 3.4
+ * @since 1.1.4
  *
  * @param array $email_templates The email templates (template slug => email template class name)
  * @return array The modified email templates array.
