@@ -11,7 +11,13 @@ function pmpropbc_pmpro_membership_level_after_other_settings()
 	$check_gateway_label = get_option( 'pmpro_check_gateway_label' ) ?: __( 'Check', 'pmpro-pay-by-check' ); // Default to 'Pay by Check' if no option is set.
 ?>
 <h3 class="topborder"><?php  echo esc_html( sprintf( __( 'Pay by %s Settings', 'pmpro-pay-by-check' ), $check_gateway_label ) ); ?></h3>
-<p><?php echo esc_html( sprintf( __( 'Change this setting to allow or disallow the "Pay by %s" option for this level.', 'pmpro-pay-by-check' ), $check_gateway_label ) ); ?></p>
+<p>
+	<?php echo esc_html( sprintf( __( 'Change this setting to allow or disallow the "Pay by %s" option for this level.', 'pmpro-pay-by-check' ), $check_gateway_label ) ); ?>
+	<?php
+	$pay_by_check_link = '<a title="' . esc_attr__( 'Pay by Check Add On', 'pmpro-pay-by-check' ) . '" target="_blank" rel="nofollow noopener" href="https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/?utm_source=plugin&utm_medium=pmpro-pay-by-check&utm_campaign=add-ons&utm_content=&utm_term=">' . esc_html__( 'Pay by Check', 'pmpro-pay-by-check' ) . '</a>';
+	printf( esc_html__( 'Learn more about %s.', 'pmpro-pay-by-check' ), $pay_by_check_link ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	?>
+</p>
 <table>
 <tbody class="form-table">
 	<tr>
