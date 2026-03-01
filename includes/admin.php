@@ -10,18 +10,19 @@ function pmpropbc_pmpro_membership_level_after_other_settings()
 	$options = pmpropbc_getOptions($level_id);
 	$check_gateway_label = get_option( 'pmpro_check_gateway_label' ) ?: __( 'Check', 'pmpro-pay-by-check' ); // Default to 'Pay by Check' if no option is set.
 ?>
-<h3 class="topborder"><?php  echo esc_html( sprintf( __( 'Pay by %s Settings', 'pmpro-pay-by-check' ), $check_gateway_label ) ); ?></h3>
+<hr />
+<h2><?php echo esc_html( sprintf( __( 'Pay by %s Settings', 'pmpro-pay-by-check' ), $check_gateway_label ) ); ?></h2>
 <p>
 	<?php echo esc_html( sprintf( __( 'Change this setting to allow or disallow the "Pay by %s" option for this level.', 'pmpro-pay-by-check' ), $check_gateway_label ) ); ?>
 	<?php
-	$pay_by_check_link = '<a title="' . esc_attr__( 'Pay by Check Add On', 'pmpro-pay-by-check' ) . '" target="_blank" rel="nofollow noopener" href="https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/?utm_source=plugin&utm_medium=pmpro-pay-by-check&utm_campaign=add-ons&utm_content=&utm_term=">' . esc_html__( 'Pay by Check', 'pmpro-pay-by-check' ) . '</a>';
-	printf( esc_html__( 'Learn more about %s.', 'pmpro-pay-by-check' ), $pay_by_check_link ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	$pay_by_check_link = '<a title="' . esc_attr( 'Manual and Offline Payments Add On Documentation', 'pmpro-pay-by-check' ) . '" target="_blank" rel="nofollow noopener" href="https://www.paidmembershipspro.com/add-ons/pmpro-pay-by-check-add-on/?utm_source=plugin&utm_medium=pmpro-pay-by-check&utm_campaign=add-ons">' . esc_html__( 'Manual and Offline Payments Add On', 'pmpro-pay-by-check' ) . '</a>';
+	printf( esc_html__( 'Learn more about the %s.', 'pmpro-pay-by-check' ), $pay_by_check_link ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	?>
 </p>
 <table>
 <tbody class="form-table">
 	<tr>
-		<th scope="row" valign="top"><label for="pbc_setting"><?php echo esc_html( sprintf( __( 'Allow Paying by %s:', 'pmpro-pay-by-check' ), $check_gateway_label ) );?></label></th>
+		<th scope="row" valign="top"><label for="pbc_setting"><?php echo esc_html( sprintf( __( 'Allow Paying by %s', 'pmpro-pay-by-check' ), $check_gateway_label ) );?></label></th>
 		<td>
 			<select id="pbc_setting" name="pbc_setting">
 				<option value="0" <?php selected($options['setting'], 0);?>><?php esc_html_e( 'No. Use the default gateway only.', 'pmpro-pay-by-check' );?></option>
@@ -31,21 +32,21 @@ function pmpropbc_pmpro_membership_level_after_other_settings()
 		</td>
 	</tr>
 	<tr class="pbc_level_settings_field">
-		<th scope="row" valign="top"><label for="pbc_renewal_days"><?php _e('Send Renewal Emails:', 'pmpro-pay-by-check');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_renewal_days"><?php esc_html_e('Send Renewal Emails', 'pmpro-pay-by-check');?></label></th>
 		<td>
-			<input type="text" id="pbc_renewal_days" name="pbc_renewal_days" size="5" value="<?php echo esc_attr($options['renewal_days']);?>" /> <?php _e('days before renewal.', 'pmpro-pay-by-check');?>
+			<input type="text" id="pbc_renewal_days" name="pbc_renewal_days" size="5" value="<?php echo esc_attr($options['renewal_days']);?>" /> <?php esc_html_e('days before renewal.', 'pmpro-pay-by-check');?>
 		</td>
 	</tr>
 	<tr class="pbc_level_settings_field">
-		<th scope="row" valign="top"><label for="pbc_reminder_days"><?php _e('Send Reminder Emails:', 'pmpro-pay-by-check');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_reminder_days"><?php esc_html_e('Send Reminder Emails', 'pmpro-pay-by-check');?></label></th>
 		<td>
-			<input type="text" id="pbc_reminder_days" name="pbc_reminder_days" size="5" value="<?php echo esc_attr($options['reminder_days']);?>" /> <?php _e('days after a missed payment.', 'pmpro-pay-by-check');?>
+			<input type="text" id="pbc_reminder_days" name="pbc_reminder_days" size="5" value="<?php echo esc_attr($options['reminder_days']);?>" /> <?php esc_html_e('days after a missed payment.', 'pmpro-pay-by-check');?>
 		</td>
 	</tr>
 	<tr class="pbc_level_settings_field">
-		<th scope="row" valign="top"><label for="pbc_cancel_days"><?php _e('Cancel Membership:', 'pmpro-pay-by-check');?></label></th>
+		<th scope="row" valign="top"><label for="pbc_cancel_days"><?php esc_html_e('Cancel Membership', 'pmpro-pay-by-check');?></label></th>
 		<td>
-			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> <?php _e('days after a missed payment.', 'pmpro-pay-by-check');?>
+			<input type="text" id="pbc_cancel_days" name="pbc_cancel_days" size="5" value="<?php echo esc_attr($options['cancel_days']);?>" /> <?php esc_html_e('days after a missed payment.', 'pmpro-pay-by-check');?>
 		</td>
 	</tr>
 </tbody>
