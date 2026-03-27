@@ -55,6 +55,14 @@ function pmpropbc_isPayPalExpressChosen() {
 	}
 }
 
+function pmpropbc_isPayPalChosen() {
+	if(jQuery('input[name=gateway]:checked').val() == 'paypal'  ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function pmpropbc_isPayFast() {
 	if(jQuery('input[name=gateway]:checked').val() == 'payfast'  ) {
 		return true;
@@ -80,6 +88,11 @@ function pmpropbc_toggleCheckoutFields() {
 			jQuery('#pmpro_paypalexpress_checkout').hide();
 			jQuery('#pmpro_submit_span').show();
 		}
+		if(pmpropbc.gateway === 'paypal' )
+		{
+			jQuery('#pmpro_paypal_checkout').hide();
+			jQuery('#pmpro_submit_span').show();
+		}
 	} else {
 		//paid, now check if using check gateway
 		if(pmpropbc_isCheckGatewayChosen()) {
@@ -88,10 +101,18 @@ function pmpropbc_toggleCheckoutFields() {
 			jQuery('#pmpro_payment_information_fields').hide();			
 			jQuery('.pmpro_check_instructions').show();
 			pmpro_require_billing = false;
+		} else if(pmpropbc_isPayPalChosen()) {
+			//paypal REST
+			jQuery('#pmpro_billing_address_fields').hide();
+			jQuery('#pmpro_payment_information_fields').hide();
+			jQuery('#pmpro_submit_span').hide();
+			jQuery('#pmpro_paypal_checkout').show();
+			jQuery('.pmpro_check_instructions').hide();
+			pmpro_require_billing = false;
 		} else if(pmpropbc_isPayPalExpressChosen()) {
 			//paypal express
 			jQuery('#pmpro_billing_address_fields').hide();
-			jQuery('#pmpro_payment_information_fields').hide();			
+			jQuery('#pmpro_payment_information_fields').hide();
 			jQuery('#pmpro_submit_span').hide();
 			jQuery('#pmpro_paypalexpress_checkout').show();
 			jQuery('.pmpro_check_instructions').hide();
@@ -113,19 +134,30 @@ function pmpropbc_toggleCheckoutFields() {
 		if(pmpropbc.gateway === 'paypalexpress' || pmpropbc.gateway === 'paypalstandard' ) {
 			if(pmpropbc_isCheckGatewayChosen()) {
 				jQuery('#pmpro_paypalexpress_checkout').hide();
-				jQuery('#pmpro_submit_span').show();				
+				jQuery('#pmpro_submit_span').show();
 			} else {
 				jQuery('#pmpro_paypalexpress_checkout').show();
 				jQuery('#pmpro_submit_span').hide();
 			}
 		}
 
-		//Integration for PayPal Website Payments Pro.
+		//Integration for PayPal REST API gateway.
 		if ( pmpropbc.gateway == 'paypal' ) {
+			if ( pmpropbc_isCheckGatewayChosen() ) {
+				jQuery('#pmpro_paypal_checkout').hide();
+				jQuery('#pmpro_submit_span').show();
+			} else {
+				jQuery('#pmpro_paypal_checkout').show();
+				jQuery('#pmpro_submit_span').hide();
+			}
+		}
+
+		//Integration for PayPal Website Payments Pro.
+		if ( pmpropbc.gateway == 'paypalwpp' ) {
 			// Figure out if they selected check or not.
 			if ( pmpropbc_isCheckGatewayChosen() ) {
 				jQuery('#pmpro_paypalexpress_checkout').hide();
-				jQuery('#pmpro_submit_span').show();				
+				jQuery('#pmpro_submit_span').show();
 			} else if( pmpropbc_isPayPalExpressChosen() ) { // see if PayPal Express is selected.
 				jQuery('#pmpro_paypalexpress_checkout').show();
 				jQuery('#pmpro_submit_span').hide();
