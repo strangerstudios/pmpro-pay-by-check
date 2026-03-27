@@ -39,7 +39,7 @@ function pmpropbc_checkout_boxes()
 								<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_field pmpro_form_field-radio-item' ) ); ?> gateway_<?php echo esc_attr($gateway_setting); ?>">
 									<input type="radio" id="gateway_<?php echo esc_attr( $gateway_setting ); ?>" name="gateway" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_input pmpro_form_input-radio' ) ); ?>" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
 									<label for="gateway_<?php echo esc_attr( $gateway_setting ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_label pmpro_form_label-inline pmpro_clickable' ) ); ?>">
-										<?php if($gateway_setting == "paypalexpress" || $gateway_setting == "paypalstandard") { ?>
+										<?php if($gateway_setting == "paypal" || $gateway_setting == "paypalexpress" || $gateway_setting == "paypalstandard") { ?>
 											<?php _e('Pay with PayPal', 'pmpro-pay-by-check');?>
 										<?php } elseif($gateway_setting == 'twocheckout') { ?>
 											<?php _e('Pay with 2Checkout', 'pmpro-pay-by-check');?>
@@ -58,7 +58,7 @@ function pmpropbc_checkout_boxes()
 								</div> <!-- end pmpro_form_field pmpro_form_field-radio-item -->
 								<?php
 									// Support the PayPal Website Payments Pro Gateway which has PayPal Express as a second option natively
-									if ( $gateway_setting == "paypal" ) { ?>
+									if ( $gateway_setting == "paypalwpp" ) { ?>
 										<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_field pmpro_form_field-radio-item' ) ); ?> gateway_paypalexpress">
 											<input type="radio" id="gateway_paypalexpress" name="gateway" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_input pmpro_form_input-radio' ) ); ?>" value="paypalexpress" <?php checked( 'paypalexpress', $gateway ); ?> />
 											<label for="gateway_paypalexpress" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_label pmpro_form_label-inline pmpro_clickable' ) ); ?>">
@@ -198,14 +198,9 @@ function pmpropbc_init_include_billing_address_fields( $level = null) {
 			} elseif($default_gateway == 'paypalstandard') {
 				add_filter('pmpro_checkout_default_submit_button', array('PMProGateway_paypalstandard', 'pmpro_checkout_default_submit_button'));
 			} elseif($default_gateway == 'paypal') {
-				if ( version_compare( PMPRO_VERSION, '2.1', '>=' ) ) {
-					add_action( 'pmpro_checkout_preheader', array( 'PMProGateway_paypal', 'pmpro_checkout_preheader' ) );
-				} else {
-					/**
-					 * @deprecated No longer used since paid-memberships-pro v2.1
-					 */
-					add_action( 'pmpro_checkout_after_form', array( 'PMProGateway_paypal', 'pmpro_checkout_after_form' ) );
-				}
+				add_filter('pmpro_checkout_default_submit_button', array('PMProGateway_paypal', 'pmpro_checkout_default_submit_button'));
+			} elseif($default_gateway == 'paypalwpp') {
+				add_action( 'pmpro_checkout_preheader', array( 'PMProGateway_paypalwpp', 'pmpro_checkout_preheader' ) );
 				add_filter('pmpro_include_payment_option_for_paypal', '__return_false');
 			} elseif($default_gateway == 'twocheckout') {
 				//undo the filter to change the checkout button text
