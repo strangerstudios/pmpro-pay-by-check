@@ -74,7 +74,11 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	 * @return string The email subject.
 	 */
 	public static function get_default_subject() {
-		return esc_html__( "Pending checkout for !!display_name!! at !!sitename!!", 'pmpro-pay-by-check' );
+		if ( ! class_exists( 'PMPro_Liquid_Renderer' ) ) {
+			// Running a version of PMPro before liquid email rendering was available.
+			return esc_html__( "Pending checkout for !!display_name!! at !!sitename!!", 'pmpro-pay-by-check' );
+		}
+		return esc_html__( "Pending checkout for {{ display_name }} at {{ sitename }}", 'pmpro-pay-by-check' );
 	}
 
 	/**
@@ -85,7 +89,9 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	 * @return string The email body.
 	 */
 	public static function get_default_body() {
-		return  wp_kses_post( __( '<p>There is a pending checkout at !!sitename!!.</p>
+		if ( ! class_exists( 'PMPro_Liquid_Renderer' ) ) {
+			// Running a version of PMPro before liquid email rendering was available.
+			return  wp_kses_post( __( '<p>There is a pending checkout at !!sitename!!.</p>
 
 <p>Account: !!display_name!! (!!user_email!!)</p>
 <p>Membership Level: !!membership_level_name!!</p>
@@ -93,6 +99,16 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 <p>
     Invoice #!!invoice_id!! on !!invoice_date!!<br />
     Total Billed: !!invoice_total!!
+</p>', 'pmpro_pay_by_check' ) );
+		}
+		return  wp_kses_post( __( '<p>There is a pending checkout at {{ sitename }}.</p>
+
+<p>Account: {{ display_name }} ({{ user_email }})</p>
+<p>Membership Level: {{ membership_level_name }}</p>
+
+<p>
+    Invoice #{{ invoice_id }} on {{ invoice_date }}<br />
+    Total Billed: {{ invoice_total }}
 </p>', 'pmpro_pay_by_check' ) );
 	}
 
@@ -190,28 +206,52 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 	* @return array The email template variables for the email (key => value pairs).
 	*/
 	public static function get_email_template_variables_with_description() {
-
+		if ( ! class_exists( 'PMPro_Liquid_Renderer' ) ) {
+			// Running a version of PMPro before liquid email rendering was available.
+			return array(
+				'!!display_name!!' => esc_html__( 'The display name of the user.', 'paid-memberships-pro' ),
+				'!!user_login!!' => esc_html__( 'The username of the user.', 'paid-memberships-pro' ),
+				'!!user_email!!' => esc_html__( 'The email address of the user.', 'paid-memberships-pro' ),
+				'!!membership_id!!' => esc_html__( 'The ID of the membership level.', 'paid-memberships-pro' ),
+				'!!membership_level_name!!' => esc_html__( 'The name of the membership level.', 'paid-memberships-pro' ),
+				'!!membership_cost!!' => esc_html__( 'The cost of the membership level.', 'paid-memberships-pro' ),
+				'!!instructions!!' => esc_html__( 'The instructions for the payment method, as set in the PMPro settings.', 'paid-memberships-pro' ),
+				'!!order_id!!' => esc_html__( 'The ID of the order.', 'paid-memberships-pro' ),
+				'!!order_date!!' => esc_html__( 'The date of the order.', 'paid-memberships-pro' ),
+				'!!order_total!!' => esc_html__( 'The total cost of the order.', 'paid-memberships-pro' ),
+				'!!discount_code!!' => esc_html__( 'The discount code used for the order.', 'paid-memberships-pro' ),
+				'!!billing_address!!' => esc_html__( 'The complete billing address of the order.', 'paid-memberships-pro' ),
+				'!!billing_name!!' => esc_html__( 'The billing name of the order.', 'paid-memberships-pro' ),
+				'!!billing_street!!' => esc_html__( 'The billing street of the order.', 'paid-memberships-pro' ),
+				'!!billing_street2!!' => esc_html__( 'The billing street line 2 of the order.', 'paid-memberships-pro' ),
+				'!!billing_city!!' => esc_html__( 'The billing city of the order.', 'paid-memberships-pro' ),
+				'!!billing_state!!' => esc_html__( 'The billing state of the order.', 'paid-memberships-pro' ),
+				'!!billing_zip!!' => esc_html__( 'The billing ZIP code of the order.', 'paid-memberships-pro' ),
+				'!!billing_country!!' => esc_html__( 'The billing country of the order.', 'paid-memberships-pro' ),
+				'!!billing_phone!!' => esc_html__( 'The billing phone number of the order.', 'paid-memberships-pro' ),
+			);
+		}
 		return array(
-			'!!display_name!!' => esc_html__( 'The display name of the user.', 'paid-memberships-pro' ),
-			'!!user_login!!' => esc_html__( 'The username of the user.', 'paid-memberships-pro' ),
-			'!!user_email!!' => esc_html__( 'The email address of the user.', 'paid-memberships-pro' ),
-			'!!membership_id!!' => esc_html__( 'The ID of the membership level.', 'paid-memberships-pro' ),
-			'!!membership_level_name!!' => esc_html__( 'The name of the membership level.', 'paid-memberships-pro' ),
-			'!!membership_cost!!' => esc_html__( 'The cost of the membership level.', 'paid-memberships-pro' ),
-            '!!instructions!!' => esc_html__( 'The instructions for the payment method, as set in the PMPro settings.', 'paid-memberships-pro' ),
-			'!!order_id!!' => esc_html__( 'The ID of the order.', 'paid-memberships-pro' ),
-			'!!order_date!!' => esc_html__( 'The date of the order.', 'paid-memberships-pro' ),
-			'!!order_total!!' => esc_html__( 'The total cost of the order.', 'paid-memberships-pro' ),
-			'!!discount_code!!' => esc_html__( 'The discount code used for the order.', 'paid-memberships-pro' ),
-			'!!billing_address!!' => esc_html__( 'The complete billing address of the order.', 'paid-memberships-pro' ),
-			'!!billing_name!!' => esc_html__( 'The billing name of the order.', 'paid-memberships-pro' ),
-			'!!billing_street!!' => esc_html__( 'The billing street of the order.', 'paid-memberships-pro' ),
-			'!!billing_street2!!' => esc_html__( 'The billing street line 2 of the order.', 'paid-memberships-pro' ),
-			'!!billing_city!!' => esc_html__( 'The billing city of the order.', 'paid-memberships-pro' ),
-			'!!billing_state!!' => esc_html__( 'The billing state of the order.', 'paid-memberships-pro' ),
-			'!!billing_zip!!' => esc_html__( 'The billing ZIP code of the order.', 'paid-memberships-pro' ),
-			'!!billing_country!!' => esc_html__( 'The billing country of the order.', 'paid-memberships-pro' ),
-			'!!billing_phone!!' => esc_html__( 'The billing phone number of the order.', 'paid-memberships-pro' ),
+			'{{ display_name }}' => esc_html__( 'The display name of the user.', 'paid-memberships-pro' ),
+			'{{ user_login }}' => esc_html__( 'The username of the user.', 'paid-memberships-pro' ),
+			'{{ user_email }}' => esc_html__( 'The email address of the user.', 'paid-memberships-pro' ),
+			'{{ membership_id }}' => esc_html__( 'The ID of the membership level.', 'paid-memberships-pro' ),
+			'{{ membership_level_name }}' => esc_html__( 'The name of the membership level.', 'paid-memberships-pro' ),
+			'{{ membership_cost }}' => esc_html__( 'The cost of the membership level.', 'paid-memberships-pro' ),
+			'{{ instructions }}' => esc_html__( 'The instructions for the payment method, as set in the PMPro settings.', 'paid-memberships-pro' ),
+			'{{ order_id }}' => esc_html__( 'The ID of the order.', 'paid-memberships-pro' ),
+			'{{ order_date }}' => esc_html__( 'The date of the order.', 'paid-memberships-pro' ),
+			'{{ order_total }}' => esc_html__( 'The total cost of the order.', 'paid-memberships-pro' ),
+			'{{ discount_code }}' => esc_html__( 'The discount code used for the order.', 'paid-memberships-pro' ),
+			'{{ billing_address }}' => esc_html__( 'The complete billing address of the order.', 'paid-memberships-pro' ),
+			'{{ billing_name }}' => esc_html__( 'The billing name of the order.', 'paid-memberships-pro' ),
+			'{{ billing_street }}' => esc_html__( 'The billing street of the order.', 'paid-memberships-pro' ),
+			'{{ billing_street2 }}' => esc_html__( 'The billing street line 2 of the order.', 'paid-memberships-pro' ),
+			'{{ billing_city }}' => esc_html__( 'The billing city of the order.', 'paid-memberships-pro' ),
+			'{{ billing_state }}' => esc_html__( 'The billing state of the order.', 'paid-memberships-pro' ),
+			'{{ billing_zip }}' => esc_html__( 'The billing ZIP code of the order.', 'paid-memberships-pro' ),
+			'{{ billing_country }}' => esc_html__( 'The billing country of the order.', 'paid-memberships-pro' ),
+			'{{ billing_phone }}' => esc_html__( 'The billing phone number of the order.', 'paid-memberships-pro' ),
 		);
 	}
 
