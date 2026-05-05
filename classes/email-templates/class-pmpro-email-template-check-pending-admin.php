@@ -97,8 +97,8 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 <p>Membership Level: !!membership_level_name!!</p>
 
 <p>
-    Invoice #!!invoice_id!! on !!invoice_date!!<br />
-    Total Billed: !!invoice_total!!
+    Order #!!order_id!! on !!order_date!!<br />
+    Total Billed: !!order_total!!
 </p>', 'pmpro_pay_by_check' ) );
 		}
 		return  wp_kses_post( __( '<p>There is a pending checkout at {{ sitename }}.</p>
@@ -107,8 +107,8 @@ class PMPro_Email_Template_Check_Pending_Admin extends PMPro_Email_Template {
 <p>Membership Level: {{ membership_level_name }}</p>
 
 <p>
-    Invoice #{{ invoice_id }} on {{ invoice_date }}<br />
-    Total Billed: {{ invoice_total }}
+    Order #{{ order_id }} on {{ order_date }}<br />
+    Total Billed: {{ order_total }}
 </p>', 'pmpro_pay_by_check' ) );
 	}
 
