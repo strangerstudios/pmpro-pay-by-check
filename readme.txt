@@ -3,7 +3,7 @@ Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 1.1.6
+Stable tag: 1.1.7
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -29,6 +29,10 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
+= 1.1.7 - 2026-05-05 =
+* ENHANCEMENT: Updated default email templates to use the new liquid syntax (`{{ var }}`) for Paid Memberships Pro 3.7+ while preserving the legacy `!!var!!` syntax on older versions. #152 (@dparker1005)
+* ENHANCEMENT: Updated the admin "check pending" email body to use `{{ order_id }}` / `{{ order_date }}` / `{{ order_total }}` so it matches the documented variable list and the member-facing templates. #152 (@dparker1005)
+
 = 1.1.6 - 2026-03-27 =
 * ENHANCEMENT: Cleaned up settings formatting in the admin. #150 (@strangerstudios)
 * BUG FIX: Fixed checkout page when toggling between the new PayPal (REST API) gateway and Pay by Check. #151 (@dparker1005)
