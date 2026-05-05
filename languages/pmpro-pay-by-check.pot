@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Paid Memberships Pro - Pay by Check Add On plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1.6\n"
+"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1.7\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-03-27T14:53:25+00:00\n"
+"POT-Creation-Date: 2026-05-05T14:33:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pmpro-pay-by-check\n"
@@ -47,9 +47,13 @@ msgstr ""
 msgid "This email is sent to the site administrator when a Pay By Check order is created in \"pending\" status."
 msgstr ""
 
-#: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:77
+#: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:79
 #: includes/emails.php:174
 msgid "Pending checkout for !!display_name!! at !!sitename!!"
+msgstr ""
+
+#: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:81
+msgid "Pending checkout for {{ display_name }} at {{ sitename }}"
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:55
@@ -60,8 +64,12 @@ msgstr ""
 msgid "This email is sent to remind a member when an Pay By Check order is in \"pending\" status."
 msgstr ""
 
-#: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:77
+#: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:79
 msgid "Reminder: New Order for !!display_name!! at !!sitename!!"
+msgstr ""
+
+#: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:81
+msgid "Reminder: New Order for {{ display_name }} at {{ sitename }}"
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending.php:55
@@ -72,8 +80,12 @@ msgstr ""
 msgid "This email is sent to a member when an Pay By Check order is created in \"pending\" status."
 msgstr ""
 
-#: classes/email-templates/class-pmpro-email-template-check-pending.php:77
+#: classes/email-templates/class-pmpro-email-template-check-pending.php:79
 msgid "New Order for !!display_name!! at !!sitename!!"
+msgstr ""
+
+#: classes/email-templates/class-pmpro-email-template-check-pending.php:81
+msgid "New Order for {{ display_name }} at {{ sitename }}"
 msgstr ""
 
 #: includes/admin.php:11
