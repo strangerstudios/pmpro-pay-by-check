@@ -80,12 +80,6 @@ function pmpropbc_confirmation_message( $confirmation_message, $invoice ) {
 	
 	$confirmation_message = '<p>' . sprintf( __( 'Thank you for your membership to %1$s. Your %2$s membership status is: <b>%3$s</b>.', 'pmpro-pay-by-check' ), get_bloginfo( 'name' ), $invoice->membership_level->name, $invoice->status ) . ' ' . __( 'Once payment is received and processed you will gain access to your membership content.', 'pmpro-pay-by-check' ) . '</p>';
 
-	// Put the level confirmation from level settings into the message.
-	$level_obj = pmpro_getLevel( $invoice->membership_id );
-	if ( ! empty( $level_obj->confirmation ) ) {
-		$confirmation_message .= wpautop( wp_unslash( $level_obj->confirmation ) );
-	}
-
 	$confirmation_message .= '<p>' . sprintf( __( 'Below are details about your membership account and a receipt for your initial membership invoice. A welcome email with a copy of your initial membership invoice has been sent to %s.', 'pmpro-pay-by-check' ), $user->user_email ) . '</p>';
 
 	// Put the check instructions into the message.
