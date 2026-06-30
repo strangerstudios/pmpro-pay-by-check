@@ -2,8 +2,8 @@
 Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 5.0
-Tested up to: 6.9
-Stable tag: 1.1.7
+Tested up to: 7.0
+Stable tag: 1.1.8
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -29,6 +29,9 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
+= 1.1.8 - 2026-06-30 =
+* BUG FIX: The membership level's confirmation message is no longer shown on the checkout confirmation page for pending Pay by Check orders; it now displays only once the order status is `success`. This aligns with the same change in PMPro core (strangerstudios/paid-memberships-pro#3682). #153 (@kimcoleman)
+
 = 1.1.7 - 2026-05-05 =
 * ENHANCEMENT: Updated default email templates to use the new liquid syntax (`{{ var }}`) for Paid Memberships Pro 3.7+ while preserving the legacy `!!var!!` syntax on older versions. #152 (@dparker1005)
 * ENHANCEMENT: Updated the admin "check pending" email body to use `{{ order_id }}` / `{{ order_date }}` / `{{ order_total }}` so it matches the documented variable list and the member-facing templates. #152 (@dparker1005)
