@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Set up crons on plugin activation.
@@ -71,7 +74,7 @@ function pmpropbc_recurring_orders() {
 		$date = date( "Y-m-d", strtotime( "+ " . $options['renewal_days'] . " days", current_time('timestamp') ) );
 
 		// Get all subscriptions with a next payment date before the cutoff that do not already have a pending order created.
-		$subscriptions = $wpdb->get_col(
+		$subscriptions = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Prepared query on PMPro custom tables in a cron.
 			$wpdb->prepare(
 				"
 				SELECT s.id FROM $wpdb->pmpro_subscriptions s
@@ -154,7 +157,7 @@ function pmpropbc_reminder_emails() {
 		if ( defined( 'PMPRO_CRON_LIMIT' ) ) {
 			$sqlQuery .= " LIMIT " . PMPRO_CRON_LIMIT;
 		}
-		$orders = $wpdb->get_col($sqlQuery);
+		$orders = $wpdb->get_col($sqlQuery); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Query built only from the level ID (from the DB), a date() string and the PMPRO_CRON_LIMIT constant; no user input.
 		if ( empty( $orders ) || ! is_array( $orders ) ) {
 			continue;
 		}
@@ -166,7 +169,7 @@ function pmpropbc_reminder_emails() {
 
 			// Note when we send the reminder.
 			$new_notes = $order->notes . "Reminder Sent:" . date( 'Y-m-d' ) . "\n";
-			$wpdb->query( "UPDATE $wpdb->pmpro_membership_orders SET notes = '" . esc_sql( $new_notes ) . "' WHERE id = '" . $order_id . "' LIMIT 1" );
+			$wpdb->query( "UPDATE $wpdb->pmpro_membership_orders SET notes = '" . esc_sql( $new_notes ) . "' WHERE id = '" . $order_id . "' LIMIT 1" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- $order_id comes from the order ID column selected above and the notes are escaped with esc_sql().
 
 			// Send email.
 			pmpropbc_send_check_pending_reminder_email( $order );
@@ -204,7 +207,7 @@ function pmpropbc_cancel_overdue_orders() {
 		if ( defined( 'PMPRO_CRON_LIMIT' ) ) {
 			$sqlQuery .= " LIMIT " . PMPRO_CRON_LIMIT;
 		}
-		$orders = $wpdb->get_col($sqlQuery);
+		$orders = $wpdb->get_col($sqlQuery); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Query built only from the level ID (from the DB), a date() string and the PMPRO_CRON_LIMIT constant; no user input.
 		if ( empty( $orders ) || ! is_array( $orders ) ) {
 			continue;
 		}
@@ -267,7 +270,7 @@ function pmpropbc_recurring_orders_legacy() {
 
 		//need to get all combos of pay cycle and period
 		$sqlQuery = "SELECT DISTINCT(CONCAT(cycle_number, ' ', cycle_period)) FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $level->id . "' AND cycle_number > 0 AND status = 'active'";
-		$combos = $wpdb->get_col($sqlQuery);
+		$combos = $wpdb->get_col($sqlQuery); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Query built only from the level ID from the DB; no user input.
 
 		if(empty($combos))
 			continue;
@@ -311,7 +314,7 @@ function pmpropbc_recurring_orders_legacy() {
 			if(defined('PMPRO_CRON_LIMIT'))
 				$sqlQuery .= " LIMIT " . PMPRO_CRON_LIMIT;
 
-			$orders = $wpdb->get_col($sqlQuery);
+			$orders = $wpdb->get_col($sqlQuery); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Query built only from the level ID and billing cycle (both from the DB), a date() string and the PMPRO_CRON_LIMIT constant; no user input.
 
 			if(empty($orders))
 				continue;
@@ -374,7 +377,7 @@ function pmpropbc_recurring_orders_legacy() {
 
 				//let's skip if there is already an order for this user/level/timestamp
 				// make sure there's no order for the current order_timesamp (ignore hours/seconds and focus on the day value itself).
-				$dupe = $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . esc_sql( $order->user_id ) . "' AND membership_id = '" . esc_sql( $order->membership_id ) . "' AND timestamp LIKE '" . esc_sql( date( 'Y-m-d', $order_timestamp ) ) . "%' LIMIT 1" );
+				$dupe = $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_membership_orders WHERE user_id = '" . esc_sql( $order->user_id ) . "' AND membership_id = '" . esc_sql( $order->membership_id ) . "' AND timestamp LIKE '" . esc_sql( date( 'Y-m-d', $order_timestamp ) ) . "%' LIMIT 1" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- All values escaped with esc_sql() and quoted; PMPro custom table.
 
 				if(!empty($dupe))
 					continue;

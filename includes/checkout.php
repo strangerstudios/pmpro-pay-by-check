@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 //add check as a valid gateway
 function pmpropbc_pmpro_valid_gateways($gateways)
@@ -37,16 +40,16 @@ function pmpropbc_checkout_boxes()
 						<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_field pmpro_form_field-radio' ) ); ?>">
 							<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_field-radio-items pmpro_cols-2' ) ); ?>">
 								<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_field pmpro_form_field-radio-item' ) ); ?> gateway_<?php echo esc_attr($gateway_setting); ?>">
-									<input type="radio" id="gateway_<?php echo esc_attr( $gateway_setting ); ?>" name="gateway" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_input pmpro_form_input-radio' ) ); ?>" value="<?php echo $gateway_setting;?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
+									<input type="radio" id="gateway_<?php echo esc_attr( $gateway_setting ); ?>" name="gateway" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_input pmpro_form_input-radio' ) ); ?>" value="<?php echo esc_attr( $gateway_setting ); ?>" <?php if(!$gateway || $gateway == $gateway_setting) { ?>checked="checked"<?php } ?> />
 									<label for="gateway_<?php echo esc_attr( $gateway_setting ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_label pmpro_form_label-inline pmpro_clickable' ) ); ?>">
 										<?php if($gateway_setting == "paypal" || $gateway_setting == "paypalexpress" || $gateway_setting == "paypalstandard") { ?>
-											<?php _e('Pay with PayPal', 'pmpro-pay-by-check');?>
+											<?php esc_html_e('Pay with PayPal', 'pmpro-pay-by-check');?>
 										<?php } elseif($gateway_setting == 'twocheckout') { ?>
-											<?php _e('Pay with 2Checkout', 'pmpro-pay-by-check');?>
+											<?php esc_html_e('Pay with 2Checkout', 'pmpro-pay-by-check');?>
 										<?php } elseif( $gateway_setting == 'payfast' ) { ?>
-											<?php _e('Pay with PayFast', 'pmpro-pay-by-check');?>
+											<?php esc_html_e('Pay with PayFast', 'pmpro-pay-by-check');?>
 										<?php } else { ?>
-											<?php _e('Pay by Credit Card', 'pmpro-pay-by-check');?>
+											<?php esc_html_e('Pay by Credit Card', 'pmpro-pay-by-check');?>
 										<?php } ?>
 									</label>
 								</div> <!-- end pmpro_form_field pmpro_form_field-radio-item -->
@@ -237,7 +240,7 @@ function pmpropbc_cancel_previous_pending_orders( $user_id, $order ) {
 	global $wpdb;
 
 	// Update any outstanding check payments for this level ID.
-	$wpdb->query(
+	$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Prepared update on the PMPro orders table.
 		$wpdb->prepare(
 			"UPDATE $wpdb->pmpro_membership_orders
 			SET `status` = 'error'
@@ -372,7 +375,7 @@ function pmpropbc_order_status_success( $morder ) {
 	$checkout_request_vars = get_pmpro_membership_order_meta( $morder->id, 'checkout_request_vars', true );
 	if ( ! empty( $checkout_request_vars ) ) {
 		// Process the checkout and avoid infinite loops. This should send the checkout email.
-		$original_request_vars = $_REQUEST;
+		$original_request_vars = $_REQUEST; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Snapshot of the request so it can be restored after the async checkout; not processed.
 		pmpro_pull_checkout_data_from_order( $morder );
 		remove_action( 'pmpro_update_order', 'pmpropbc_order_status_success', 10, 1 );
 		pmpro_complete_async_checkout( $morder );

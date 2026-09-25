@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Show levels with pending payments on the account page.
@@ -21,9 +24,9 @@ function pmpropbc_pmpro_account_bullets_bottom() {
 
 			// Check if the user is pending for the level.
 			if ( ! pmpro_hasMembershipLevel( $order->membership_id, $order->user_id ) ) {
-				printf( esc_html__('%sYour %s membership is pending.%s We are still waiting for payment for %syour latest invoice%s.', 'pmpro-pay-by-check'), '<strong>', esc_html( $level->name ), '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $order->code) ), '</a>' );
+				printf( esc_html__('%sYour %s membership is pending.%s We are still waiting for payment for %syour latest invoice%s.', 'pmpro-pay-by-check'), '<strong>', esc_html( $level->name ), '</strong>', sprintf( '<a href="%s">', esc_url( pmpro_url('invoice', '?invoice=' . $order->code) ) ), '</a>' );
 			} else {
-				printf( esc_html__('%sImportant Notice:%s We are still waiting for payment on %sthe latest invoice%s for your %s membership.', 'pmpro-pay-by-check'), '<strong>', '</strong>', sprintf( '<a href="%s">', pmpro_url('invoice', '?invoice=' . $order->code ) ), '</a>', esc_html( $level->name ) );
+				printf( esc_html__('%sImportant Notice:%s We are still waiting for payment on %sthe latest invoice%s for your %s membership.', 'pmpro-pay-by-check'), '<strong>', '</strong>', sprintf( '<a href="%s">', esc_url( pmpro_url('invoice', '?invoice=' . $order->code ) ) ), '</a>', esc_html( $level->name ) );
 			}
 			?>
 		</li>
@@ -36,12 +39,12 @@ add_action('pmpro_account_bullets_bottom', 'pmpropbc_pmpro_account_bullets_botto
  * If an invoice is pending, show a message on the invoice page.
  */
 function pmpropbc_pmpro_invoice_bullets_bottom() {
-	if ( empty( $_REQUEST['invoice'] ) ) {
+	if ( empty( $_REQUEST['invoice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display on the invoice page.
 		return;
 	}
 
 	// Get the order.
-	$order = new MemberOrder( $_REQUEST['invoice'] );
+	$order = new MemberOrder( sanitize_text_field( wp_unslash( $_REQUEST['invoice'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display on the invoice page.
 
 	// Check if it is pending and a check payment.
 	if ( $order->status == 'pending' && $order->gateway == 'check' ) {
