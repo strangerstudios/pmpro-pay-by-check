@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class PMProGateway_pbc extends PMProGateway {
 	function __construct() {
 		$this->gateway = 'check';

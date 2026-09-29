@@ -147,7 +147,7 @@ function pmpropbc_reminder_emails() {
 		$sqlQuery = "
 			SELECT id 
 			FROM $wpdb->pmpro_membership_orders 
-			WHERE membership_id = $level->id 
+			WHERE membership_id = " . (int) $level->id . "
 				AND gateway = 'check' 
 				AND status = 'pending' 
 				AND timestamp <= '" . $date . "'
@@ -198,7 +198,7 @@ function pmpropbc_cancel_overdue_orders() {
 		$sqlQuery = "
 			SELECT id 
 			FROM $wpdb->pmpro_membership_orders 
-			WHERE membership_id = $level->id 
+			WHERE membership_id = " . (int) $level->id . "
 				AND gateway = 'check' 
 				AND status = 'pending' 
 				AND timestamp <= '" . $date . "'
@@ -290,7 +290,7 @@ function pmpropbc_recurring_orders_legacy() {
 				SELECT o1.id FROM
 				    (SELECT mo.id, mo.user_id, mo.timestamp
 				    FROM {$wpdb->pmpro_membership_orders} AS mo
-				    WHERE mo.membership_id = $level->id
+				    WHERE mo.membership_id = " . (int) $level->id . "
 				        AND mo.gateway = 'check'
 				        AND mo.status IN('pending', 'success')
 				    ) as o1
@@ -299,7 +299,7 @@ function pmpropbc_recurring_orders_legacy() {
 					
 					(SELECT mo1.id, mo1.user_id, mo1.timestamp
 				    FROM {$wpdb->pmpro_membership_orders} AS mo1
-				    WHERE mo1.membership_id = $level->id
+				    WHERE mo1.membership_id = " . (int) $level->id . "
 				        AND mo1.status IN('pending', 'success')
 				    ) as o2
 
