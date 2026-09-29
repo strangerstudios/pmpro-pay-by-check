@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Paid Memberships Pro - Pay by Check Add On plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1.8\n"
+"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1.9\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-30T16:58:47+00:00\n"
+"POT-Creation-Date: 2026-09-29T15:52:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pmpro-pay-by-check\n"
@@ -34,6 +34,7 @@ msgstr "Permettre le paiement par chèque:"
 #: pmpro-pay-by-check.php:56
 #: includes/admin.php:21
 #: includes/admin.php:28
+#: includes/admin.php:31
 msgid "No. Use the default gateway only."
 msgstr "Non. Utiliser seulement la passerelle par défaut."
 
@@ -59,6 +60,7 @@ msgstr "Envoyer les courriels de renouvellement:"
 #: pmpro-pay-by-check.php:65
 #: includes/admin.php:30
 #: includes/admin.php:37
+#: includes/admin.php:40
 msgid "days before renewal."
 msgstr "jours avant le renouvellement."
 
@@ -79,6 +81,8 @@ msgstr "Envoyer les courriels de renouvellement:"
 #: includes/admin.php:42
 #: includes/admin.php:43
 #: includes/admin.php:49
+#: includes/admin.php:46
+#: includes/admin.php:52
 msgid "days after a missed payment."
 msgstr "jours après le paiement échoué."
 
@@ -95,6 +99,7 @@ msgstr "Annuler l'abonnement:"
 #: includes/checkout.php:29
 #: includes/checkout.php:31
 #: includes/checkout.php:33
+#: includes/checkout.php:36
 msgid "Choose Your Payment Method"
 msgstr "Veuillez choisir votre méthode de paiement"
 
@@ -104,6 +109,7 @@ msgstr "Veuillez choisir votre méthode de paiement"
 #: includes/checkout.php:35
 #: includes/checkout.php:41
 #: includes/checkout.php:43
+#: includes/checkout.php:46
 msgid "Pay with PayPal"
 msgstr "Payer avec PayPal"
 
@@ -113,6 +119,7 @@ msgstr "Payer avec PayPal"
 #: includes/checkout.php:41
 #: includes/checkout.php:47
 #: includes/checkout.php:49
+#: includes/checkout.php:52
 msgid "Pay by Credit Card"
 msgstr "Payer par carte de crédit"
 
@@ -148,6 +155,7 @@ msgstr "<strong>Avis important:</strong> Nous sommes toujours en attente du paie
 #: includes/emails.php:77
 #: includes/emails.php:90
 #: includes/emails.php:95
+#: includes/emails.php:98
 #, php-format
 msgid "New Invoice for %s at %s"
 msgstr "Nouvelle facture pour %s de %s"
@@ -161,6 +169,7 @@ msgstr "Nouvelle facture pour %s de %s"
 #: includes/emails.php:148
 #: includes/emails.php:234
 #: includes/emails.php:251
+#: includes/emails.php:254
 #, php-format
 msgid "Reminder: New Invoice for %s at %s"
 msgstr "Rappel: nouvelle facture pour %s de %s"
@@ -170,6 +179,8 @@ msgstr "Rappel: nouvelle facture pour %s de %s"
 #: includes/emails.php:204
 #: includes/emails.php:136
 #: includes/emails.php:215
+#: includes/emails.php:139
+#: includes/emails.php:218
 msgid "Discount Code"
 msgstr "Code de rabais"
 
@@ -181,24 +192,28 @@ msgstr "Courriel d'abonnement expiré envoyé à %s."
 #: pmpro-pay-by-check.php:885
 #: pmpro-pay-by-check.php:54
 #: pmpro-pay-by-check.php:69
+#: pmpro-pay-by-check.php:73
 msgid "Docs"
 msgstr "Documentation"
 
 #: pmpro-pay-by-check.php:885
 #: pmpro-pay-by-check.php:54
 #: pmpro-pay-by-check.php:69
+#: pmpro-pay-by-check.php:73
 msgid "View Documentation"
 msgstr "Voir la documentation"
 
 #: pmpro-pay-by-check.php:886
 #: pmpro-pay-by-check.php:55
 #: pmpro-pay-by-check.php:70
+#: pmpro-pay-by-check.php:74
 msgid "Support"
 msgstr "Soutien"
 
 #: pmpro-pay-by-check.php:886
 #: pmpro-pay-by-check.php:55
 #: pmpro-pay-by-check.php:70
+#: pmpro-pay-by-check.php:74
 msgid "Visit Customer Support Forum"
 msgstr "Visiter le forum de soutien au client"
 
@@ -232,6 +247,7 @@ msgstr ""
 #: includes/checkout.php:37
 #: includes/checkout.php:43
 #: includes/checkout.php:45
+#: includes/checkout.php:48
 msgid "Pay with 2Checkout"
 msgstr ""
 
@@ -240,6 +256,7 @@ msgstr ""
 #: includes/checkout.php:39
 #: includes/checkout.php:45
 #: includes/checkout.php:47
+#: includes/checkout.php:50
 msgid "Pay with PayFast"
 msgstr ""
 
@@ -248,6 +265,7 @@ msgstr ""
 #: includes/checkout.php:53
 #: includes/checkout.php:63
 #: includes/checkout.php:65
+#: includes/checkout.php:68
 msgid "Check Out with PayPal"
 msgstr ""
 
@@ -256,6 +274,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:678
 #: pmpro-pay-by-check.php:681
 #: includes/frontend.php:24
+#: includes/frontend.php:27
 #, php-format
 msgid "%sYour %s membership is pending.%s We are still waiting for payment for %syour latest invoice%s."
 msgstr ""
@@ -265,6 +284,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:680
 #: pmpro-pay-by-check.php:683
 #: includes/frontend.php:26
+#: includes/frontend.php:29
 #, php-format
 msgid "%sImportant Notice:%s We are still waiting for payment on %sthe latest invoice%s for your %s membership."
 msgstr ""
@@ -274,6 +294,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:708
 #: pmpro-pay-by-check.php:711
 #: includes/frontend.php:53
+#: includes/frontend.php:56
 #, php-format
 msgid "%sMembership pending.%s We are still waiting for payment of this invoice."
 msgstr ""
@@ -283,6 +304,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:710
 #: pmpro-pay-by-check.php:713
 #: includes/frontend.php:55
+#: includes/frontend.php:58
 #, php-format
 msgid "%sImportant Notice:%s We are still waiting for payment of this invoice."
 msgstr ""
@@ -292,6 +314,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:736
 #: pmpro-pay-by-check.php:739
 #: includes/frontend.php:81
+#: includes/frontend.php:84
 #, php-format
 msgid "Thank you for your membership to %1$s. Your %2$s membership status is: <b>%3$s</b>."
 msgstr ""
@@ -301,6 +324,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:736
 #: pmpro-pay-by-check.php:739
 #: includes/frontend.php:81
+#: includes/frontend.php:84
 msgid "Once payment is received and processed you will gain access to your membership content."
 msgstr ""
 
@@ -310,6 +334,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:747
 #: includes/frontend.php:89
 #: includes/frontend.php:83
+#: includes/frontend.php:86
 #, php-format
 msgid "Below are details about your membership account and a receipt for your initial membership invoice. A welcome email with a copy of your initial membership invoice has been sent to %s."
 msgstr ""
@@ -320,6 +345,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:1311
 #: pmpro-pay-by-check.php:1310
 #: includes/member-pending-deprecated.php:217
+#: includes/member-pending-deprecated.php:220
 msgid "Your payment is currently pending. You will gain access to this page once it is approved."
 msgstr ""
 
@@ -328,12 +354,15 @@ msgstr ""
 #: includes/admin.php:11
 #: includes/checkout.php:22
 #: includes/checkout.php:24
+#: includes/admin.php:14
+#: includes/checkout.php:27
 msgid "Check"
 msgstr ""
 
 #: pmpro-pay-by-check.php:48
 #: includes/admin.php:13
 #: includes/admin.php:14
+#: includes/admin.php:17
 #, php-format
 msgid "Pay by %s Settings"
 msgstr ""
@@ -341,6 +370,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:49
 #: includes/admin.php:14
 #: includes/admin.php:16
+#: includes/admin.php:19
 #, php-format
 msgid "Change this setting to allow or disallow the \"Pay by %s\" option for this level."
 msgstr ""
@@ -354,6 +384,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:57
 #: includes/admin.php:22
 #: includes/admin.php:29
+#: includes/admin.php:32
 #, php-format
 msgid "Yes. Users choose between default gateway and %s."
 msgstr ""
@@ -361,6 +392,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:58
 #: includes/admin.php:23
 #: includes/admin.php:30
+#: includes/admin.php:33
 #, php-format
 msgid "Yes. Users can only pay by %s."
 msgstr ""
@@ -372,6 +404,8 @@ msgstr ""
 #: includes/checkout.php:271
 #: includes/checkout.php:56
 #: includes/checkout.php:274
+#: includes/checkout.php:59
+#: includes/checkout.php:272
 #, php-format
 msgid "Pay by %s"
 msgstr ""
@@ -385,77 +419,96 @@ msgstr ""
 #: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:77
 #: includes/emails.php:174
 #: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:79
+#: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:83
+#: includes/emails.php:177
 msgid "Pending checkout for !!display_name!! at !!sitename!!"
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:55
+#: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:59
 msgid "Pay By Check - Check Pending (admin)"
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:66
+#: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:70
 msgid "This email is sent to the site administrator when a Pay By Check order is created in \"pending\" status."
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:55
+#: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:59
 msgid "Pay By Check - Check Pending Reminder"
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:66
+#: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:70
 msgid "This email is sent to remind a member when an Pay By Check order is in \"pending\" status."
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:77
 #: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:79
+#: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:83
 msgid "Reminder: New Order for !!display_name!! at !!sitename!!"
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending.php:55
+#: classes/email-templates/class-pmpro-email-template-check-pending.php:59
 msgid "Pay By Check - Check Pending"
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending.php:66
+#: classes/email-templates/class-pmpro-email-template-check-pending.php:70
 msgid "This email is sent to a member when an Pay By Check order is created in \"pending\" status."
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending.php:77
 #: classes/email-templates/class-pmpro-email-template-check-pending.php:79
+#: classes/email-templates/class-pmpro-email-template-check-pending.php:83
 msgid "New Order for !!display_name!! at !!sitename!!"
 msgstr ""
 
 #: includes/admin.php:18
+#: includes/admin.php:21
 msgid "Manual and Offline Payments Add On"
 msgstr ""
 
 #: includes/admin.php:19
+#: includes/admin.php:22
 #, php-format
 msgid "Learn more about the %s."
 msgstr ""
 
 #: includes/admin.php:25
+#: includes/admin.php:28
 #, php-format
 msgid "Allow Paying by %s"
 msgstr ""
 
 #: includes/admin.php:35
+#: includes/admin.php:38
 msgid "Send Renewal Emails"
 msgstr ""
 
 #: includes/admin.php:41
+#: includes/admin.php:44
 msgid "Send Reminder Emails"
 msgstr ""
 
 #: includes/admin.php:47
+#: includes/admin.php:50
 msgid "Cancel Membership"
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:81
+#: classes/email-templates/class-pmpro-email-template-check-pending-admin.php:85
 msgid "Pending checkout for {{ display_name }} at {{ sitename }}"
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:81
+#: classes/email-templates/class-pmpro-email-template-check-pending-reminder.php:85
 msgid "Reminder: New Order for {{ display_name }} at {{ sitename }}"
 msgstr ""
 
 #: classes/email-templates/class-pmpro-email-template-check-pending.php:81
+#: classes/email-templates/class-pmpro-email-template-check-pending.php:85
 msgid "New Order for {{ display_name }} at {{ sitename }}"
 msgstr ""
