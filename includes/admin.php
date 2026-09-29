@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /*
 	Add settings to the edit levels page
@@ -6,7 +9,7 @@
 //show the checkbox on the edit level page
 function pmpropbc_pmpro_membership_level_after_other_settings()
 {
-	$level_id = intval($_REQUEST['edit']);
+	$level_id = intval($_REQUEST['edit']); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- Read-only; this hook only runs on the edit level screen where 'edit' is set.
 	$options = pmpropbc_getOptions($level_id);
 	$check_gateway_label = get_option( 'pmpro_check_gateway_label' ) ?: __( 'Check', 'pmpro-pay-by-check' ); // Default to 'Pay by Check' if no option is set.
 ?>
@@ -58,15 +61,17 @@ add_action('pmpro_membership_level_after_other_settings', 'pmpropbc_pmpro_member
 //save pay by check settings when the level is saved/added
 function pmpropbc_pmpro_save_membership_level($level_id)
 {
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Runs on pmpro_save_membership_level, after core PMPro verifies the save_membershiplevel nonce and pmpro_membershiplevels capability; values are cast with intval().
 	//get values
 	if(isset($_REQUEST['pbc_setting']))
 		$pbc_setting = intval($_REQUEST['pbc_setting']);
 	else
 		$pbc_setting = 0;
 
-	$renewal_days = intval($_REQUEST['pbc_renewal_days']);
-	$reminder_days = intval($_REQUEST['pbc_reminder_days']);
-	$cancel_days = intval($_REQUEST['pbc_cancel_days']);
+	$renewal_days = isset( $_REQUEST['pbc_renewal_days'] ) ? intval( $_REQUEST['pbc_renewal_days'] ) : 0;
+	$reminder_days = isset( $_REQUEST['pbc_reminder_days'] ) ? intval( $_REQUEST['pbc_reminder_days'] ) : 0;
+	$cancel_days = isset( $_REQUEST['pbc_cancel_days'] ) ? intval( $_REQUEST['pbc_cancel_days'] ) : 0;
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 	//build array
 	$options = array(

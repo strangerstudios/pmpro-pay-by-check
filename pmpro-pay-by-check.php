@@ -21,6 +21,10 @@ Domain Path: /languages
 	* An email is sent to the user RE the status change.
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /*
 	Settings, Globals and Constants
 */

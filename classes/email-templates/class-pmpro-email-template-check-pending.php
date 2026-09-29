@@ -4,6 +4,10 @@
  *
  * @since 1.1.4
  */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class PMPro_Email_Template_Check_Pending extends PMPro_Email_Template {
 
 	/**

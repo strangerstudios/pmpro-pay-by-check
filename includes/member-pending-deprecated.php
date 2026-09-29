@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Hook in the "member pending" code for sites running PMPro versions lower than 3.0.3.

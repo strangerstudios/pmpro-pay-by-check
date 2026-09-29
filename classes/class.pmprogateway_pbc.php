@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class PMProGateway_pbc extends PMProGateway {
 	function __construct() {
 		$this->gateway = 'check';
@@ -66,7 +70,7 @@ class PMProGateway_pbc extends PMProGateway {
 
 		// Redirect to the confirmation page and await checkout completion.
 		$confirmation_url = apply_filters( 'pmpro_confirmation_url', add_query_arg( 'pmpro_level', $order->membership_level->id, pmpro_url("confirmation" ) ), $order->user_id, $order->membership_level );
-		wp_redirect( $confirmation_url );
+		wp_redirect( $confirmation_url ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect -- Confirmation URL is filterable (pmpro_confirmation_url, pmpro_url) and may legitimately point offsite.
 		exit;
 	}
 
