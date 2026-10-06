@@ -99,6 +99,17 @@ function pmpropbc_recurring_orders() {
 			// Get the PMPro_Subscription object.
 			$subscription = new PMPro_Subscription( $subscription_id );			
 
+			// Skip subscriptions whose user has been deleted. Core leaves these active unless the admin cancels them on deletion.
+			$user_id = $subscription->get_user_id();
+			if ( empty( get_userdata( $user_id ) ) ) {
+				continue;
+			}
+
+			// Skip if the user no longer has this level so we don't keep generating orders for an out-of-sync subscription.
+			if ( ! pmpro_hasMembershipLevel( $subscription->get_membership_level_id(), $user_id ) ) {
+				continue;
+			}
+
 			// Create a new order.
 			$pending_order = new MemberOrder();
 			$pending_order->user_id = $subscription->get_user_id();
