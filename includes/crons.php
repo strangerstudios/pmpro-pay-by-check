@@ -106,7 +106,7 @@ function pmpropbc_recurring_orders() {
 			}
 
 			// Skip if the user no longer has this level so we don't keep generating orders for an out-of-sync subscription.
-			if ( ! pmpro_hasMembershipLevel( $subscription->get_membership_level_id(), $user_id ) ) {
+			if ( empty( pmpro_getSpecificMembershipLevelForUser( $user_id, $subscription->get_membership_level_id() ) ) ) {
 				continue;
 			}
 
