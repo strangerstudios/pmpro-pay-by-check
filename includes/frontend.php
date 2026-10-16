@@ -7,6 +7,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Show levels with pending payments on the account page.
  */
 function pmpropbc_pmpro_account_bullets_bottom() {
+	// PMPro 3.9+ shows pending and past due memberships on the account page.
+	if ( defined( 'PMPRO_VERSION' ) && version_compare( PMPRO_VERSION, '3.9', '>=' ) ) {
+		return;
+	}
+
 	// Get all pending check orders for this user.
 	$order_query_args = array(
 		'user_id' => get_current_user_id(),
