@@ -82,7 +82,7 @@ function pmpropbc_confirmation_message( $confirmation_message, $invoice ) {
 	$user = get_user_by( 'ID', $invoice->user_id );
 
 	/* translators: Order status shown in the confirmation message. */
-	$status_label = ( 'pending' === $invoice->status ) ? __( 'pending', 'pmpro-pay-by-check' ) : $invoice->status;
+	$status_label = ( 'pending' === $invoice->status ) ? _x( 'pending', 'order status', 'pmpro-pay-by-check' ) : $invoice->status;
 	
 	$confirmation_message = '<p>' . sprintf( __( 'Thank you for your membership to %1$s. Your %2$s membership status is: <b>%3$s</b>.', 'pmpro-pay-by-check' ), get_bloginfo( 'name' ), $invoice->membership_level->name, $status_label ) . ' ' . __( 'Once payment is received and processed you will gain access to your membership content.', 'pmpro-pay-by-check' ) . '</p>';
 
