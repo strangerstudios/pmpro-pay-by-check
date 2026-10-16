@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Paid Memberships Pro - Pay by Check Add On plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1.10\n"
+"Project-Id-Version: Paid Memberships Pro - Pay by Check Add On 1.1.11\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-07T18:02:08+00:00\n"
+"POT-Creation-Date: 2026-10-16T17:34:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pmpro-pay-by-check\n"
@@ -275,6 +275,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:681
 #: includes/frontend.php:24
 #: includes/frontend.php:27
+#: includes/frontend.php:32
 #, php-format
 msgid "%sYour %s membership is pending.%s We are still waiting for payment for %syour latest invoice%s."
 msgstr ""
@@ -285,6 +286,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:683
 #: includes/frontend.php:26
 #: includes/frontend.php:29
+#: includes/frontend.php:34
 #, php-format
 msgid "%sImportant Notice:%s We are still waiting for payment on %sthe latest invoice%s for your %s membership."
 msgstr ""
@@ -295,6 +297,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:711
 #: includes/frontend.php:53
 #: includes/frontend.php:56
+#: includes/frontend.php:61
 #, php-format
 msgid "%sMembership pending.%s We are still waiting for payment of this invoice."
 msgstr ""
@@ -305,6 +308,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:713
 #: includes/frontend.php:55
 #: includes/frontend.php:58
+#: includes/frontend.php:63
 #, php-format
 msgid "%sImportant Notice:%s We are still waiting for payment of this invoice."
 msgstr ""
@@ -315,6 +319,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:739
 #: includes/frontend.php:81
 #: includes/frontend.php:84
+#: includes/frontend.php:92
 #, php-format
 msgid "Thank you for your membership to %1$s. Your %2$s membership status is: <b>%3$s</b>."
 msgstr ""
@@ -325,6 +330,7 @@ msgstr ""
 #: pmpro-pay-by-check.php:739
 #: includes/frontend.php:81
 #: includes/frontend.php:84
+#: includes/frontend.php:92
 msgid "Once payment is received and processed you will gain access to your membership content."
 msgstr ""
 
@@ -335,6 +341,7 @@ msgstr ""
 #: includes/frontend.php:89
 #: includes/frontend.php:83
 #: includes/frontend.php:86
+#: includes/frontend.php:94
 #, php-format
 msgid "Below are details about your membership account and a receipt for your initial membership invoice. A welcome email with a copy of your initial membership invoice has been sent to %s."
 msgstr ""
@@ -511,4 +518,10 @@ msgstr ""
 #: classes/email-templates/class-pmpro-email-template-check-pending.php:81
 #: classes/email-templates/class-pmpro-email-template-check-pending.php:85
 msgid "New Order for {{ display_name }} at {{ sitename }}"
+msgstr ""
+
+#. translators: Order status shown in the confirmation message.
+#: includes/frontend.php:90
+msgctxt "order status"
+msgid "pending"
 msgstr ""
