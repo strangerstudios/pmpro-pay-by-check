@@ -3,7 +3,7 @@ Contributors: strangerstudios, eighty20results
 Tags: pmpro, paid memberships pro, members, memberships, check, cheque, payments, offline
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 1.1.10
+Stable tag: 1.1.11
 
 A collection of customizations useful when allowing users to pay by check for Paid Memberships Pro levels.
 
@@ -29,6 +29,10 @@ If you would like to change the wording from "Pay by Check" to something else, y
 https://gist.github.com/strangerstudios/68bb75bf3b83530390d4
 
 == Changelog ==
+= 1.1.11 - 2026-10-16 =
+* ENHANCEMENT: On PMPro 3.9+, the Membership Account page no longer shows the Pay by Check pending payment message, since PMPro now shows pending and past due memberships on that page. Check renewal orders are no longer noted on the Membership Account page until they are due. #160 (@dparker1005)
+* BUG FIX: The order status shown in the check confirmation message can now be translated. #159 (@dparker1005)
+
 = 1.1.10 - 2026-10-07 =
 * BUG FIX: Fixed an issue where recurring check orders could be created repeatedly for subscriptions whose user had been deleted or no longer had the membership level. #158 (@andrewlimaza)
 
